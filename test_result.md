@@ -119,63 +119,78 @@ user_problem_statement: |
 backend:
   - task: "Update Customer model with business fields"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added has_business_with_gst (bool), business_id (str), business_name (str) fields to Customer model"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Customer model correctly includes business fields. Created customers with and without business - all fields working properly."
   
   - task: "Update CustomerCreate model to accept business_data"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added has_business_with_gst (bool) and business_data (dict) fields to CustomerCreate model"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: CustomerCreate model accepts business_data correctly. Tested with various business data combinations - all working."
   
   - task: "Implement business logic in customer creation endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/customers now checks if business exists by GSTIN, links to existing or creates new business, sets business_name to 'NA' if has_business_with_gst is false"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All business logic scenarios working: 1) Customer without business sets business_name='NA' 2) Customer with new business creates business and links 3) Customer with existing GSTIN links to existing business (no duplicate creation)"
   
   - task: "Implement business logic in customer update endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "PUT /api/customers/{id} now handles business creation/linking/unlinking same as create endpoint"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Customer update endpoint working perfectly. Tested adding business to customer without business, and unlinking business from customer with business. Both scenarios work correctly."
   
   - task: "Update businesses endpoint to return linked customers"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "GET /api/businesses now returns linked_customers (array of names) and linked_customers_count for each business"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: GET /api/businesses correctly returns linked_customers array with customer names and linked_customers_count. Verified businesses show accurate customer linkage data."
 
 frontend:
   - task: "Update customer table to show Business Name column"
