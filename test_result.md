@@ -101,3 +101,198 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  Add business management integration to customer records in the billing application.
+  Requirements:
+  1. Add 'Business Name' column to customers table (after Name), remove 'Email' column
+  2. In Add/Edit Customer form, add checkbox "Does this customer have a business with GST?"
+  3. If NO - set Business Name = "NA"
+  4. If YES - show business details form with fields:
+     - Business Legal Name, Nickname, GSTIN, State Code, State, City, PAN, Others
+     - Phone 1/2, Email 1/2, Address 1/2 with "Same as customer" checkboxes
+  5. Auto-fill business fields when "Same as customer" checkboxes are checked
+  6. If business with same GSTIN exists, link to existing, else create new
+  7. Display linked customers in Businesses table
+  8. Support editing/unlinking business from customers
+
+backend:
+  - task: "Update Customer model with business fields"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added has_business_with_gst (bool), business_id (str), business_name (str) fields to Customer model"
+  
+  - task: "Update CustomerCreate model to accept business_data"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added has_business_with_gst (bool) and business_data (dict) fields to CustomerCreate model"
+  
+  - task: "Implement business logic in customer creation endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/customers now checks if business exists by GSTIN, links to existing or creates new business, sets business_name to 'NA' if has_business_with_gst is false"
+  
+  - task: "Implement business logic in customer update endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "PUT /api/customers/{id} now handles business creation/linking/unlinking same as create endpoint"
+  
+  - task: "Update businesses endpoint to return linked customers"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "GET /api/businesses now returns linked_customers (array of names) and linked_customers_count for each business"
+
+frontend:
+  - task: "Update customer table to show Business Name column"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Customers.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added 'Business Name' column after 'Name' column, removed 'Email' column from table display"
+  
+  - task: "Add business checkbox and form section in customer dialog"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Customers.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added checkbox 'Does this customer have a business with GST?' with conditional business details form section"
+  
+  - task: "Implement business form fields with 'Same as customer' checkboxes"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Customers.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented business form with all required fields. Added 'Same as customer' checkboxes for phone, email, and address that auto-fill when checked"
+  
+  - task: "Implement customer form submission with business data"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Customers.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated handleSubmit to send business_data when has_business_with_gst is true. Backend will handle linking/creation logic"
+  
+  - task: "Update Businesses table to show linked customers"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Businesses.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added 'Linked Customers' column showing customer count with tooltip of customer names"
+  
+  - task: "Update export functions to include business_name"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/Customers.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated Excel, PDF, and Word export functions to include Business Name column"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Implement business logic in customer creation endpoint"
+    - "Implement business logic in customer update endpoint"
+    - "Add business checkbox and form section in customer dialog"
+    - "Implement business form fields with 'Same as customer' checkboxes"
+    - "Update Businesses table to show linked customers"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      Implementation Complete - Business Integration with Customers
+      
+      Backend Changes:
+      - Updated Customer model with business_id, business_name, has_business_with_gst fields
+      - Modified POST/PUT /api/customers to handle business creation/linking logic
+      - Check if business exists by GSTIN before creating new one
+      - Modified GET /api/businesses to return linked_customers array and count
+      
+      Frontend Changes:
+      - Updated Customers table: Added 'Business Name' column, removed 'Email' column
+      - Added business section with checkbox in Add/Edit Customer dialog
+      - Implemented conditional business form with all required fields
+      - Added 'Same as customer' checkboxes for phone, email, address with auto-fill
+      - Updated Businesses table to show linked customers count
+      - Updated export functions to include business_name
+      
+      Testing Focus:
+      1. Test customer creation WITHOUT business (should set business_name = "NA")
+      2. Test customer creation WITH new business (should create business and link)
+      3. Test customer creation linking to EXISTING business (same GSTIN)
+      4. Test "Same as customer" checkboxes auto-fill functionality
+      5. Test customer edit to change/unlink business
+      6. Verify Businesses table shows correct linked customer counts
+      7. Test export functions include business_name
+      
+      All services are running. Backend shows no errors in logs.
