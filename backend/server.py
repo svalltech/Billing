@@ -375,24 +375,6 @@ async def delete_customer(customer_id: str):
 # Product Routes
 @api_router.post("/products", response_model=Product)
 async def create_product(input: ProductCreate):
-    # Check if product exists
-    existing = await db.products.find_one({"name": input.name}, {"_id": 0})
-    if existing:
-        # Update existing
-        product_dict = input.model_dump()
-        product_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
-        product_dict['id'] = existing['id']
-        product_dict['created_at'] = existing['created_at']
-        
-        await db.products.update_one({"name": input.name}, {"$set": product_dict})
-        
-        if isinstance(product_dict['created_at'], str):
-            product_dict['created_at'] = datetime.fromisoformat(product_dict['created_at'])
-        if isinstance(product_dict['updated_at'], str):
-            product_dict['updated_at'] = datetime.fromisoformat(product_dict['updated_at'])
-        
-        return Product(**product_dict)
-    
     product_obj = Product(**input.model_dump())
     doc = product_obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
@@ -402,17 +384,19 @@ async def create_product(input: ProductCreate):
     return product_obj
 
 @api_router.get("/products", response_model=List[Product])
-async def get_products(search: Optional[str] = None):
+async def get_products(search: Optional[str] = None, sort_by: Optional[str] = "created_at", sort_order: Optional[str] = "desc"):
     query = {}
     if search:
         query = {
             "$or": [
                 {"name": {"$regex": search, "$options": "i"}},
+                {"category": {"$regex": search, "$options": "i"}},
                 {"hsn": {"$regex": search, "$options": "i"}},
             ]
         }
     
-    products = await db.products.find(query, {"_id": 0}).sort("name", 1).to_list(1000)
+    sort_direction = -1 if sort_order == "desc" else 1
+    products = await db.products.find(query, {"_id": 0}).sort(sort_by, sort_direction).to_list(1000)
     
     for product in products:
         if isinstance(product['created_at'], str):
@@ -421,6 +405,48 @@ async def get_products(search: Optional[str] = None):
             product['updated_at'] = datetime.fromisoformat(product['updated_at'])
     
     return products
+
+@api_router.get("/products/{product_id}", response_model=Product)
+async def get_product(product_id: str):
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    if isinstance(product['created_at'], str):
+        product['created_at'] = datetime.fromisoformat(product['created_at'])
+    if isinstance(product['updated_at'], str):
+        product['updated_at'] = datetime.fromisoformat(product['updated_at'])
+    
+    return Product(**product)
+
+@api_router.put("/products/{product_id}", response_model=Product)
+async def update_product(product_id: str, input: ProductCreate):
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    product_dict = input.model_dump()
+    product_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+    product_dict['id'] = product['id']
+    product_dict['created_at'] = product['created_at']
+    
+    await db.products.update_one({"id": product_id}, {"$set": product_dict})
+    
+    if isinstance(product_dict['created_at'], str):
+        product_dict['created_at'] = datetime.fromisoformat(product_dict['created_at'])
+    if isinstance(product_dict['updated_at'], str):
+        product_dict['updated_at'] = datetime.fromisoformat(product_dict['updated_at'])
+    
+    return Product(**product_dict)
+
+@api_router.delete("/products/{product_id}")
+async def delete_product(product_id: str):
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    await db.products.delete_one({"id": product_id})
+    return {"message": "Product deleted successfully"}
 
 
 # Invoice Routes
