@@ -242,7 +242,7 @@ async def create_customer(input: CustomerCreate):
     return customer_obj
 
 @api_router.get("/customers", response_model=List[Customer])
-async def get_customers(search: Optional[str] = None):
+async def get_customers(search: Optional[str] = None, sort_by: Optional[str] = "created_at", sort_order: Optional[str] = "desc"):
     query = {}
     if search:
         query = {
@@ -250,10 +250,13 @@ async def get_customers(search: Optional[str] = None):
                 {"name": {"$regex": search, "$options": "i"}},
                 {"nickname": {"$regex": search, "$options": "i"}},
                 {"phone_1": {"$regex": search, "$options": "i"}},
+                {"city": {"$regex": search, "$options": "i"}},
+                {"state": {"$regex": search, "$options": "i"}},
             ]
         }
     
-    customers = await db.customers.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    sort_direction = -1 if sort_order == "desc" else 1
+    customers = await db.customers.find(query, {"_id": 0}).sort(sort_by, sort_direction).to_list(1000)
     
     for customer in customers:
         if isinstance(customer['created_at'], str):
