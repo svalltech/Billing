@@ -235,10 +235,10 @@ const Customers = () => {
   const exportToWord = () => {
     let content = '<html><head><style>table { border-collapse: collapse; width: 100%; } th, td { border: 1px solid black; padding: 8px; text-align: left; }</style></head><body>';
     content += '<h1>Customers List</h1>';
-    content += '<table><tr><th>Name</th><th>State</th><th>City</th><th>Mobile</th><th>Email</th><th>GSTIN</th></tr>';
+    content += '<table><tr><th>Name</th><th>State</th><th>City</th><th>Pincode</th><th>Mobile</th><th>Email</th><th>GSTIN</th></tr>';
     
     customers.forEach(c => {
-      content += `<tr><td>${c.name}</td><td>${c.state || ''}</td><td>${c.city || ''}</td><td>${c.phone_1 || ''}</td><td>${c.email_1 || ''}</td><td>${c.gstin || ''}</td></tr>`;
+      content += `<tr><td>${c.name}</td><td>${c.state_1 || ''}</td><td>${c.city_1 || ''}</td><td>${c.pincode_1 || ''}</td><td>${c.phone_1 || ''}</td><td>${c.email_1 || ''}</td><td>${c.gstin || ''}</td></tr>`;
     });
     
     content += '</table></body></html>';
