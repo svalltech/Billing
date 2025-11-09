@@ -32,6 +32,7 @@ function App() {
               <Route path="/invoices" element={<InvoiceList />} />
               <Route path="/invoices/:id" element={<InvoiceView />} />
               <Route path="/customers" element={<Customers />} />
+              <Route path="/businesses" element={<Businesses />} />
               <Route path="/products" element={<Products />} />
               <Route path="/settings" element={<BusinessSettings />} />
             </Routes>
