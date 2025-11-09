@@ -17,7 +17,6 @@ const Sidebar = ({ open, setOpen }) => {
   
   const menuItems = [
     { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/create-invoice', icon: PlusCircle, label: 'New Invoice' },
     { path: '/invoices', icon: FileText, label: 'Invoices' },
     { path: '/customers', icon: Users, label: 'Customers' },
     { path: '/businesses', icon: Building, label: 'Businesses' },
