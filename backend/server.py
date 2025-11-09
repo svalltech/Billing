@@ -75,6 +75,8 @@ class Customer(BaseModel):
     phone_2: Optional[str] = None
     email_1: Optional[EmailStr] = None
     email_2: Optional[EmailStr] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
     address_1: Optional[str] = None
     address_2: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -88,6 +90,8 @@ class CustomerCreate(BaseModel):
     phone_2: Optional[str] = None
     email_1: Optional[EmailStr] = None
     email_2: Optional[EmailStr] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
     address_1: Optional[str] = None
     address_2: Optional[str] = None
 
