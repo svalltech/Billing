@@ -345,30 +345,6 @@ const Customers = () => {
                   />
                 </div>
                 <div>
-                  <Label>State</Label>
-                  <Input
-                    value={formData.state_1}
-                    onChange={(e) => setFormData({...formData, state_1: e.target.value})}
-                    placeholder="State"
-                  />
-                </div>
-                <div>
-                  <Label>City</Label>
-                  <Input
-                    value={formData.city_1}
-                    onChange={(e) => setFormData({...formData, city_1: e.target.value})}
-                    placeholder="City"
-                  />
-                </div>
-                <div>
-                  <Label>Pincode</Label>
-                  <Input
-                    value={formData.pincode_1}
-                    onChange={(e) => setFormData({...formData, pincode_1: e.target.value})}
-                    placeholder="Pincode"
-                  />
-                </div>
-                <div>
                   <Label>GSTIN</Label>
                   <Input
                     value={formData.gstin}
@@ -410,6 +386,11 @@ const Customers = () => {
                     placeholder="Secondary email"
                   />
                 </div>
+                
+                {/* Address 1 Section */}
+                <div className="col-span-2 mt-4 border-t pt-4">
+                  <h3 className="text-sm font-semibold text-slate-700 mb-3">Address 1</h3>
+                </div>
                 <div className="col-span-2">
                   <Label>Address 1</Label>
                   <Textarea
@@ -419,6 +400,35 @@ const Customers = () => {
                     rows={2}
                   />
                 </div>
+                <div>
+                  <Label>City 1</Label>
+                  <Input
+                    value={formData.city_1}
+                    onChange={(e) => setFormData({...formData, city_1: e.target.value})}
+                    placeholder="City"
+                  />
+                </div>
+                <div>
+                  <Label>State 1</Label>
+                  <Input
+                    value={formData.state_1}
+                    onChange={(e) => setFormData({...formData, state_1: e.target.value})}
+                    placeholder="State"
+                  />
+                </div>
+                <div>
+                  <Label>Pincode 1</Label>
+                  <Input
+                    value={formData.pincode_1}
+                    onChange={(e) => setFormData({...formData, pincode_1: e.target.value})}
+                    placeholder="Pincode"
+                  />
+                </div>
+                
+                {/* Address 2 Section */}
+                <div className="col-span-2 mt-4 border-t pt-4">
+                  <h3 className="text-sm font-semibold text-slate-700 mb-3">Address 2 (Optional)</h3>
+                </div>
                 <div className="col-span-2">
                   <Label>Address 2</Label>
                   <Textarea
@@ -426,6 +436,30 @@ const Customers = () => {
                     onChange={(e) => setFormData({...formData, address_2: e.target.value})}
                     placeholder="Secondary address"
                     rows={2}
+                  />
+                </div>
+                <div>
+                  <Label>City 2</Label>
+                  <Input
+                    value={formData.city_2}
+                    onChange={(e) => setFormData({...formData, city_2: e.target.value})}
+                    placeholder="City"
+                  />
+                </div>
+                <div>
+                  <Label>State 2</Label>
+                  <Input
+                    value={formData.state_2}
+                    onChange={(e) => setFormData({...formData, state_2: e.target.value})}
+                    placeholder="State"
+                  />
+                </div>
+                <div>
+                  <Label>Pincode 2</Label>
+                  <Input
+                    value={formData.pincode_2}
+                    onChange={(e) => setFormData({...formData, pincode_2: e.target.value})}
+                    placeholder="Pincode"
                   />
                 </div>
               </div>
