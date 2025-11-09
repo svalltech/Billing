@@ -139,10 +139,14 @@ const Customers = () => {
       phone_2: customer.phone_2 || '',
       email_1: customer.email_1 || '',
       email_2: customer.email_2 || '',
-      city: customer.city || '',
-      state: customer.state || '',
       address_1: customer.address_1 || '',
-      address_2: customer.address_2 || ''
+      city_1: customer.city_1 || '',
+      state_1: customer.state_1 || '',
+      pincode_1: customer.pincode_1 || '',
+      address_2: customer.address_2 || '',
+      city_2: customer.city_2 || '',
+      state_2: customer.state_2 || '',
+      pincode_2: customer.pincode_2 || ''
     });
     setShowDialog(true);
   };
