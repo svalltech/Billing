@@ -49,9 +49,19 @@ const InvoiceList = () => {
   return (
     <div className="p-6 lg:p-8 space-y-6" data-testid="invoice-list-page">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl lg:text-5xl font-bold text-slate-800 mb-2">Invoices</h1>
-        <p className="text-slate-600">View and manage all your invoices</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl lg:text-5xl font-bold text-slate-800 mb-2">Invoices</h1>
+          <p className="text-slate-600">View and manage all your invoices</p>
+        </div>
+        <Button 
+          onClick={() => navigate('/create-invoice')}
+          data-testid="create-invoice-btn"
+          size="lg"
+        >
+          <PlusCircle size={20} className="mr-2" />
+          Create Invoice
+        </Button>
       </div>
       
       {/* Search */}
