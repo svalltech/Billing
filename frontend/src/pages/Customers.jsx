@@ -85,10 +85,14 @@ const Customers = () => {
         phone_2: formData.phone_2 || null,
         email_1: formData.email_1 || null,
         email_2: formData.email_2 || null,
-        city: formData.city || null,
-        state: formData.state || null,
         address_1: formData.address_1 || null,
-        address_2: formData.address_2 || null
+        city_1: formData.city_1 || null,
+        state_1: formData.state_1 || null,
+        pincode_1: formData.pincode_1 || null,
+        address_2: formData.address_2 || null,
+        city_2: formData.city_2 || null,
+        state_2: formData.state_2 || null,
+        pincode_2: formData.pincode_2 || null
       };
       
       if (editingCustomer) {
