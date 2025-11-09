@@ -216,23 +216,49 @@ const Customers = () => {
   };
   
   const exportToPDF = () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF('landscape');
     doc.text('Customers List', 14, 15);
     
     const tableData = customers.map(c => [
       c.name,
-      c.state_1 || '-',
-      c.city_1 || '-',
-      c.pincode_1 || '-',
+      c.nickname || '-',
+      c.gstin || '-',
       c.phone_1 || '-',
-      c.email_1 || '-'
+      c.phone_2 || '-',
+      c.email_1 || '-',
+      c.email_2 || '-',
+      c.address_1 || '-',
+      c.city_1 || '-',
+      c.state_1 || '-',
+      c.pincode_1 || '-',
+      c.address_2 || '-',
+      c.city_2 || '-',
+      c.state_2 || '-',
+      c.pincode_2 || '-'
     ]);
     
     autoTable(doc, {
-      head: [['Name', 'State', 'City', 'Pincode', 'Mobile', 'Email']],
+      head: [['Name', 'Nickname', 'GSTIN', 'Phone 1', 'Phone 2', 'Email 1', 'Email 2', 'Address 1', 'City 1', 'State 1', 'Pincode 1', 'Address 2', 'City 2', 'State 2', 'Pincode 2']],
       body: tableData,
       startY: 20,
-      styles: { fontSize: 7 }
+      styles: { fontSize: 6 },
+      columnStyles: {
+        0: { cellWidth: 15 },
+        1: { cellWidth: 12 },
+        2: { cellWidth: 18 },
+        3: { cellWidth: 15 },
+        4: { cellWidth: 15 },
+        5: { cellWidth: 20 },
+        6: { cellWidth: 20 },
+        7: { cellWidth: 25 },
+        8: { cellWidth: 12 },
+        9: { cellWidth: 12 },
+        10: { cellWidth: 12 },
+        11: { cellWidth: 25 },
+        12: { cellWidth: 12 },
+        13: { cellWidth: 12 },
+        14: { cellWidth: 12 }
+      }
     });
     
     doc.save('customers.pdf');
