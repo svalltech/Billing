@@ -113,10 +113,14 @@ const Customers = () => {
         phone_2: '',
         email_1: '',
         email_2: '',
-        city: '',
-        state: '',
         address_1: '',
-        address_2: ''
+        city_1: '',
+        state_1: '',
+        pincode_1: '',
+        address_2: '',
+        city_2: '',
+        state_2: '',
+        pincode_2: ''
       });
       fetchCustomers();
     } catch (error) {
