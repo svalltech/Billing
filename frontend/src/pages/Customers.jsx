@@ -266,12 +266,28 @@ const Customers = () => {
   };
   
   const exportToWord = () => {
-    let content = '<html><head><style>table { border-collapse: collapse; width: 100%; } th, td { border: 1px solid black; padding: 8px; text-align: left; }</style></head><body>';
+    let content = '<html><head><style>table { border-collapse: collapse; width: 100%; font-size: 10px; } th, td { border: 1px solid black; padding: 6px; text-align: left; } th { background-color: #f0f0f0; font-weight: bold; }</style></head><body>';
     content += '<h1>Customers List</h1>';
-    content += '<table><tr><th>Name</th><th>State</th><th>City</th><th>Pincode</th><th>Mobile</th><th>Email</th><th>GSTIN</th></tr>';
+    content += '<table><tr><th>Name</th><th>Nickname</th><th>GSTIN</th><th>Phone 1</th><th>Phone 2</th><th>Email 1</th><th>Email 2</th><th>Address 1</th><th>City 1</th><th>State 1</th><th>Pincode 1</th><th>Address 2</th><th>City 2</th><th>State 2</th><th>Pincode 2</th></tr>';
     
     customers.forEach(c => {
-      content += `<tr><td>${c.name}</td><td>${c.state_1 || ''}</td><td>${c.city_1 || ''}</td><td>${c.pincode_1 || ''}</td><td>${c.phone_1 || ''}</td><td>${c.email_1 || ''}</td><td>${c.gstin || ''}</td></tr>`;
+      content += `<tr>
+        <td>${c.name}</td>
+        <td>${c.nickname || ''}</td>
+        <td>${c.gstin || ''}</td>
+        <td>${c.phone_1 || ''}</td>
+        <td>${c.phone_2 || ''}</td>
+        <td>${c.email_1 || ''}</td>
+        <td>${c.email_2 || ''}</td>
+        <td>${c.address_1 || ''}</td>
+        <td>${c.city_1 || ''}</td>
+        <td>${c.state_1 || ''}</td>
+        <td>${c.pincode_1 || ''}</td>
+        <td>${c.address_2 || ''}</td>
+        <td>${c.city_2 || ''}</td>
+        <td>${c.state_2 || ''}</td>
+        <td>${c.pincode_2 || ''}</td>
+      </tr>`;
     });
     
     content += '</table></body></html>';
