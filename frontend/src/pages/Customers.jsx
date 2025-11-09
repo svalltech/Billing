@@ -270,12 +270,13 @@ const Customers = () => {
           try {
             await axios.post(`${API}/customers`, {
               name: row.Name || row.name,
-              state: row.State || row.state || '',
-              city: row.City || row.city || '',
+              address_1: row['Address 1'] || row.address_1 || '',
+              city_1: row['City 1'] || row.city_1 || '',
+              state_1: row['State 1'] || row.state_1 || '',
+              pincode_1: row['Pincode 1'] || row.pincode_1 || '',
               phone_1: row.Mobile || row.mobile || row.phone_1 || '',
               email_1: row.Email || row.email || row.email_1 || '',
-              gstin: row.GSTIN || row.gstin || '',
-              address_1: row.Address || row.address || row.address_1 || ''
+              gstin: row.GSTIN || row.gstin || ''
             });
             successCount++;
           } catch (err) {
