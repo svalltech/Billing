@@ -229,7 +229,7 @@ const Customers = () => {
               </div>
             </div>
             <div className="flex justify-end gap-3 mt-6">
-              <Button variant="outline" onClick={handleDialogClose}>Cancel</Button>
+              <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
               <Button onClick={handleSubmit} data-testid="save-customer-btn">Save Customer</Button>
             </div>
           </DialogContent>
