@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { UserPlus, Search, Edit, Trash2, Download, Upload, ArrowUpDown } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -36,7 +37,25 @@ const Customers = () => {
     address_2: '',
     city_2: '',
     state_2: '',
-    pincode_2: ''
+    pincode_2: '',
+    has_business_with_gst: false,
+    business_legal_name: '',
+    business_nickname: '',
+    business_gstin: '',
+    business_state_code: '',
+    business_state: '',
+    business_city: '',
+    business_pan: '',
+    business_others: '',
+    business_phone_1: '',
+    business_phone_2: '',
+    business_email_1: '',
+    business_email_2: '',
+    business_address_1: '',
+    business_address_2: '',
+    same_phone: false,
+    same_email: false,
+    same_address: false
   });
   
   useEffect(() => {
@@ -69,6 +88,36 @@ const Customers = () => {
     }
   };
   
+  // Handle "Same as customer" checkboxes
+  const handleSamePhoneChange = (checked) => {
+    setFormData({
+      ...formData,
+      same_phone: checked,
+      business_phone_1: checked ? formData.phone_1 : '',
+      business_phone_2: checked ? formData.phone_2 : ''
+    });
+  };
+  
+  const handleSameEmailChange = (checked) => {
+    setFormData({
+      ...formData,
+      same_email: checked,
+      business_email_1: checked ? formData.email_1 : '',
+      business_email_2: checked ? formData.email_2 : ''
+    });
+  };
+  
+  const handleSameAddressChange = (checked) => {
+    setFormData({
+      ...formData,
+      same_address: checked,
+      business_address_1: checked ? formData.address_1 : '',
+      business_address_2: checked ? formData.address_2 : '',
+      business_city: checked ? formData.city_1 : '',
+      business_state: checked ? formData.state_1 : ''
+    });
+  };
+  
   const handleSubmit = async () => {
     if (!formData.name) {
       toast.error('Customer name is required');
@@ -76,7 +125,7 @@ const Customers = () => {
     }
     
     try {
-      // Clean data - convert empty strings to null for optional fields
+      // Clean customer data
       const cleanData = {
         name: formData.name,
         nickname: formData.nickname || null,
@@ -92,8 +141,29 @@ const Customers = () => {
         address_2: formData.address_2 || null,
         city_2: formData.city_2 || null,
         state_2: formData.state_2 || null,
-        pincode_2: formData.pincode_2 || null
+        pincode_2: formData.pincode_2 || null,
+        has_business_with_gst: formData.has_business_with_gst
       };
+      
+      // Add business data if applicable
+      if (formData.has_business_with_gst && formData.business_legal_name) {
+        cleanData.business_data = {
+          legal_name: formData.business_legal_name,
+          nickname: formData.business_nickname || null,
+          gstin: formData.business_gstin || null,
+          state_code: formData.business_state_code || null,
+          state: formData.business_state || null,
+          city: formData.business_city || null,
+          pan: formData.business_pan || null,
+          others: formData.business_others || null,
+          phone_1: formData.business_phone_1 || null,
+          phone_2: formData.business_phone_2 || null,
+          email_1: formData.business_email_1 || null,
+          email_2: formData.business_email_2 || null,
+          address_1: formData.business_address_1 || null,
+          address_2: formData.business_address_2 || null
+        };
+      }
       
       if (editingCustomer) {
         await axios.put(`${API}/customers/${editingCustomer.id}`, cleanData);
@@ -105,28 +175,50 @@ const Customers = () => {
       
       setShowDialog(false);
       setEditingCustomer(null);
-      setFormData({
-        name: '',
-        nickname: '',
-        gstin: '',
-        phone_1: '',
-        phone_2: '',
-        email_1: '',
-        email_2: '',
-        address_1: '',
-        city_1: '',
-        state_1: '',
-        pincode_1: '',
-        address_2: '',
-        city_2: '',
-        state_2: '',
-        pincode_2: ''
-      });
+      resetForm();
       fetchCustomers();
     } catch (error) {
       console.error('Error saving customer:', error);
       toast.error('Failed to save customer');
     }
+  };
+  
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      nickname: '',
+      gstin: '',
+      phone_1: '',
+      phone_2: '',
+      email_1: '',
+      email_2: '',
+      address_1: '',
+      city_1: '',
+      state_1: '',
+      pincode_1: '',
+      address_2: '',
+      city_2: '',
+      state_2: '',
+      pincode_2: '',
+      has_business_with_gst: false,
+      business_legal_name: '',
+      business_nickname: '',
+      business_gstin: '',
+      business_state_code: '',
+      business_state: '',
+      business_city: '',
+      business_pan: '',
+      business_others: '',
+      business_phone_1: '',
+      business_phone_2: '',
+      business_email_1: '',
+      business_email_2: '',
+      business_address_1: '',
+      business_address_2: '',
+      same_phone: false,
+      same_email: false,
+      same_address: false
+    });
   };
   
   const handleEdit = (customer) => {
@@ -146,7 +238,25 @@ const Customers = () => {
       address_2: customer.address_2 || '',
       city_2: customer.city_2 || '',
       state_2: customer.state_2 || '',
-      pincode_2: customer.pincode_2 || ''
+      pincode_2: customer.pincode_2 || '',
+      has_business_with_gst: customer.has_business_with_gst || false,
+      business_legal_name: '',
+      business_nickname: '',
+      business_gstin: '',
+      business_state_code: '',
+      business_state: '',
+      business_city: '',
+      business_pan: '',
+      business_others: '',
+      business_phone_1: '',
+      business_phone_2: '',
+      business_email_1: '',
+      business_email_2: '',
+      business_address_1: '',
+      business_address_2: '',
+      same_phone: false,
+      same_email: false,
+      same_address: false
     });
     setShowDialog(true);
   };
@@ -168,23 +278,7 @@ const Customers = () => {
     setShowDialog(open);
     if (!open) {
       setEditingCustomer(null);
-      setFormData({
-        name: '',
-        nickname: '',
-        gstin: '',
-        phone_1: '',
-        phone_2: '',
-        email_1: '',
-        email_2: '',
-        address_1: '',
-        city_1: '',
-        state_1: '',
-        pincode_1: '',
-        address_2: '',
-        city_2: '',
-        state_2: '',
-        pincode_2: ''
-      });
+      resetForm();
     }
   };
   
@@ -192,6 +286,7 @@ const Customers = () => {
   const exportToExcel = () => {
     const data = customers.map(c => ({
       'Name': c.name,
+      'Business Name': c.business_name || 'NA',
       'Nickname': c.nickname || '',
       'GSTIN': c.gstin || '',
       'Phone 1': c.phone_1 || '',
@@ -221,44 +316,17 @@ const Customers = () => {
     
     const tableData = customers.map(c => [
       c.name,
+      c.business_name || 'NA',
       c.nickname || '-',
-      c.gstin || '-',
       c.phone_1 || '-',
-      c.phone_2 || '-',
-      c.email_1 || '-',
-      c.email_2 || '-',
-      c.address_1 || '-',
       c.city_1 || '-',
-      c.state_1 || '-',
-      c.pincode_1 || '-',
-      c.address_2 || '-',
-      c.city_2 || '-',
-      c.state_2 || '-',
-      c.pincode_2 || '-'
+      c.state_1 || '-'
     ]);
     
     autoTable(doc, {
-      head: [['Name', 'Nickname', 'GSTIN', 'Phone 1', 'Phone 2', 'Email 1', 'Email 2', 'Address 1', 'City 1', 'State 1', 'Pincode 1', 'Address 2', 'City 2', 'State 2', 'Pincode 2']],
+      head: [['Name', 'Business Name', 'Nickname', 'Phone', 'City', 'State']],
       body: tableData,
-      startY: 20,
-      styles: { fontSize: 6 },
-      columnStyles: {
-        0: { cellWidth: 15 },
-        1: { cellWidth: 12 },
-        2: { cellWidth: 18 },
-        3: { cellWidth: 15 },
-        4: { cellWidth: 15 },
-        5: { cellWidth: 20 },
-        6: { cellWidth: 20 },
-        7: { cellWidth: 25 },
-        8: { cellWidth: 12 },
-        9: { cellWidth: 12 },
-        10: { cellWidth: 12 },
-        11: { cellWidth: 25 },
-        12: { cellWidth: 12 },
-        13: { cellWidth: 12 },
-        14: { cellWidth: 12 }
-      }
+      startY: 20
     });
     
     doc.save('customers.pdf');
@@ -266,31 +334,25 @@ const Customers = () => {
   };
   
   const exportToWord = () => {
-    let content = '<html><head><style>table { border-collapse: collapse; width: 100%; font-size: 10px; } th, td { border: 1px solid black; padding: 6px; text-align: left; } th { background-color: #f0f0f0; font-weight: bold; }</style></head><body>';
+    let content = '<html><head><meta charset="utf-8"><title>Customers</title></head><body>';
     content += '<h1>Customers List</h1>';
-    content += '<table><tr><th>Name</th><th>Nickname</th><th>GSTIN</th><th>Phone 1</th><th>Phone 2</th><th>Email 1</th><th>Email 2</th><th>Address 1</th><th>City 1</th><th>State 1</th><th>Pincode 1</th><th>Address 2</th><th>City 2</th><th>State 2</th><th>Pincode 2</th></tr>';
+    content += '<table border="1" style="border-collapse: collapse; width: 100%;">';
+    content += '<thead><tr><th>Name</th><th>Business Name</th><th>Nickname</th><th>Phone</th><th>Email</th><th>City</th><th>State</th></tr></thead>';
+    content += '<tbody>';
     
     customers.forEach(c => {
       content += `<tr>
         <td>${c.name}</td>
-        <td>${c.nickname || ''}</td>
-        <td>${c.gstin || ''}</td>
-        <td>${c.phone_1 || ''}</td>
-        <td>${c.phone_2 || ''}</td>
-        <td>${c.email_1 || ''}</td>
-        <td>${c.email_2 || ''}</td>
-        <td>${c.address_1 || ''}</td>
-        <td>${c.city_1 || ''}</td>
-        <td>${c.state_1 || ''}</td>
-        <td>${c.pincode_1 || ''}</td>
-        <td>${c.address_2 || ''}</td>
-        <td>${c.city_2 || ''}</td>
-        <td>${c.state_2 || ''}</td>
-        <td>${c.pincode_2 || ''}</td>
+        <td>${c.business_name || 'NA'}</td>
+        <td>${c.nickname || '-'}</td>
+        <td>${c.phone_1 || '-'}</td>
+        <td>${c.email_1 || '-'}</td>
+        <td>${c.city_1 || '-'}</td>
+        <td>${c.state_1 || '-'}</td>
       </tr>`;
     });
     
-    content += '</table></body></html>';
+    content += '</tbody></table></body></html>';
     
     const blob = new Blob([content], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
@@ -371,150 +433,351 @@ const Customers = () => {
                 Add Customer
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{editingCustomer ? 'Edit Customer' : 'Add New Customer'}</DialogTitle>
               </DialogHeader>
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                <div>
-                  <Label>Name *</Label>
-                  <Input
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    placeholder="Customer name"
-                    data-testid="customer-name-input"
-                  />
-                </div>
-                <div>
-                  <Label>Nickname</Label>
-                  <Input
-                    value={formData.nickname}
-                    onChange={(e) => setFormData({...formData, nickname: e.target.value})}
-                    placeholder="Nickname"
-                  />
-                </div>
-                <div>
-                  <Label>GSTIN</Label>
-                  <Input
-                    value={formData.gstin}
-                    onChange={(e) => setFormData({...formData, gstin: e.target.value})}
-                    placeholder="GST number"
-                  />
-                </div>
-                <div>
-                  <Label>Phone 1</Label>
-                  <Input
-                    value={formData.phone_1}
-                    onChange={(e) => setFormData({...formData, phone_1: e.target.value})}
-                    placeholder="Primary phone"
-                  />
-                </div>
-                <div>
-                  <Label>Phone 2</Label>
-                  <Input
-                    value={formData.phone_2}
-                    onChange={(e) => setFormData({...formData, phone_2: e.target.value})}
-                    placeholder="Secondary phone"
-                  />
-                </div>
-                <div>
-                  <Label>Email 1</Label>
-                  <Input
-                    type="email"
-                    value={formData.email_1}
-                    onChange={(e) => setFormData({...formData, email_1: e.target.value})}
-                    placeholder="Primary email"
-                  />
-                </div>
-                <div>
-                  <Label>Email 2</Label>
-                  <Input
-                    type="email"
-                    value={formData.email_2}
-                    onChange={(e) => setFormData({...formData, email_2: e.target.value})}
-                    placeholder="Secondary email"
-                  />
+              <div className="space-y-6 mt-4">
+                {/* Customer Information Section */}
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-slate-800 mb-3">Customer Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Name *</Label>
+                      <Input
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        placeholder="Customer name"
+                        data-testid="customer-name-input"
+                      />
+                    </div>
+                    <div>
+                      <Label>Nickname</Label>
+                      <Input
+                        value={formData.nickname}
+                        onChange={(e) => setFormData({...formData, nickname: e.target.value})}
+                        placeholder="Nickname"
+                      />
+                    </div>
+                    <div>
+                      <Label>GSTIN</Label>
+                      <Input
+                        value={formData.gstin}
+                        onChange={(e) => setFormData({...formData, gstin: e.target.value})}
+                        placeholder="GST number"
+                      />
+                    </div>
+                    <div>
+                      <Label>Phone 1</Label>
+                      <Input
+                        value={formData.phone_1}
+                        onChange={(e) => setFormData({...formData, phone_1: e.target.value})}
+                        placeholder="Primary phone"
+                      />
+                    </div>
+                    <div>
+                      <Label>Phone 2</Label>
+                      <Input
+                        value={formData.phone_2}
+                        onChange={(e) => setFormData({...formData, phone_2: e.target.value})}
+                        placeholder="Secondary phone"
+                      />
+                    </div>
+                    <div>
+                      <Label>Email 1</Label>
+                      <Input
+                        type="email"
+                        value={formData.email_1}
+                        onChange={(e) => setFormData({...formData, email_1: e.target.value})}
+                        placeholder="Primary email"
+                      />
+                    </div>
+                    <div>
+                      <Label>Email 2</Label>
+                      <Input
+                        type="email"
+                        value={formData.email_2}
+                        onChange={(e) => setFormData({...formData, email_2: e.target.value})}
+                        placeholder="Secondary email"
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 {/* Address 1 Section */}
-                <div className="col-span-2 mt-4 border-t pt-4">
+                <div className="border-b pb-4">
                   <h3 className="text-sm font-semibold text-slate-700 mb-3">Address 1</h3>
-                </div>
-                <div className="col-span-2">
-                  <Label>Address 1</Label>
-                  <Textarea
-                    value={formData.address_1}
-                    onChange={(e) => setFormData({...formData, address_1: e.target.value})}
-                    placeholder="Primary address"
-                    rows={2}
-                  />
-                </div>
-                <div>
-                  <Label>City 1</Label>
-                  <Input
-                    value={formData.city_1}
-                    onChange={(e) => setFormData({...formData, city_1: e.target.value})}
-                    placeholder="City"
-                  />
-                </div>
-                <div>
-                  <Label>State 1</Label>
-                  <Input
-                    value={formData.state_1}
-                    onChange={(e) => setFormData({...formData, state_1: e.target.value})}
-                    placeholder="State"
-                  />
-                </div>
-                <div>
-                  <Label>Pincode 1</Label>
-                  <Input
-                    value={formData.pincode_1}
-                    onChange={(e) => setFormData({...formData, pincode_1: e.target.value})}
-                    placeholder="Pincode"
-                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="col-span-2">
+                      <Label>Address 1</Label>
+                      <Textarea
+                        value={formData.address_1}
+                        onChange={(e) => setFormData({...formData, address_1: e.target.value})}
+                        placeholder="Primary address"
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <Label>City</Label>
+                      <Input
+                        value={formData.city_1}
+                        onChange={(e) => setFormData({...formData, city_1: e.target.value})}
+                        placeholder="City"
+                      />
+                    </div>
+                    <div>
+                      <Label>State</Label>
+                      <Input
+                        value={formData.state_1}
+                        onChange={(e) => setFormData({...formData, state_1: e.target.value})}
+                        placeholder="State"
+                      />
+                    </div>
+                    <div>
+                      <Label>Pincode</Label>
+                      <Input
+                        value={formData.pincode_1}
+                        onChange={(e) => setFormData({...formData, pincode_1: e.target.value})}
+                        placeholder="Pincode"
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 {/* Address 2 Section */}
-                <div className="col-span-2 mt-4 border-t pt-4">
+                <div className="border-b pb-4">
                   <h3 className="text-sm font-semibold text-slate-700 mb-3">Address 2 (Optional)</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="col-span-2">
+                      <Label>Address 2</Label>
+                      <Textarea
+                        value={formData.address_2}
+                        onChange={(e) => setFormData({...formData, address_2: e.target.value})}
+                        placeholder="Secondary address"
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <Label>City</Label>
+                      <Input
+                        value={formData.city_2}
+                        onChange={(e) => setFormData({...formData, city_2: e.target.value})}
+                        placeholder="City"
+                      />
+                    </div>
+                    <div>
+                      <Label>State</Label>
+                      <Input
+                        value={formData.state_2}
+                        onChange={(e) => setFormData({...formData, state_2: e.target.value})}
+                        placeholder="State"
+                      />
+                    </div>
+                    <div>
+                      <Label>Pincode</Label>
+                      <Input
+                        value={formData.pincode_2}
+                        onChange={(e) => setFormData({...formData, pincode_2: e.target.value})}
+                        placeholder="Pincode"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="col-span-2">
-                  <Label>Address 2</Label>
-                  <Textarea
-                    value={formData.address_2}
-                    onChange={(e) => setFormData({...formData, address_2: e.target.value})}
-                    placeholder="Secondary address"
-                    rows={2}
-                  />
-                </div>
-                <div>
-                  <Label>City 2</Label>
-                  <Input
-                    value={formData.city_2}
-                    onChange={(e) => setFormData({...formData, city_2: e.target.value})}
-                    placeholder="City"
-                  />
-                </div>
-                <div>
-                  <Label>State 2</Label>
-                  <Input
-                    value={formData.state_2}
-                    onChange={(e) => setFormData({...formData, state_2: e.target.value})}
-                    placeholder="State"
-                  />
-                </div>
-                <div>
-                  <Label>Pincode 2</Label>
-                  <Input
-                    value={formData.pincode_2}
-                    onChange={(e) => setFormData({...formData, pincode_2: e.target.value})}
-                    placeholder="Pincode"
-                  />
+                
+                {/* Business Section */}
+                <div className="border-t pt-4">
+                  <div className="flex items-center space-x-2 mb-4">
+                    <Checkbox
+                      id="has_business"
+                      checked={formData.has_business_with_gst}
+                      onCheckedChange={(checked) => setFormData({...formData, has_business_with_gst: checked})}
+                    />
+                    <Label htmlFor="has_business" className="text-base font-semibold cursor-pointer">
+                      Does this customer have a business with GST?
+                    </Label>
+                  </div>
+                  
+                  {formData.has_business_with_gst && (
+                    <div className="bg-slate-50 p-4 rounded-lg space-y-4">
+                      <h3 className="text-sm font-semibold text-slate-700">Business Details</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Business Legal Name *</Label>
+                          <Input
+                            value={formData.business_legal_name}
+                            onChange={(e) => setFormData({...formData, business_legal_name: e.target.value})}
+                            placeholder="Legal business name"
+                          />
+                        </div>
+                        <div>
+                          <Label>Business Nickname</Label>
+                          <Input
+                            value={formData.business_nickname}
+                            onChange={(e) => setFormData({...formData, business_nickname: e.target.value})}
+                            placeholder="Business nickname"
+                          />
+                        </div>
+                        <div>
+                          <Label>Business GSTIN</Label>
+                          <Input
+                            value={formData.business_gstin}
+                            onChange={(e) => setFormData({...formData, business_gstin: e.target.value})}
+                            placeholder="Business GST number"
+                          />
+                        </div>
+                        <div>
+                          <Label>PAN</Label>
+                          <Input
+                            value={formData.business_pan}
+                            onChange={(e) => setFormData({...formData, business_pan: e.target.value})}
+                            placeholder="PAN number"
+                          />
+                        </div>
+                        <div>
+                          <Label>State Code</Label>
+                          <Input
+                            value={formData.business_state_code}
+                            onChange={(e) => setFormData({...formData, business_state_code: e.target.value})}
+                            placeholder="State code"
+                          />
+                        </div>
+                        <div>
+                          <Label>State</Label>
+                          <Input
+                            value={formData.business_state}
+                            onChange={(e) => setFormData({...formData, business_state: e.target.value})}
+                            placeholder="State"
+                          />
+                        </div>
+                        <div>
+                          <Label>City</Label>
+                          <Input
+                            value={formData.business_city}
+                            onChange={(e) => setFormData({...formData, business_city: e.target.value})}
+                            placeholder="City"
+                          />
+                        </div>
+                        <div>
+                          <Label>Others</Label>
+                          <Input
+                            value={formData.business_others}
+                            onChange={(e) => setFormData({...formData, business_others: e.target.value})}
+                            placeholder="Other details"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Phone Section with "Same as customer" checkbox */}
+                      <div className="space-y-3 border-t pt-3">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="same_phone"
+                            checked={formData.same_phone}
+                            onCheckedChange={handleSamePhoneChange}
+                          />
+                          <Label htmlFor="same_phone" className="cursor-pointer">Same phone as customer</Label>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label>Business Phone 1</Label>
+                            <Input
+                              value={formData.business_phone_1}
+                              onChange={(e) => setFormData({...formData, business_phone_1: e.target.value})}
+                              placeholder="Business phone 1"
+                              disabled={formData.same_phone}
+                            />
+                          </div>
+                          <div>
+                            <Label>Business Phone 2</Label>
+                            <Input
+                              value={formData.business_phone_2}
+                              onChange={(e) => setFormData({...formData, business_phone_2: e.target.value})}
+                              placeholder="Business phone 2"
+                              disabled={formData.same_phone}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Email Section with "Same as customer" checkbox */}
+                      <div className="space-y-3 border-t pt-3">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="same_email"
+                            checked={formData.same_email}
+                            onCheckedChange={handleSameEmailChange}
+                          />
+                          <Label htmlFor="same_email" className="cursor-pointer">Same email as customer</Label>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label>Business Email 1</Label>
+                            <Input
+                              type="email"
+                              value={formData.business_email_1}
+                              onChange={(e) => setFormData({...formData, business_email_1: e.target.value})}
+                              placeholder="Business email 1"
+                              disabled={formData.same_email}
+                            />
+                          </div>
+                          <div>
+                            <Label>Business Email 2</Label>
+                            <Input
+                              type="email"
+                              value={formData.business_email_2}
+                              onChange={(e) => setFormData({...formData, business_email_2: e.target.value})}
+                              placeholder="Business email 2"
+                              disabled={formData.same_email}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Address Section with "Same as customer" checkbox */}
+                      <div className="space-y-3 border-t pt-3">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="same_address"
+                            checked={formData.same_address}
+                            onCheckedChange={handleSameAddressChange}
+                          />
+                          <Label htmlFor="same_address" className="cursor-pointer">Same address as customer</Label>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="col-span-2">
+                            <Label>Business Address 1</Label>
+                            <Textarea
+                              value={formData.business_address_1}
+                              onChange={(e) => setFormData({...formData, business_address_1: e.target.value})}
+                              placeholder="Business address 1"
+                              rows={2}
+                              disabled={formData.same_address}
+                            />
+                          </div>
+                          <div className="col-span-2">
+                            <Label>Business Address 2</Label>
+                            <Textarea
+                              value={formData.business_address_2}
+                              onChange={(e) => setFormData({...formData, business_address_2: e.target.value})}
+                              placeholder="Business address 2"
+                              rows={2}
+                              disabled={formData.same_address}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
+              
               <div className="flex justify-end gap-3 mt-6">
-                <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
-                <Button onClick={handleSubmit} data-testid="save-customer-btn">Save Customer</Button>
+                <Button variant="outline" onClick={() => handleDialogChange(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSubmit} data-testid="submit-customer-btn">
+                  {editingCustomer ? 'Update' : 'Create'}
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -590,6 +853,14 @@ const Customers = () => {
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">
                       <button
+                        onClick={() => handleSort('business_name')}
+                        className="flex items-center gap-1 hover:text-blue-600"
+                      >
+                        Business Name <ArrowUpDown size={14} />
+                      </button>
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">
+                      <button
                         onClick={() => handleSort('state_1')}
                         className="flex items-center gap-1 hover:text-blue-600"
                       >
@@ -606,7 +877,6 @@ const Customers = () => {
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Pincode</th>
                     <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Mobile</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Email</th>
                     <th className="text-center py-3 px-4 text-sm font-semibold text-slate-700">Actions</th>
                   </tr>
                 </thead>
@@ -614,11 +884,11 @@ const Customers = () => {
                   {customers.map((customer) => (
                     <tr key={customer.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                       <td className="py-3 px-4 text-sm font-medium text-slate-800">{customer.name}</td>
+                      <td className="py-3 px-4 text-sm text-slate-600">{customer.business_name || 'NA'}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{customer.state_1 || '-'}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{customer.city_1 || '-'}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{customer.pincode_1 || '-'}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{customer.phone_1 || '-'}</td>
-                      <td className="py-3 px-4 text-sm text-slate-600">{customer.email_1 || '-'}</td>
                       <td className="py-3 px-4">
                         <div className="flex items-center justify-center gap-2">
                           <Button
