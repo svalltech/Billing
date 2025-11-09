@@ -7,6 +7,7 @@ import CreateInvoice from "@/pages/CreateInvoice";
 import InvoiceList from "@/pages/InvoiceList";
 import InvoiceView from "@/pages/InvoiceView";
 import Customers from "@/pages/Customers";
+import Businesses from "@/pages/Businesses";
 import Products from "@/pages/Products";
 import BusinessSettings from "@/pages/BusinessSettings";
 import Sidebar from "@/components/Sidebar";
