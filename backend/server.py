@@ -258,8 +258,9 @@ async def get_customers(search: Optional[str] = None, sort_by: Optional[str] = "
                 {"name": {"$regex": search, "$options": "i"}},
                 {"nickname": {"$regex": search, "$options": "i"}},
                 {"phone_1": {"$regex": search, "$options": "i"}},
-                {"city": {"$regex": search, "$options": "i"}},
-                {"state": {"$regex": search, "$options": "i"}},
+                {"city_1": {"$regex": search, "$options": "i"}},
+                {"state_1": {"$regex": search, "$options": "i"}},
+                {"pincode_1": {"$regex": search, "$options": "i"}},
             ]
         }
     
