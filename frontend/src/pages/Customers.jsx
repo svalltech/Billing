@@ -523,8 +523,9 @@ const Customers = () => {
                   {customers.map((customer) => (
                     <tr key={customer.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                       <td className="py-3 px-4 text-sm font-medium text-slate-800">{customer.name}</td>
-                      <td className="py-3 px-4 text-sm text-slate-600">{customer.state || '-'}</td>
-                      <td className="py-3 px-4 text-sm text-slate-600">{customer.city || '-'}</td>
+                      <td className="py-3 px-4 text-sm text-slate-600">{customer.state_1 || '-'}</td>
+                      <td className="py-3 px-4 text-sm text-slate-600">{customer.city_1 || '-'}</td>
+                      <td className="py-3 px-4 text-sm text-slate-600">{customer.pincode_1 || '-'}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{customer.phone_1 || '-'}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{customer.email_1 || '-'}</td>
                       <td className="py-3 px-4">
