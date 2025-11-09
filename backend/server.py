@@ -111,8 +111,10 @@ class Product(BaseModel):
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
+    category: Optional[str] = None
     description: Optional[str] = None
     hsn: Optional[str] = None
+    gst_rate: Optional[float] = None
     default_rate: Optional[float] = None
     uom: str = "pcs"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -120,8 +122,10 @@ class Product(BaseModel):
 
 class ProductCreate(BaseModel):
     name: str
+    category: Optional[str] = None
     description: Optional[str] = None
     hsn: Optional[str] = None
+    gst_rate: Optional[float] = None
     default_rate: Optional[float] = None
     uom: str = "pcs"
 
