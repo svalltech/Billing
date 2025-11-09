@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Eye, Search } from 'lucide-react';
+import { Eye, Search, PlusCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const InvoiceList = () => {
