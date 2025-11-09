@@ -195,6 +195,52 @@ const Products = () => {
             </DialogHeader>
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="col-span-2">
+                <Label>Product Category *</Label>
+                {showNewCategory ? (
+                  <div className="flex gap-2">
+                    <Input
+                      value={formData.category}
+                      onChange={(e) => setFormData({...formData, category: e.target.value})}
+                      placeholder="Enter new category"
+                      autoFocus
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowNewCategory(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value) => {
+                        if (value === '__add_new__') {
+                          setShowNewCategory(true);
+                          setFormData({...formData, category: ''});
+                        } else {
+                          setFormData({...formData, category: value});
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((cat) => (
+                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                        ))}
+                        <SelectItem value="__add_new__" className="text-blue-600 font-semibold">
+                          + Add New Category
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+              <div className="col-span-2">
                 <Label>Product Name *</Label>
                 <Input
                   value={formData.name}
@@ -203,12 +249,13 @@ const Products = () => {
                   data-testid="product-name-input"
                 />
               </div>
-              <div>
-                <Label>Product Category</Label>
-                <Input
-                  value={formData.category}
-                  onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  placeholder="Category"
+              <div className="col-span-2">
+                <Label>Description</Label>
+                <Textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="Product description"
+                  rows={2}
                 />
               </div>
               <div>
@@ -259,15 +306,6 @@ const Products = () => {
                   value={formData.uom}
                   onChange={(e) => setFormData({...formData, uom: e.target.value})}
                   placeholder="pcs"
-                />
-              </div>
-              <div className="col-span-2">
-                <Label>Description</Label>
-                <Textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  placeholder="Product description"
-                  rows={2}
                 />
               </div>
             </div>
