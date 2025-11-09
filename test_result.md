@@ -290,12 +290,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Implement business logic in customer creation endpoint"
-    - "Implement business logic in customer update endpoint"
-    - "Add business checkbox and form section in customer dialog"
-    - "Implement business form fields with 'Same as customer' checkboxes"
-    - "Update Businesses table to show linked customers"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
