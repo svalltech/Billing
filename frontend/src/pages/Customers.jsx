@@ -100,20 +100,23 @@ const Customers = () => {
     setShowDialog(true);
   };
   
-  const handleDialogClose = () => {
-    setShowDialog(false);
-    setEditingCustomer(null);
-    setFormData({
-      name: '',
-      nickname: '',
-      gstin: '',
-      phone_1: '',
-      phone_2: '',
-      email_1: '',
-      email_2: '',
-      address_1: '',
-      address_2: ''
-    });
+  const handleDialogChange = (open) => {
+    setShowDialog(open);
+    if (!open) {
+      // Only reset when closing
+      setEditingCustomer(null);
+      setFormData({
+        name: '',
+        nickname: '',
+        gstin: '',
+        phone_1: '',
+        phone_2: '',
+        email_1: '',
+        email_2: '',
+        address_1: '',
+        address_2: ''
+      });
+    }
   };
   
   if (loading) {
