@@ -215,7 +215,7 @@ async def create_business(input: BusinessCreate):
     await db.businesses.insert_one(doc)
     return business_obj
 
-@api_router.get("/businesses", response_model=List[Business])
+@api_router.get("/businesses")
 async def get_businesses(search: Optional[str] = None, sort_by: Optional[str] = "created_at", sort_order: Optional[str] = "desc"):
     query = {}
     if search:
@@ -232,11 +232,20 @@ async def get_businesses(search: Optional[str] = None, sort_by: Optional[str] = 
     sort_direction = -1 if sort_order == "desc" else 1
     businesses = await db.businesses.find(query, {"_id": 0}).sort(sort_by, sort_direction).to_list(1000)
     
+    # Add linked customers count to each business
     for business in businesses:
         if isinstance(business['created_at'], str):
             business['created_at'] = datetime.fromisoformat(business['created_at'])
         if isinstance(business['updated_at'], str):
             business['updated_at'] = datetime.fromisoformat(business['updated_at'])
+        
+        # Get linked customers
+        linked_customers = await db.customers.find(
+            {"business_id": business['id']}, 
+            {"_id": 0, "name": 1}
+        ).to_list(1000)
+        business['linked_customers'] = [c['name'] for c in linked_customers]
+        business['linked_customers_count'] = len(linked_customers)
     
     return businesses
 
