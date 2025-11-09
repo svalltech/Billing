@@ -195,75 +195,93 @@ backend:
 frontend:
   - task: "Update customer table to show Business Name column"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Customers.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added 'Business Name' column after 'Name' column, removed 'Email' column from table display"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Business Name column successfully added to customers table after Name column. Email column confirmed removed. Existing customers show 'NA' in Business Name column as expected."
   
   - task: "Add business checkbox and form section in customer dialog"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Customers.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added checkbox 'Does this customer have a business with GST?' with conditional business details form section"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Business checkbox found in Add Customer dialog, unchecked by default. Business form section appears/hides correctly when checkbox is toggled. All functionality working as expected."
   
   - task: "Implement business form fields with 'Same as customer' checkboxes"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Customers.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented business form with all required fields. Added 'Same as customer' checkboxes for phone, email, and address that auto-fill when checked"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All 'Same as customer' checkboxes present (phone, email, address). Auto-fill functionality working correctly - when customer phone is filled and 'same phone' is checked, business phone auto-fills with same value."
   
   - task: "Implement customer form submission with business data"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Customers.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Updated handleSubmit to send business_data when has_business_with_gst is true. Backend will handle linking/creation logic"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Customer form submission working perfectly. API integration tested - customers without business show 'NA' in Business Name, customers with business show business legal name. Backend integration working correctly."
   
   - task: "Update Businesses table to show linked customers"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Businesses.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added 'Linked Customers' column showing customer count with tooltip of customer names"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Businesses table has 'Linked Customers' column. When customer with business is created, business appears in businesses table with correct linked customer count (e.g., '1 customer'). Linking functionality working correctly."
   
   - task: "Update export functions to include business_name"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/Customers.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Updated Excel, PDF, and Word export functions to include Business Name column"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Export buttons (Excel, PDF, Word) are accessible and clickable. Export functions include Business Name column in the data structure as verified in code review."
 
 metadata:
   created_by: "main_agent"
