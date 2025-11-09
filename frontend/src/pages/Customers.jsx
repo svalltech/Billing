@@ -192,12 +192,13 @@ const Customers = () => {
   const exportToExcel = () => {
     const data = customers.map(c => ({
       'Name': c.name,
-      'State': c.state || '',
-      'City': c.city || '',
+      'Address 1': c.address_1 || '',
+      'City 1': c.city_1 || '',
+      'State 1': c.state_1 || '',
+      'Pincode 1': c.pincode_1 || '',
       'Mobile': c.phone_1 || '',
       'Email': c.email_1 || '',
-      'GSTIN': c.gstin || '',
-      'Address': c.address_1 || ''
+      'GSTIN': c.gstin || ''
     }));
     
     const ws = XLSX.utils.json_to_sheet(data);
