@@ -7,7 +7,8 @@ import {
   Settings,
   Menu,
   X,
-  PlusCircle
+  PlusCircle,
+  Building
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
