@@ -577,6 +577,7 @@ const Businesses = () => {
                         GSTIN <ArrowUpDown size={14} />
                       </button>
                     </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Linked Customers</th>
                     <th className="text-center py-3 px-4 text-sm font-semibold text-slate-700">Actions</th>
                   </tr>
                 </thead>
@@ -588,6 +589,15 @@ const Businesses = () => {
                       <td className="py-3 px-4 text-sm font-medium text-slate-800">{business.legal_name}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{business.nickname || '-'}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{business.gstin || '-'}</td>
+                      <td className="py-3 px-4 text-sm text-slate-600">
+                        {business.linked_customers && business.linked_customers.length > 0 ? (
+                          <span title={business.linked_customers.join(', ')}>
+                            {business.linked_customers_count} customer{business.linked_customers_count !== 1 ? 's' : ''}
+                          </span>
+                        ) : (
+                          <span className="text-slate-400">None</span>
+                        )}
+                      </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center justify-center gap-2">
                           <Button
