@@ -72,11 +72,26 @@ const Customers = () => {
     }
     
     try {
+      // Clean data - convert empty strings to null for optional fields
+      const cleanData = {
+        name: formData.name,
+        nickname: formData.nickname || null,
+        gstin: formData.gstin || null,
+        phone_1: formData.phone_1 || null,
+        phone_2: formData.phone_2 || null,
+        email_1: formData.email_1 || null,
+        email_2: formData.email_2 || null,
+        city: formData.city || null,
+        state: formData.state || null,
+        address_1: formData.address_1 || null,
+        address_2: formData.address_2 || null
+      };
+      
       if (editingCustomer) {
-        await axios.put(`${API}/customers/${editingCustomer.id}`, formData);
+        await axios.put(`${API}/customers/${editingCustomer.id}`, cleanData);
         toast.success('Customer updated successfully');
       } else {
-        await axios.post(`${API}/customers`, formData);
+        await axios.post(`${API}/customers`, cleanData);
         toast.success('Customer created successfully');
       }
       
