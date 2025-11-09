@@ -78,6 +78,11 @@ const Products = () => {
   };
   
   const handleSubmit = async () => {
+    if (!formData.category) {
+      toast.error('Product category is required');
+      return;
+    }
+    
     if (!formData.name) {
       toast.error('Product name is required');
       return;
@@ -86,7 +91,7 @@ const Products = () => {
     try {
       const cleanData = {
         name: formData.name,
-        category: formData.category || null,
+        category: formData.category,
         description: formData.description || null,
         hsn: formData.hsn || null,
         gst_rate: formData.gst_rate ? parseFloat(formData.gst_rate) : null,
@@ -104,6 +109,7 @@ const Products = () => {
       
       setShowDialog(false);
       setEditingProduct(null);
+      setShowNewCategory(false);
       setFormData({
         name: '',
         category: '',
