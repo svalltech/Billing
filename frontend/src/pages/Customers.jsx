@@ -499,7 +499,7 @@ const Customers = () => {
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">
                       <button
-                        onClick={() => handleSort('state')}
+                        onClick={() => handleSort('state_1')}
                         className="flex items-center gap-1 hover:text-blue-600"
                       >
                         State <ArrowUpDown size={14} />
@@ -507,12 +507,13 @@ const Customers = () => {
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">
                       <button
-                        onClick={() => handleSort('city')}
+                        onClick={() => handleSort('city_1')}
                         className="flex items-center gap-1 hover:text-blue-600"
                       >
                         City <ArrowUpDown size={14} />
                       </button>
                     </th>
+                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Pincode</th>
                     <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Mobile</th>
                     <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Email</th>
                     <th className="text-center py-3 px-4 text-sm font-semibold text-slate-700">Actions</th>
