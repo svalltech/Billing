@@ -157,6 +157,7 @@ const Products = () => {
     setShowDialog(open);
     if (!open) {
       setEditingProduct(null);
+      setShowNewCategory(false);
       setFormData({
         name: '',
         category: '',
