@@ -15,6 +15,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 const Customers = () => {
+  console.log('🔥 CUSTOMERS COMPONENT LOADED - NEW VERSION WITH BUSINESS INTEGRATION 🔥');
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
