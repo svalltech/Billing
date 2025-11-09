@@ -42,6 +42,11 @@ const Products = () => {
       setLoading(true);
       const res = await axios.get(`${API}/products?search=${search}&sort_by=${sortBy}&sort_order=${sortOrder}`);
       setProducts(res.data);
+      
+      // Extract unique categories
+      const uniqueCategories = [...new Set(res.data.map(p => p.category).filter(c => c))];
+      setCategories(uniqueCategories);
+      
       setLoading(false);
     } catch (error) {
       console.error('Error fetching products:', error);
