@@ -402,7 +402,57 @@ async def update_customer(customer_id: str, input: CustomerCreate):
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found")
     
-    customer_dict = input.model_dump()
+    customer_dict = input.model_dump(exclude={'business_data'})
+    
+    # Handle business logic
+    if input.has_business_with_gst:
+        if input.business_data and input.business_data.get('legal_name'):
+            business_data = input.business_data
+            
+            # Check if business with same GSTIN already exists
+            existing_business = None
+            if business_data.get('gstin'):
+                existing_business = await db.businesses.find_one(
+                    {"gstin": business_data['gstin']}, 
+                    {"_id": 0}
+                )
+            
+            if existing_business:
+                # Link to existing business
+                customer_dict['business_id'] = existing_business['id']
+                customer_dict['business_name'] = existing_business['legal_name']
+            else:
+                # Create new business
+                business_obj = Business(
+                    legal_name=business_data.get('legal_name'),
+                    nickname=business_data.get('nickname'),
+                    gstin=business_data.get('gstin'),
+                    state_code=business_data.get('state_code'),
+                    state=business_data.get('state'),
+                    city=business_data.get('city'),
+                    pan=business_data.get('pan'),
+                    others=business_data.get('others'),
+                    phone_1=business_data.get('phone_1'),
+                    phone_2=business_data.get('phone_2'),
+                    email_1=business_data.get('email_1'),
+                    email_2=business_data.get('email_2'),
+                    address_1=business_data.get('address_1'),
+                    address_2=business_data.get('address_2'),
+                )
+                business_doc = business_obj.model_dump()
+                business_doc['created_at'] = business_doc['created_at'].isoformat()
+                business_doc['updated_at'] = business_doc['updated_at'].isoformat()
+                await db.businesses.insert_one(business_doc)
+                
+                customer_dict['business_id'] = business_obj.id
+                customer_dict['business_name'] = business_obj.legal_name
+        else:
+            customer_dict['business_name'] = "NA"
+            customer_dict['business_id'] = None
+    else:
+        customer_dict['business_name'] = "NA"
+        customer_dict['business_id'] = None
+    
     customer_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
     customer_dict['id'] = customer['id']
     customer_dict['created_at'] = customer['created_at']
