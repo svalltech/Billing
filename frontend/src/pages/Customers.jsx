@@ -347,16 +347,16 @@ const Customers = () => {
                 <div>
                   <Label>State</Label>
                   <Input
-                    value={formData.state}
-                    onChange={(e) => setFormData({...formData, state: e.target.value})}
+                    value={formData.state_1}
+                    onChange={(e) => setFormData({...formData, state_1: e.target.value})}
                     placeholder="State"
                   />
                 </div>
                 <div>
                   <Label>City</Label>
                   <Input
-                    value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    value={formData.city_1}
+                    onChange={(e) => setFormData({...formData, city_1: e.target.value})}
                     placeholder="City"
                   />
                 </div>
