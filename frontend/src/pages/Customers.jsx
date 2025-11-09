@@ -361,6 +361,14 @@ const Customers = () => {
                   />
                 </div>
                 <div>
+                  <Label>Pincode</Label>
+                  <Input
+                    value={formData.pincode_1}
+                    onChange={(e) => setFormData({...formData, pincode_1: e.target.value})}
+                    placeholder="Pincode"
+                  />
+                </div>
+                <div>
                   <Label>GSTIN</Label>
                   <Input
                     value={formData.gstin}
