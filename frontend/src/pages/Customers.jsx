@@ -138,7 +138,7 @@ const Customers = () => {
           <h1 className="text-4xl lg:text-5xl font-bold text-slate-800 mb-2">Customers</h1>
           <p className="text-slate-600">Manage your customer database</p>
         </div>
-        <Dialog open={showDialog} onOpenChange={handleDialogClose}>
+        <Dialog open={showDialog} onOpenChange={handleDialogChange}>
           <DialogTrigger asChild>
             <Button data-testid="add-customer-btn">
               <UserPlus size={18} className="mr-2" />
