@@ -107,6 +107,8 @@ class CustomerCreate(BaseModel):
     city_2: Optional[str] = None
     state_2: Optional[str] = None
     pincode_2: Optional[str] = None
+    has_business_with_gst: bool = False
+    business_data: Optional[dict] = None
 
 
 class Product(BaseModel):
