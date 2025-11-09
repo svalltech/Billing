@@ -214,17 +214,18 @@ const Customers = () => {
     
     const tableData = customers.map(c => [
       c.name,
-      c.state || '-',
-      c.city || '-',
+      c.state_1 || '-',
+      c.city_1 || '-',
+      c.pincode_1 || '-',
       c.phone_1 || '-',
       c.email_1 || '-'
     ]);
     
     autoTable(doc, {
-      head: [['Name', 'State', 'City', 'Mobile', 'Email']],
+      head: [['Name', 'State', 'City', 'Pincode', 'Mobile', 'Email']],
       body: tableData,
       startY: 20,
-      styles: { fontSize: 8 }
+      styles: { fontSize: 7 }
     });
     
     doc.save('customers.pdf');
