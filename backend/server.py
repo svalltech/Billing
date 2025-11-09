@@ -37,6 +37,7 @@ class Business(BaseModel):
     gstin: Optional[str] = None
     state_code: Optional[str] = None
     state: Optional[str] = None
+    city: Optional[str] = None
     pan: Optional[str] = None
     others: Optional[str] = None
     phone_1: Optional[str] = None
@@ -54,6 +55,7 @@ class BusinessCreate(BaseModel):
     gstin: Optional[str] = None
     state_code: Optional[str] = None
     state: Optional[str] = None
+    city: Optional[str] = None
     pan: Optional[str] = None
     others: Optional[str] = None
     phone_1: Optional[str] = None
