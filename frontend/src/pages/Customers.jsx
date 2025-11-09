@@ -10,8 +10,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { UserPlus, Search, Edit, Trash2, Download, Upload, ArrowUpDown } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
