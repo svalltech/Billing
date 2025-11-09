@@ -13,6 +13,7 @@ import { Plus, Search, Edit, Trash2, ArrowUpDown } from 'lucide-react';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [hsnCodes, setHsnCodes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +21,7 @@ const Products = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [sortBy, setSortBy] = useState('created_at');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [showNewCategory, setShowNewCategory] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     category: '',
