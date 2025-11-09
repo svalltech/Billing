@@ -196,38 +196,86 @@ async def root():
 
 
 # Business Routes
-@api_router.post("/business", response_model=Business)
-async def create_or_update_business(input: BusinessCreate):
-    # Check if business already exists
-    existing = await db.businesses.find_one({}, {"_id": 0})
+@api_router.post("/businesses", response_model=Business)
+async def create_business(input: BusinessCreate):
+    business_obj = Business(**input.model_dump())
+    doc = business_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    doc['updated_at'] = doc['updated_at'].isoformat()
     
-    if existing:
-        # Update existing business
-        business_dict = input.model_dump()
-        business_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
-        business_dict['id'] = existing['id']
-        business_dict['created_at'] = existing['created_at']
-        
-        await db.businesses.update_one({"id": existing['id']}, {"$set": business_dict})
-        
-        if isinstance(business_dict['created_at'], str):
-            business_dict['created_at'] = datetime.fromisoformat(business_dict['created_at'])
-        if isinstance(business_dict['updated_at'], str):
-            business_dict['updated_at'] = datetime.fromisoformat(business_dict['updated_at'])
-            
-        return Business(**business_dict)
-    else:
-        # Create new business
-        business_obj = Business(**input.model_dump())
-        doc = business_obj.model_dump()
-        doc['created_at'] = doc['created_at'].isoformat()
-        doc['updated_at'] = doc['updated_at'].isoformat()
-        
-        await db.businesses.insert_one(doc)
-        return business_obj
+    await db.businesses.insert_one(doc)
+    return business_obj
 
+@api_router.get("/businesses", response_model=List[Business])
+async def get_businesses(search: Optional[str] = None, sort_by: Optional[str] = "created_at", sort_order: Optional[str] = "desc"):
+    query = {}
+    if search:
+        query = {
+            "$or": [
+                {"legal_name": {"$regex": search, "$options": "i"}},
+                {"nickname": {"$regex": search, "$options": "i"}},
+                {"city": {"$regex": search, "$options": "i"}},
+                {"state": {"$regex": search, "$options": "i"}},
+                {"gstin": {"$regex": search, "$options": "i"}},
+            ]
+        }
+    
+    sort_direction = -1 if sort_order == "desc" else 1
+    businesses = await db.businesses.find(query, {"_id": 0}).sort(sort_by, sort_direction).to_list(1000)
+    
+    for business in businesses:
+        if isinstance(business['created_at'], str):
+            business['created_at'] = datetime.fromisoformat(business['created_at'])
+        if isinstance(business['updated_at'], str):
+            business['updated_at'] = datetime.fromisoformat(business['updated_at'])
+    
+    return businesses
+
+@api_router.get("/businesses/{business_id}", response_model=Business)
+async def get_business(business_id: str):
+    business = await db.businesses.find_one({"id": business_id}, {"_id": 0})
+    if not business:
+        raise HTTPException(status_code=404, detail="Business not found")
+    
+    if isinstance(business['created_at'], str):
+        business['created_at'] = datetime.fromisoformat(business['created_at'])
+    if isinstance(business['updated_at'], str):
+        business['updated_at'] = datetime.fromisoformat(business['updated_at'])
+    
+    return Business(**business)
+
+@api_router.put("/businesses/{business_id}", response_model=Business)
+async def update_business(business_id: str, input: BusinessCreate):
+    business = await db.businesses.find_one({"id": business_id}, {"_id": 0})
+    if not business:
+        raise HTTPException(status_code=404, detail="Business not found")
+    
+    business_dict = input.model_dump()
+    business_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+    business_dict['id'] = business['id']
+    business_dict['created_at'] = business['created_at']
+    
+    await db.businesses.update_one({"id": business_id}, {"$set": business_dict})
+    
+    if isinstance(business_dict['created_at'], str):
+        business_dict['created_at'] = datetime.fromisoformat(business_dict['created_at'])
+    if isinstance(business_dict['updated_at'], str):
+        business_dict['updated_at'] = datetime.fromisoformat(business_dict['updated_at'])
+    
+    return Business(**business_dict)
+
+@api_router.delete("/businesses/{business_id}")
+async def delete_business(business_id: str):
+    business = await db.businesses.find_one({"id": business_id}, {"_id": 0})
+    if not business:
+        raise HTTPException(status_code=404, detail="Business not found")
+    
+    await db.businesses.delete_one({"id": business_id})
+    return {"message": "Business deleted successfully"}
+
+# Legacy route for backward compatibility (for invoice view)
 @api_router.get("/business", response_model=Optional[Business])
-async def get_business():
+async def get_first_business():
     business = await db.businesses.find_one({}, {"_id": 0})
     if not business:
         return None
