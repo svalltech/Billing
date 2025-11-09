@@ -85,6 +85,9 @@ class Customer(BaseModel):
     city_2: Optional[str] = None
     state_2: Optional[str] = None
     pincode_2: Optional[str] = None
+    has_business_with_gst: bool = False
+    business_id: Optional[str] = None
+    business_name: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
