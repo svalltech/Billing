@@ -184,7 +184,7 @@ const Customers = () => {
       c.email_1 || '-'
     ]);
     
-    doc.autoTable({
+    autoTable(doc, {
       head: [['Name', 'State', 'City', 'Mobile', 'Email']],
       body: tableData,
       startY: 20,
