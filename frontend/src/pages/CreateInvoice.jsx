@@ -45,12 +45,6 @@ const CreateInvoice = () => {
   const [paymentStatus, setPaymentStatus] = useState('unpaid');
   const [notes, setNotes] = useState('');
   
-  useEffect(() => {
-    fetchCustomers();
-    fetchProducts();
-    fetchAdminBusiness();
-  }, []);
-  
   const fetchCustomers = async () => {
     try {
       const res = await axios.get(`${API}/customers`);
@@ -77,6 +71,13 @@ const CreateInvoice = () => {
       console.error('Error fetching admin business:', error);
     }
   };
+  
+  useEffect(() => {
+    fetchCustomers();
+    fetchProducts();
+    fetchAdminBusiness();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   // Filter customers based on search
   const filteredCustomers = useMemo(() => {
