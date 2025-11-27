@@ -152,8 +152,8 @@ const CreateInvoice = () => {
     updatedItems[index][field] = value;
     setItems(updatedItems);
     
-    // Recalculate if rate, qty, discount, or gst_rate changes
-    if (['rate', 'qty', 'discount_amount', 'gst_rate', 'rate_mode'].includes(field)) {
+    // Recalculate if rate, qty, discount, gst_rate, custom_gst_rate, or rate_mode changes
+    if (['rate', 'qty', 'discount_amount', 'gst_rate', 'custom_gst_rate', 'rate_mode'].includes(field)) {
       calculateItemTotal(index, updatedItems);
     }
   };
