@@ -83,10 +83,14 @@ const CreateInvoice = () => {
     fetchCustomers();
     fetchProducts();
     fetchAdminBusiness();
-    if (isEditMode) {
+  }, []);
+  
+  // Load invoice data when in edit mode and customers are loaded
+  useEffect(() => {
+    if (isEditMode && customers.length > 0 && !loading) {
       loadInvoice();
     }
-  }, []);
+  }, [isEditMode, customers.length]);
   
   const loadInvoice = async () => {
     try {
@@ -103,11 +107,17 @@ const CreateInvoice = () => {
       // Set invoice date
       setInvoiceDate(new Date(invoice.invoice_date).toISOString().split('T')[0]);
       
-      // Set items (mark all as confirmed)
-      setItems(invoice.items.map(item => ({ ...item, confirmed: true })));
+      // Set items with proper validation
+      if (invoice.items && Array.isArray(invoice.items)) {
+        setItems(invoice.items.map(item => ({ 
+          ...item, 
+          confirmed: true,
+          custom_gst_rate: item.custom_gst_rate || null
+        })));
+      }
       
       // Set payment details
-      setPaymentStatus(invoice.payment_status);
+      setPaymentStatus(invoice.payment_status || 'unpaid');
       setPaymentMethod(invoice.payment_method || '');
       setPaidAmount(invoice.paid_amount || 0);
       setTransactionReference(invoice.transaction_reference || '');
