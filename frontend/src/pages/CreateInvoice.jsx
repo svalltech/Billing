@@ -49,6 +49,8 @@ const CreateInvoice = () => {
   const [paidAmount, setPaidAmount] = useState(0);
   const [transactionReference, setTransactionReference] = useState('');
   const [notes, setNotes] = useState('');
+  const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split('T')[0]);
+  const [loading, setLoading] = useState(false);
   
   const fetchCustomers = async () => {
     try {
