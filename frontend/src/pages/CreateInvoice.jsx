@@ -244,8 +244,63 @@ const CreateInvoice = () => {
       sgst_amount: 0,
       igst_amount: 0,
       taxable_amount: 0,
-      final_amount: 0
+      final_amount: 0,
+      confirmed: false
     }]);
+  };
+  
+  const confirmItem = (index) => {
+    const item = items[index];
+    if (!item.product_name) {
+      toast.error('Please enter product name');
+      return;
+    }
+    if (item.qty <= 0) {
+      toast.error('Please enter valid quantity');
+      return;
+    }
+    if (item.rate <= 0) {
+      toast.error('Please enter valid rate');
+      return;
+    }
+    
+    const updatedItems = [...items];
+    updatedItems[index] = { ...updatedItems[index], confirmed: true };
+    setItems(updatedItems);
+    toast.success('Item confirmed!');
+  };
+  
+  const editItem = (index) => {
+    const updatedItems = [...items];
+    updatedItems[index] = { ...updatedItems[index], confirmed: false };
+    setItems(updatedItems);
+  };
+  
+  const deleteItem = (index) => {
+    const updatedItems = items.filter((_, i) => i !== index);
+    setItems(updatedItems.length > 0 ? updatedItems : [{
+      product_name: '',
+      description: '',
+      hsn: '',
+      qty: 1,
+      uom: 'pcs',
+      rate_mode: 'with_gst',
+      rate: 0,
+      gst_rate: 18,
+      custom_gst_rate: null,
+      total: 0,
+      discount_amount: 0,
+      cgst_percent: 0,
+      sgst_percent: 0,
+      igst_percent: 0,
+      cgst_amount: 0,
+      sgst_amount: 0,
+      igst_amount: 0,
+      taxable_amount: 0,
+      final_amount: 0,
+      confirmed: false
+    }]);
+    toast.success('Item removed');
   };
   
   const removeItem = (index) => {
