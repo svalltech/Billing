@@ -414,36 +414,85 @@ const Businesses = () => {
                   />
                 </div>
                 <div>
-                  <Label>State</Label>
-                  <Input
-                    value={formData.state}
-                    onChange={(e) => setFormData({...formData, state: e.target.value})}
-                    placeholder="State"
-                  />
-                </div>
-                <div>
-                  <Label>City</Label>
-                  <Input
-                    value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
-                    placeholder="City"
-                  />
-                </div>
-                <div>
                   <Label>GSTIN</Label>
                   <Input
                     value={formData.gstin}
-                    onChange={(e) => setFormData({...formData, gstin: e.target.value})}
-                    placeholder="GST number"
+                    onChange={(e) => handleGSTINChange(e.target.value)}
+                    placeholder="GST number (e.g., 27ABCDE1234F1Z5)"
+                    maxLength={15}
                   />
                 </div>
                 <div>
-                  <Label>State Code</Label>
-                  <Input
-                    value={formData.state_code}
-                    onChange={(e) => setFormData({...formData, state_code: e.target.value})}
-                    placeholder="State code"
-                  />
+                  <Label>GST State Code</Label>
+                  <Select 
+                    value={formData.state_code} 
+                    onValueChange={(val) => {
+                      const stateCodeOption = gstStateCodeOptions.find(opt => opt.value === val);
+                      if (stateCodeOption) {
+                        setFormData({...formData, state_code: val, state: stateCodeOption.state});
+                        const cities = indianStatesAndCities[stateCodeOption.state] || [];
+                        setAvailableCities(cities);
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select GST state code" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      {gstStateCodeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>State</Label>
+                  <Select value={formData.state} onValueChange={handleStateChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select state" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      {indianStates.map((state) => (
+                        <SelectItem key={state} value={state}>{state}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>City</Label>
+                  <Select 
+                    value={showCustomCity ? "Others" : formData.city} 
+                    onValueChange={(val) => {
+                      if (val === "Others") {
+                        setShowCustomCity(true);
+                        setFormData({...formData, city: ''});
+                      } else {
+                        setShowCustomCity(false);
+                        setFormData({...formData, city: val});
+                      }
+                    }} 
+                    disabled={!formData.state}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={formData.state ? "Select city" : "Select state first"} />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      {availableCities.map((city) => (
+                        <SelectItem key={city} value={city}>{city}</SelectItem>
+                      ))}
+                      <SelectItem value="Others">Others (Enter manually)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {showCustomCity && (
+                    <Input
+                      value={formData.city}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                      placeholder="Enter city name"
+                      className="mt-2"
+                    />
+                  )}
                 </div>
                 <div>
                   <Label>PAN</Label>
