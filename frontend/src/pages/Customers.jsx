@@ -976,7 +976,7 @@ const Customers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {customers.map((customer) => (
+                  {sortedCustomers.map((customer) => (
                     <tr key={customer.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                       <td className="py-3 px-4 text-sm font-medium text-slate-800">{customer.name}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{customer.business_name || 'NA'}</td>
