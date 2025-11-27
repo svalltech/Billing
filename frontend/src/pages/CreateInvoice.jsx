@@ -714,13 +714,21 @@ const CreateInvoice = () => {
                   </div>
                 </div>
                 
-                {/* Remove Button */}
-                <div className="flex justify-end">
+                {/* Action Buttons */}
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => confirmItem(index)}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    <Check size={16} className="mr-1" />
+                    Confirm Item
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => removeItem(index)}
-                    disabled={items.length === 1}
+                    onClick={() => deleteItem(index)}
                     className="text-red-600 hover:bg-red-50"
                   >
                     <Trash2 size={16} className="mr-1" />
