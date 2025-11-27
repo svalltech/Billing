@@ -223,6 +223,7 @@ const Customers = () => {
   };
   
   const resetForm = () => {
+    setAvailableCities([]);
     setFormData({
       name: '',
       nickname: '',
