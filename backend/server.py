@@ -721,13 +721,14 @@ async def update_invoice(invoice_id: str, input: InvoiceCreate):
     invoice_dict['deleted_at'] = invoice.get('deleted_at')
     
     # Handle invoice_date - use provided or keep original
-    if invoice_dict.get('invoice_date'):
-        if isinstance(invoice_dict['invoice_date'], datetime):
-            invoice_dict['invoice_date'] = invoice_dict['invoice_date'].isoformat()
+    provided_date = invoice_dict.get('invoice_date')
+    if provided_date:
+        if isinstance(provided_date, datetime):
+            invoice_dict['invoice_date'] = provided_date.isoformat()
         # invoice_date is already a string, keep it as is
     else:
         # Preserve original invoice_date if not provided
-        invoice_dict['invoice_date'] = invoice['invoice_date']
+        invoice_dict['invoice_date'] = invoice.get('invoice_date')
     
     await db.invoices.update_one({"id": invoice_id}, {"$set": invoice_dict})
     
