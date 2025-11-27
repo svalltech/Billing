@@ -44,6 +44,7 @@ const CreateInvoice = () => {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentStatus, setPaymentStatus] = useState('unpaid');
   const [notes, setNotes] = useState('');
+  const [itemsConfirmed, setItemsConfirmed] = useState(false);
   
   const fetchCustomers = async () => {
     try {
