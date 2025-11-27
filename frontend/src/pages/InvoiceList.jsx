@@ -39,6 +39,10 @@ const InvoiceList = () => {
     }
   };
   
+  useEffect(() => {
+    fetchInvoices();
+  }, [sortBy, sortOrder]);
+  
   const handleSearch = () => {
     fetchInvoices();
   };
