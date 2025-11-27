@@ -32,9 +32,11 @@ function App() {
               <Route path="/create-invoice" element={<CreateInvoice />} />
               <Route path="/invoices" element={<InvoiceList />} />
               <Route path="/invoices/:id" element={<InvoiceView />} />
+              <Route path="/invoices/:id/edit" element={<CreateInvoice />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/businesses" element={<Businesses />} />
               <Route path="/products" element={<Products />} />
+              <Route path="/archives" element={<Archives />} />
               <Route path="/settings" element={<BusinessSettings />} />
             </Routes>
           </main>
