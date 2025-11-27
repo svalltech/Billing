@@ -76,7 +76,6 @@ const CreateInvoice = () => {
     fetchCustomers();
     fetchProducts();
     fetchAdminBusiness();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   // Filter customers based on search
