@@ -566,10 +566,19 @@ const CreateInvoice = () => {
                         <td className="py-3 px-4 font-medium text-slate-800">{item.product_name}</td>
                         <td className="py-3 px-4 text-right text-slate-700">{item.qty} {item.uom}</td>
                         <td className="py-3 px-4 text-right text-slate-700">
-                          ₹{item.rate_mode === 'with_gst' 
-                            ? item.rate.toFixed(2) 
-                            : (item.rate * (1 + ((item.custom_gst_rate ? parseFloat(item.custom_gst_rate) : item.gst_rate) / 100))).toFixed(2)
-                          }
+                          ₹{(() => {
+                            // Calculate unit price with GST
+                            if (!item.rate || item.rate === 0) {
+                              // If no rate, calculate from final_amount
+                              return (item.final_amount / item.qty).toFixed(2);
+                            }
+                            if (item.rate_mode === 'with_gst') {
+                              return item.rate.toFixed(2);
+                            } else {
+                              const gstRate = item.custom_gst_rate ? parseFloat(item.custom_gst_rate) : item.gst_rate;
+                              return (item.rate * (1 + (gstRate / 100))).toFixed(2);
+                            }
+                          })()}
                         </td>
                         <td className="py-3 px-4 text-right font-semibold text-blue-600">
                           ₹{item.final_amount.toFixed(2)}
