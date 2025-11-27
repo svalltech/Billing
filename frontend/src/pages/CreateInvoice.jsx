@@ -396,7 +396,7 @@ const CreateInvoice = () => {
           <CardTitle className="text-xl">Invoice Items</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {items.map((item, index) => (
+          {!itemsConfirmed && items.map((item, index) => (
             <Card key={index} className="border-2">
               <CardContent className="pt-6 space-y-4">
                 {/* Product Selection */}
