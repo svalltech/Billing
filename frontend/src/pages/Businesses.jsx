@@ -209,6 +209,8 @@ const Businesses = () => {
     setShowDialog(open);
     if (!open) {
       setEditingBusiness(null);
+      setAvailableCities([]);
+      setShowCustomCity(false);
       setFormData({
         legal_name: '',
         nickname: '',
