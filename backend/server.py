@@ -203,6 +203,7 @@ class InvoiceCreate(BaseModel):
     balance_due: Optional[float] = 0
     transaction_reference: Optional[str] = None
     notes: Optional[str] = None
+    invoice_date: Optional[str] = None
 
 
 # ============ ROUTES ============
