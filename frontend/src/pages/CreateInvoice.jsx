@@ -451,7 +451,68 @@ const CreateInvoice = () => {
           <CardTitle className="text-xl">Invoice Items</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {!itemsConfirmed && items.map((item, index) => (
+          {/* Confirmed Items Table */}
+          {items.filter(item => item.confirmed).length > 0 && (
+            <div className="bg-green-50 border border-green-200 rounded-lg overflow-hidden">
+              <div className="bg-white">
+                <table className="w-full">
+                  <thead className="bg-slate-50 border-b">
+                    <tr>
+                      <th className="text-left py-3 px-4 font-semibold text-slate-700">#</th>
+                      <th className="text-left py-3 px-4 font-semibold text-slate-700">Product Name</th>
+                      <th className="text-right py-3 px-4 font-semibold text-slate-700">Quantity</th>
+                      <th className="text-right py-3 px-4 font-semibold text-slate-700">Unit Price (with GST)</th>
+                      <th className="text-right py-3 px-4 font-semibold text-slate-700">Total Value (with GST)</th>
+                      <th className="text-center py-3 px-4 font-semibold text-slate-700">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item, index) => item.confirmed && (
+                      <tr key={index} className="border-b last:border-b-0 hover:bg-slate-50">
+                        <td className="py-3 px-4 text-slate-600">{index + 1}</td>
+                        <td className="py-3 px-4 font-medium text-slate-800">{item.product_name}</td>
+                        <td className="py-3 px-4 text-right text-slate-700">{item.qty} {item.uom}</td>
+                        <td className="py-3 px-4 text-right text-slate-700">
+                          ₹{item.rate_mode === 'with_gst' 
+                            ? item.rate.toFixed(2) 
+                            : (item.rate * (1 + ((item.custom_gst_rate ? parseFloat(item.custom_gst_rate) : item.gst_rate) / 100))).toFixed(2)
+                          }
+                        </td>
+                        <td className="py-3 px-4 text-right font-semibold text-blue-600">
+                          ₹{item.final_amount.toFixed(2)}
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center justify-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => editItem(index)}
+                              className="h-8 w-8 text-blue-600 hover:bg-blue-50"
+                              title="Edit item"
+                            >
+                              <Edit2 size={16} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteItem(index)}
+                              className="h-8 w-8 text-red-600 hover:bg-red-50"
+                              title="Delete item"
+                            >
+                              <Trash2 size={16} />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+          
+          {/* Unconfirmed Items (Edit Forms) */}
+          {items.map((item, index) => !item.confirmed && (
             <Card key={index} className="border-2">
               <CardContent className="pt-6 space-y-4">
                 {/* Product Selection */}
