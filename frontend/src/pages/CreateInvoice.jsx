@@ -788,6 +788,14 @@ const CreateInvoice = () => {
             <span className="text-2xl font-bold text-blue-600" data-testid="grand-total">₹{totals.grandTotal.toFixed(2)}</span>
           </div>
           
+          {/* Balance Due (only show for partial payment) */}
+          {paymentStatus === 'partial' && paidAmount > 0 && (
+            <div className="flex justify-between items-center py-3 px-4 bg-orange-50 border-2 border-orange-300 rounded-lg">
+              <span className="text-lg font-semibold text-slate-800">Balance Due:</span>
+              <span className="text-2xl font-bold text-orange-600">₹{Math.max(0, totals.grandTotal - paidAmount).toFixed(2)}</span>
+            </div>
+          )}
+          
           {/* Payment Details */}
           <div className="pt-4 border-t space-y-4">
             <h3 className="text-lg font-semibold text-slate-800">Payment Details</h3>
