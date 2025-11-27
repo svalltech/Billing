@@ -86,6 +86,33 @@ const Businesses = () => {
     }
   };
   
+  const handleStateChange = (state) => {
+    const cities = indianStatesAndCities[state] || [];
+    setAvailableCities(cities);
+    setFormData({...formData, state: state, city: ''});
+    setShowCustomCity(false);
+  };
+  
+  const handleGSTINChange = (gstin) => {
+    setFormData({...formData, gstin: gstin});
+    
+    // Auto-extract state code from GSTIN
+    const stateCode = extractStateCodeFromGSTIN(gstin);
+    if (stateCode) {
+      const stateCodeOption = gstStateCodeOptions.find(opt => opt.value === stateCode);
+      if (stateCodeOption) {
+        setFormData(prev => ({
+          ...prev,
+          gstin: gstin,
+          state_code: stateCode,
+          state: stateCodeOption.state
+        }));
+        const cities = indianStatesAndCities[stateCodeOption.state] || [];
+        setAvailableCities(cities);
+      }
+    }
+  };
+  
   const handleSubmit = async () => {
     if (!formData.legal_name) {
       toast.error('Business legal name is required');
