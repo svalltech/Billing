@@ -233,7 +233,7 @@ const CreateInvoice = () => {
       rate_mode: 'with_gst',
       rate: 0,
       gst_rate: 18,
-      custom_gst_rate: '',
+      custom_gst_rate: null,
       total: 0,
       discount_amount: 0,
       cgst_percent: 0,
