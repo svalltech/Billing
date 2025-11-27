@@ -311,13 +311,14 @@ const CreateInvoice = () => {
   };
   
   const calculateTotals = () => {
-    const subtotal = items.reduce((sum, item) => sum + item.total, 0);
-    const totalDiscount = items.reduce((sum, item) => sum + item.discount_amount, 0);
-    const totalCgst = items.reduce((sum, item) => sum + item.cgst_amount, 0);
-    const totalSgst = items.reduce((sum, item) => sum + item.sgst_amount, 0);
-    const totalIgst = items.reduce((sum, item) => sum + item.igst_amount, 0);
+    const confirmedItems = items.filter(item => item.confirmed);
+    const subtotal = confirmedItems.reduce((sum, item) => sum + item.total, 0);
+    const totalDiscount = confirmedItems.reduce((sum, item) => sum + item.discount_amount, 0);
+    const totalCgst = confirmedItems.reduce((sum, item) => sum + item.cgst_amount, 0);
+    const totalSgst = confirmedItems.reduce((sum, item) => sum + item.sgst_amount, 0);
+    const totalIgst = confirmedItems.reduce((sum, item) => sum + item.igst_amount, 0);
     const totalTax = totalCgst + totalSgst + totalIgst;
-    const grandTotal = items.reduce((sum, item) => sum + item.final_amount, 0);
+    const grandTotal = confirmedItems.reduce((sum, item) => sum + item.final_amount, 0);
     
     return { subtotal, totalDiscount, totalCgst, totalSgst, totalIgst, totalTax, grandTotal };
   };
@@ -328,8 +329,9 @@ const CreateInvoice = () => {
       return;
     }
     
-    if (items.some(item => !item.product_name)) {
-      toast.error('Please fill in all product details');
+    const confirmedItems = items.filter(item => item.confirmed);
+    if (confirmedItems.length === 0) {
+      toast.error('Please confirm at least one item');
       return;
     }
     
