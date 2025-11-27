@@ -426,16 +426,32 @@ const CreateInvoice = () => {
     <div className="p-6 lg:p-8 space-y-6" data-testid="create-invoice-page">
       {/* Header */}
       <div>
-        <h1 className="text-4xl lg:text-5xl font-bold text-slate-800 mb-2">Create Invoice</h1>
-        <p className="text-slate-600">Generate a new invoice for your customer</p>
+        <h1 className="text-4xl lg:text-5xl font-bold text-slate-800 mb-2">
+          {isEditMode ? 'Edit Invoice' : 'Create Invoice'}
+        </h1>
+        <p className="text-slate-600">
+          {isEditMode ? 'Update invoice details' : 'Generate a new invoice for your customer'}
+        </p>
       </div>
       
       {/* Customer Selection */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl">Customer Details</CardTitle>
+          <CardTitle className="text-xl">Customer & Invoice Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Invoice Date *</Label>
+              <Input
+                type="date"
+                value={invoiceDate}
+                onChange={(e) => setInvoiceDate(e.target.value)}
+                max={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+          </div>
+          
           <div>
             <Label>Select Customer *</Label>
             <div className="relative">
