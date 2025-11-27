@@ -19,10 +19,6 @@ const InvoiceList = () => {
   const [sortBy, setSortBy] = useState('created_at');
   const [sortOrder, setSortOrder] = useState('desc');
   
-  useEffect(() => {
-    fetchInvoices();
-  }, [sortBy, sortOrder]);
-  
   const fetchInvoices = async () => {
     try {
       setLoading(true);
