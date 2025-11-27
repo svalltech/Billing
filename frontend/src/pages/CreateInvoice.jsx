@@ -39,12 +39,12 @@ const CreateInvoice = () => {
     sgst_amount: 0,
     igst_amount: 0,
     taxable_amount: 0,
-    final_amount: 0
+    final_amount: 0,
+    confirmed: false
   }]);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentStatus, setPaymentStatus] = useState('unpaid');
   const [notes, setNotes] = useState('');
-  const [itemsConfirmed, setItemsConfirmed] = useState(false);
   
   const fetchCustomers = async () => {
     try {
