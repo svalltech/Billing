@@ -67,6 +67,17 @@ const Customers = () => {
     fetchAvailableBusinesses();
   }, []);
   
+  // Client-side sorting - compute sorted array without modifying state
+  const sortedCustomers = [...customers].sort((a, b) => {
+    const aVal = a[sortBy] || '';
+    const bVal = b[sortBy] || '';
+    if (sortOrder === 'asc') {
+      return aVal > bVal ? 1 : -1;
+    } else {
+      return aVal < bVal ? 1 : -1;
+    }
+  });
+  
   const fetchCustomers = async (search = '') => {
     try {
       setLoading(true);
