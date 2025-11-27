@@ -789,8 +789,24 @@ const CreateInvoice = () => {
           </div>
           
           {/* Payment Details */}
-          <div className="pt-4 border-t space-y-3">
+          <div className="pt-4 border-t space-y-4">
+            <h3 className="text-lg font-semibold text-slate-800">Payment Details</h3>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Payment Status *</Label>
+                <Select value={paymentStatus} onValueChange={setPaymentStatus}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fully_paid">Fully Paid</SelectItem>
+                    <SelectItem value="partial">Partial</SelectItem>
+                    <SelectItem value="unpaid">Unpaid</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
               <div>
                 <Label>Payment Method</Label>
                 <Select value={paymentMethod} onValueChange={setPaymentMethod}>
@@ -798,28 +814,48 @@ const CreateInvoice = () => {
                     <SelectValue placeholder="Select payment method" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="cash">Cash</SelectItem>
-                    <SelectItem value="card">Card</SelectItem>
                     <SelectItem value="upi">UPI</SelectItem>
-                    <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-                    <SelectItem value="credit">Credit</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Payment Status</Label>
-                <Select value={paymentStatus} onValueChange={setPaymentStatus}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="paid">Paid</SelectItem>
-                    <SelectItem value="unpaid">Unpaid</SelectItem>
-                    <SelectItem value="partial">Partial</SelectItem>
+                    <SelectItem value="neft_rtgs_imps">NEFT/RTGS/IMPS</SelectItem>
+                    <SelectItem value="cheque">Cheque</SelectItem>
+                    <SelectItem value="card">Card</SelectItem>
+                    <SelectItem value="others">Others</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
+            
+            {/* Show paid amount field if partial payment */}
+            {paymentStatus === 'partial' && (
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 space-y-3">
+                <div>
+                  <Label>Amount Paid *</Label>
+                  <Input
+                    type="number"
+                    value={paidAmount}
+                    onChange={(e) => setPaidAmount(parseFloat(e.target.value) || 0)}
+                    placeholder="Enter amount paid"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t border-orange-300">
+                  <span className="font-semibold text-slate-700">Balance Due:</span>
+                  <span className="text-xl font-bold text-orange-600">
+                    ₹{Math.max(0, totals.grandTotal - paidAmount).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            )}
+            
+            <div>
+              <Label>Transaction Number / Reference ID</Label>
+              <Input
+                value={transactionReference}
+                onChange={(e) => setTransactionReference(e.target.value)}
+                placeholder="Enter transaction number, cheque number, or reference ID"
+              />
+            </div>
+            
             <div>
               <Label>Notes</Label>
               <Textarea
