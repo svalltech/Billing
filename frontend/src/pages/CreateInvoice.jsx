@@ -83,7 +83,43 @@ const CreateInvoice = () => {
     fetchCustomers();
     fetchProducts();
     fetchAdminBusiness();
+    if (isEditMode) {
+      loadInvoice();
+    }
   }, []);
+  
+  const loadInvoice = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${API}/invoices/${invoiceId}`);
+      const invoice = res.data;
+      
+      // Find and set customer
+      const customer = customers.find(c => c.id === invoice.customer_id);
+      if (customer) {
+        setSelectedCustomer(customer);
+      }
+      
+      // Set invoice date
+      setInvoiceDate(new Date(invoice.invoice_date).toISOString().split('T')[0]);
+      
+      // Set items (mark all as confirmed)
+      setItems(invoice.items.map(item => ({ ...item, confirmed: true })));
+      
+      // Set payment details
+      setPaymentStatus(invoice.payment_status);
+      setPaymentMethod(invoice.payment_method || '');
+      setPaidAmount(invoice.paid_amount || 0);
+      setTransactionReference(invoice.transaction_reference || '');
+      setNotes(invoice.notes || '');
+      
+      setLoading(false);
+    } catch (error) {
+      console.error('Error loading invoice:', error);
+      toast.error('Failed to load invoice');
+      setLoading(false);
+    }
+  };
   
   // Filter customers based on search
   const filteredCustomers = useMemo(() => {
