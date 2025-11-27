@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Plus, Trash2, Save, Receipt } from 'lucide-react';
+import { Plus, Trash2, Save, Receipt, Check, Edit2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CreateInvoice = () => {
