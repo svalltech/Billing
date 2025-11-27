@@ -620,7 +620,7 @@ const Customers = () => {
                         <SelectTrigger>
                           <SelectValue placeholder="Select state" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px]">
                           {indianStates.map((state) => (
                             <SelectItem key={state} value={state}>{state}</SelectItem>
                           ))}
@@ -629,11 +629,11 @@ const Customers = () => {
                     </div>
                     <div>
                       <Label>City</Label>
-                      <Select value={formData.city_2} onValueChange={(val) => setFormData({...formData, city_2: val})}>
+                      <Select value={formData.city_2} onValueChange={(val) => setFormData({...formData, city_2: val})} disabled={!formData.state_2}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select city" />
+                          <SelectValue placeholder={formData.state_2 ? "Select city" : "Select state first"} />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px]">
                           {availableCities.map((city) => (
                             <SelectItem key={city} value={city}>{city}</SelectItem>
                           ))}
