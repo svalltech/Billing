@@ -705,6 +705,69 @@ async def update_payment_status(invoice_id: str, payment_status: str, payment_me
     
     return Invoice(**invoice)
 
+@api_router.put("/invoices/{invoice_id}", response_model=Invoice)
+async def update_invoice(invoice_id: str, input: InvoiceCreate):
+    invoice = await db.invoices.find_one({"id": invoice_id}, {"_id": 0})
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    invoice_dict = input.model_dump()
+    invoice_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+    invoice_dict['id'] = invoice['id']
+    invoice_dict['invoice_number'] = invoice['invoice_number']
+    invoice_dict['created_at'] = invoice['created_at']
+    invoice_dict['is_deleted'] = invoice.get('is_deleted', False)
+    invoice_dict['deleted_at'] = invoice.get('deleted_at')
+    
+    # Convert datetime to isoformat if it's a datetime object
+    if isinstance(invoice_dict['invoice_date'], datetime):
+        invoice_dict['invoice_date'] = invoice_dict['invoice_date'].isoformat()
+    
+    await db.invoices.update_one({"id": invoice_id}, {"$set": invoice_dict})
+    
+    # Fetch and return updated invoice
+    invoice = await db.invoices.find_one({"id": invoice_id}, {"_id": 0})
+    if isinstance(invoice['invoice_date'], str):
+        invoice['invoice_date'] = datetime.fromisoformat(invoice['invoice_date'])
+    if isinstance(invoice['created_at'], str):
+        invoice['created_at'] = datetime.fromisoformat(invoice['created_at'])
+    if isinstance(invoice['updated_at'], str):
+        invoice['updated_at'] = datetime.fromisoformat(invoice['updated_at'])
+    
+    return Invoice(**invoice)
+
+@api_router.delete("/invoices/{invoice_id}")
+async def soft_delete_invoice(invoice_id: str):
+    invoice = await db.invoices.find_one({"id": invoice_id}, {"_id": 0})
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    await db.invoices.update_one(
+        {"id": invoice_id}, 
+        {"$set": {
+            "is_deleted": True,
+            "deleted_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    return {"message": "Invoice moved to archives"}
+
+@api_router.post("/invoices/{invoice_id}/restore")
+async def restore_invoice(invoice_id: str):
+    invoice = await db.invoices.find_one({"id": invoice_id}, {"_id": 0})
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    await db.invoices.update_one(
+        {"id": invoice_id}, 
+        {"$set": {
+            "is_deleted": False,
+            "deleted_at": None,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    return {"message": "Invoice restored successfully"}
+
 
 # Master Data Routes
 @api_router.get("/gst-rates")
