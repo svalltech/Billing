@@ -518,13 +518,24 @@ const CreateInvoice = () => {
                       <Label>GST Rate (%)</Label>
                       <div className="flex gap-2">
                         <Select
-                          value={item.custom_gst_rate ? 'custom' : item.gst_rate.toString()}
+                          value={item.custom_gst_rate !== '' && item.custom_gst_rate !== null && item.custom_gst_rate !== undefined ? 'custom' : item.gst_rate.toString()}
                           onValueChange={(value) => {
                             if (value === 'custom') {
-                              handleItemChange(index, 'custom_gst_rate', '');
+                              const updatedItems = [...items];
+                              updatedItems[index] = {
+                                ...updatedItems[index],
+                                custom_gst_rate: ''
+                              };
+                              setItems(updatedItems);
                             } else {
-                              handleItemChange(index, 'gst_rate', parseFloat(value));
-                              handleItemChange(index, 'custom_gst_rate', '');
+                              const updatedItems = [...items];
+                              updatedItems[index] = {
+                                ...updatedItems[index],
+                                gst_rate: parseFloat(value),
+                                custom_gst_rate: ''
+                              };
+                              setItems(updatedItems);
+                              calculateItemTotal(index, updatedItems);
                             }
                           }}
                         >
@@ -541,8 +552,8 @@ const CreateInvoice = () => {
                           </SelectContent>
                         </Select>
                         
-                        {(item.custom_gst_rate !== undefined && item.custom_gst_rate !== null && 
-                          (item.gst_rate.toString() === 'custom' || item.custom_gst_rate !== '')) && (
+                        {(item.custom_gst_rate !== '' && item.custom_gst_rate !== null && item.custom_gst_rate !== undefined) || 
+                         (item.custom_gst_rate === '') ? (
                           <Input
                             type="number"
                             value={item.custom_gst_rate}
@@ -553,7 +564,7 @@ const CreateInvoice = () => {
                             step="0.01"
                             className="w-24"
                           />
-                        )}
+                        ) : null}
                       </div>
                     </div>
                   </div>
