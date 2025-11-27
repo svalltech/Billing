@@ -619,25 +619,46 @@ async def create_invoice(input: InvoiceCreate):
     return invoice_obj
 
 @api_router.get("/invoices", response_model=List[Invoice])
-async def get_invoices(skip: int = 0, limit: int = 50, search: Optional[str] = None):
-    query = {}
-    if search:
-        query = {
-            "$or": [
-                {"invoice_number": {"$regex": search, "$options": "i"}},
-                {"customer_name": {"$regex": search, "$options": "i"}},
-            ]
-        }
+async def get_invoices(
+    skip: int = 0, 
+    limit: int = 50, 
+    search: Optional[str] = None,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    sort_by: Optional[str] = "created_at",
+    sort_order: Optional[str] = "desc",
+    include_deleted: bool = False
+):
+    query = {"is_deleted": False} if not include_deleted else {"is_deleted": True}
     
-    invoices = await db.invoices.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    if search:
+        query["$or"] = [
+            {"invoice_number": {"$regex": search, "$options": "i"}},
+            {"customer_name": {"$regex": search, "$options": "i"}},
+        ]
+    
+    # Date range filter
+    if start_date or end_date:
+        date_query = {}
+        if start_date:
+            date_query["$gte"] = start_date
+        if end_date:
+            date_query["$lte"] = end_date
+        if date_query:
+            query["invoice_date"] = date_query
+    
+    sort_direction = -1 if sort_order == "desc" else 1
+    invoices = await db.invoices.find(query, {"_id": 0}).sort(sort_by, sort_direction).skip(skip).limit(limit).to_list(limit)
     
     for invoice in invoices:
-        if isinstance(invoice['invoice_date'], str):
+        if isinstance(invoice.get('invoice_date'), str):
             invoice['invoice_date'] = datetime.fromisoformat(invoice['invoice_date'])
-        if isinstance(invoice['created_at'], str):
+        if isinstance(invoice.get('created_at'), str):
             invoice['created_at'] = datetime.fromisoformat(invoice['created_at'])
-        if isinstance(invoice['updated_at'], str):
+        if isinstance(invoice.get('updated_at'), str):
             invoice['updated_at'] = datetime.fromisoformat(invoice['updated_at'])
+        if invoice.get('deleted_at') and isinstance(invoice['deleted_at'], str):
+            invoice['deleted_at'] = datetime.fromisoformat(invoice['deleted_at'])
     
     return invoices
 
