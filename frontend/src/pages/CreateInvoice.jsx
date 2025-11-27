@@ -107,12 +107,17 @@ const CreateInvoice = () => {
       // Set invoice date
       setInvoiceDate(new Date(invoice.invoice_date).toISOString().split('T')[0]);
       
-      // Set items with proper validation
+      // Set items with proper validation and defaults
       if (invoice.items && Array.isArray(invoice.items)) {
         setItems(invoice.items.map(item => ({ 
           ...item, 
           confirmed: true,
-          custom_gst_rate: item.custom_gst_rate || null
+          custom_gst_rate: item.custom_gst_rate || null,
+          rate_mode: item.rate_mode || 'with_gst',
+          rate: item.rate || 0,
+          qty: item.qty || 1,
+          uom: item.uom || 'pcs',
+          discount_amount: item.discount_amount || 0
         })));
       }
       
