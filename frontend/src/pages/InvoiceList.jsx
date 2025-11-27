@@ -596,7 +596,7 @@ const InvoiceList = () => {
                         ₹{invoice.grand_total.toFixed(2)}
                       </td>
                       <td className="py-3 px-4 text-center">
-                        {getStatusBadge(invoice.payment_status)}
+                        {getStatusBadge(invoice)}
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center justify-center gap-2">
