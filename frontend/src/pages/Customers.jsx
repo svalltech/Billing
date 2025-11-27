@@ -665,11 +665,49 @@ const Customers = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label>Business Legal Name *</Label>
-                          <Input
-                            value={formData.business_legal_name}
-                            onChange={(e) => setFormData({...formData, business_legal_name: e.target.value})}
-                            placeholder="Legal business name"
-                          />
+                          <Select 
+                            value={formData.business_legal_name} 
+                            onValueChange={(val) => {
+                              if (val === '__new__') {
+                                setFormData({...formData, business_legal_name: ''});
+                              } else {
+                                const business = availableBusinesses.find(b => b.legal_name === val);
+                                if (business) {
+                                  setFormData({
+                                    ...formData,
+                                    business_legal_name: business.legal_name,
+                                    business_nickname: business.nickname || '',
+                                    business_gstin: business.gstin || '',
+                                    business_state_code: business.state_code || '',
+                                    business_state: business.state || '',
+                                    business_city: business.city || '',
+                                    business_pan: business.pan || '',
+                                    business_others: business.others || ''
+                                  });
+                                } else {
+                                  setFormData({...formData, business_legal_name: val});
+                                }
+                              }
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select or type business name" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="__new__">+ Add New Business</SelectItem>
+                              {availableBusinesses.map((biz) => (
+                                <SelectItem key={biz.id} value={biz.legal_name}>{biz.legal_name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {formData.business_legal_name && !availableBusinesses.find(b => b.legal_name === formData.business_legal_name) && (
+                            <Input
+                              value={formData.business_legal_name}
+                              onChange={(e) => setFormData({...formData, business_legal_name: e.target.value})}
+                              placeholder="Enter new business name"
+                              className="mt-2"
+                            />
+                          )}
                         </div>
                         <div>
                           <Label>Business Nickname</Label>
