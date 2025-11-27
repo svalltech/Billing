@@ -8,7 +8,8 @@ import {
   Menu,
   X,
   PlusCircle,
-  Building
+  Building,
+  Archive
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -21,6 +22,7 @@ const Sidebar = ({ open, setOpen }) => {
     { path: '/customers', icon: Users, label: 'Customers' },
     { path: '/businesses', icon: Building, label: 'Businesses' },
     { path: '/products', icon: Package, label: 'Products' },
+    { path: '/archives', icon: Archive, label: 'Archives' },
     { path: '/settings', icon: Settings, label: 'Settings' },
   ];
   
