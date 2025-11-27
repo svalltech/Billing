@@ -9,10 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Plus, Trash2, Save, Receipt, Check, Edit2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const CreateInvoice = () => {
   const navigate = useNavigate();
+  const { id: invoiceId } = useParams();
+  const isEditMode = !!invoiceId;
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
   const [adminBusiness, setAdminBusiness] = useState(null);
