@@ -262,6 +262,13 @@ const Customers = () => {
   
   const handleEdit = (customer) => {
     setEditingCustomer(customer);
+    
+    // Set available cities based on customer's state
+    if (customer.state_1) {
+      const cities = indianStatesAndCities[customer.state_1] || [];
+      setAvailableCities(cities);
+    }
+    
     setFormData({
       name: customer.name,
       nickname: customer.nickname || '',
