@@ -336,7 +336,6 @@ const CreateInvoice = () => {
     }
     
     const totals = calculateTotals();
-    const confirmedItems = items.filter(item => item.confirmed);
     
     const invoiceData = {
       customer_id: selectedCustomer.id,
