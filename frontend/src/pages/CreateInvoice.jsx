@@ -432,6 +432,17 @@ const CreateInvoice = () => {
   
   const totals = calculateTotals();
   
+  if (loading && isEditMode) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-slate-600">Loading invoice...</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="p-6 lg:p-8 space-y-6" data-testid="create-invoice-page">
       {/* Header */}
