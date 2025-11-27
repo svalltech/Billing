@@ -739,91 +739,11 @@ const CreateInvoice = () => {
             </Card>
           ))}
           
-          {!itemsConfirmed && (
-            <>
-              <Button onClick={addItem} variant="outline" className="w-full" data-testid="add-item-btn">
-                <Plus size={18} className="mr-2" />
-                Add Item
-              </Button>
-              
-              <Button 
-                onClick={() => {
-                  // Validate all items have product name
-                  if (items.some(item => !item.product_name)) {
-                    toast.error('Please fill in all product names before confirming');
-                    return;
-                  }
-                  setItemsConfirmed(true);
-                }}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
-                data-testid="confirm-items-btn"
-              >
-                Confirm Items
-              </Button>
-            </>
-          )}
-          
-          {/* Confirmed Items Summary */}
-          {itemsConfirmed && (
-            <div className="space-y-4">
-              <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-semibold text-green-800">✓ Items Confirmed</h3>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setItemsConfirmed(false)}
-                    className="text-blue-600 hover:bg-blue-50"
-                  >
-                    Edit Items
-                  </Button>
-                </div>
-                
-                {/* Items Summary Table */}
-                <div className="bg-white rounded-lg border overflow-hidden">
-                  <table className="w-full">
-                    <thead className="bg-slate-50 border-b">
-                      <tr>
-                        <th className="text-left py-3 px-4 font-semibold text-slate-700">#</th>
-                        <th className="text-left py-3 px-4 font-semibold text-slate-700">Product Name</th>
-                        <th className="text-right py-3 px-4 font-semibold text-slate-700">Quantity</th>
-                        <th className="text-right py-3 px-4 font-semibold text-slate-700">Unit Price (with GST)</th>
-                        <th className="text-right py-3 px-4 font-semibold text-slate-700">Total Value (with GST)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((item, index) => (
-                        <tr key={index} className="border-b last:border-b-0 hover:bg-slate-50">
-                          <td className="py-3 px-4 text-slate-600">{index + 1}</td>
-                          <td className="py-3 px-4 font-medium text-slate-800">{item.product_name}</td>
-                          <td className="py-3 px-4 text-right text-slate-700">{item.qty} {item.uom}</td>
-                          <td className="py-3 px-4 text-right text-slate-700">
-                            ₹{item.rate_mode === 'with_gst' 
-                              ? item.rate.toFixed(2) 
-                              : (item.rate * (1 + ((item.custom_gst_rate ? parseFloat(item.custom_gst_rate) : item.gst_rate) / 100))).toFixed(2)
-                            }
-                          </td>
-                          <td className="py-3 px-4 text-right font-semibold text-blue-600">
-                            ₹{item.final_amount.toFixed(2)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    <tfoot className="bg-slate-50 border-t-2">
-                      <tr>
-                        <td colSpan="4" className="py-3 px-4 text-right font-bold text-slate-800">
-                          Grand Total:
-                        </td>
-                        <td className="py-3 px-4 text-right font-bold text-blue-600 text-lg">
-                          ₹{items.reduce((sum, item) => sum + item.final_amount, 0).toFixed(2)}
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Add More Items Button */}
+          <Button onClick={addItem} variant="outline" className="w-full" data-testid="add-item-btn">
+            <Plus size={18} className="mr-2" />
+            Add More Items
+          </Button>
         </CardContent>
       </Card>
       
