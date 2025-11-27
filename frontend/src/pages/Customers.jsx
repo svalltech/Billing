@@ -579,11 +579,11 @@ const Customers = () => {
                     </div>
                     <div>
                       <Label>City</Label>
-                      <Select value={formData.city_1} onValueChange={(val) => setFormData({...formData, city_1: val})}>
+                      <Select value={formData.city_1} onValueChange={(val) => setFormData({...formData, city_1: val})} disabled={!formData.state_1}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select city" />
+                          <SelectValue placeholder={formData.state_1 ? "Select city" : "Select state first"} />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px]">
                           {availableCities.map((city) => (
                             <SelectItem key={city} value={city}>{city}</SelectItem>
                           ))}
