@@ -10,6 +10,7 @@ import Customers from "@/pages/Customers";
 import Businesses from "@/pages/Businesses";
 import Products from "@/pages/Products";
 import BusinessSettings from "@/pages/BusinessSettings";
+import Archives from "@/pages/Archives";
 import Sidebar from "@/components/Sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
