@@ -173,6 +173,13 @@ const Businesses = () => {
   
   const handleEdit = (business) => {
     setEditingBusiness(business);
+    
+    // Set available cities based on business's state
+    if (business.state) {
+      const cities = indianStatesAndCities[business.state] || [];
+      setAvailableCities(cities);
+    }
+    
     setFormData({
       legal_name: business.legal_name,
       nickname: business.nickname || '',
