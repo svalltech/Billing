@@ -661,7 +661,19 @@ const Customers = () => {
                     </div>
                     <div>
                       <Label>City</Label>
-                      <Select value={formData.city_2} onValueChange={(val) => setFormData({...formData, city_2: val})} disabled={!formData.state_2}>
+                      <Select 
+                        value={showCustomCity2 ? "Others" : formData.city_2} 
+                        onValueChange={(val) => {
+                          if (val === "Others") {
+                            setShowCustomCity2(true);
+                            setFormData({...formData, city_2: ''});
+                          } else {
+                            setShowCustomCity2(false);
+                            setFormData({...formData, city_2: val});
+                          }
+                        }} 
+                        disabled={!formData.state_2}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder={formData.state_2 ? "Select city" : "Select state first"} />
                         </SelectTrigger>
@@ -669,8 +681,17 @@ const Customers = () => {
                           {availableCities.map((city) => (
                             <SelectItem key={city} value={city}>{city}</SelectItem>
                           ))}
+                          <SelectItem value="Others">Others (Enter manually)</SelectItem>
                         </SelectContent>
                       </Select>
+                      {showCustomCity2 && (
+                        <Input
+                          value={formData.city_2}
+                          onChange={(e) => setFormData({...formData, city_2: e.target.value})}
+                          placeholder="Enter city name"
+                          className="mt-2"
+                        />
+                      )}
                     </div>
                     <div>
                       <Label>Pincode</Label>
