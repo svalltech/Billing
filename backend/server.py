@@ -291,9 +291,10 @@ async def delete_business(business_id: str):
     await db.businesses.delete_one({"id": business_id})
     return {"message": "Business deleted successfully"}
 
-# Legacy route for backward compatibility (for invoice view)
+# Admin Business Settings Routes (for Settings page and invoice calculations)
 @api_router.get("/business", response_model=Optional[Business])
-async def get_first_business():
+async def get_admin_business():
+    """Get admin business settings (first business in collection)"""
     business = await db.businesses.find_one({}, {"_id": 0})
     if not business:
         return None
@@ -304,6 +305,37 @@ async def get_first_business():
         business['updated_at'] = datetime.fromisoformat(business['updated_at'])
     
     return Business(**business)
+
+@api_router.post("/business", response_model=Business)
+async def save_admin_business(input: BusinessCreate):
+    """Save or update admin business settings"""
+    # Check if admin business already exists
+    existing_business = await db.businesses.find_one({}, {"_id": 0})
+    
+    if existing_business:
+        # Update existing admin business
+        business_dict = input.model_dump()
+        business_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+        business_dict['id'] = existing_business['id']
+        business_dict['created_at'] = existing_business['created_at']
+        
+        await db.businesses.update_one({"id": existing_business['id']}, {"$set": business_dict})
+        
+        if isinstance(business_dict['created_at'], str):
+            business_dict['created_at'] = datetime.fromisoformat(business_dict['created_at'])
+        if isinstance(business_dict['updated_at'], str):
+            business_dict['updated_at'] = datetime.fromisoformat(business_dict['updated_at'])
+        
+        return Business(**business_dict)
+    else:
+        # Create new admin business
+        business_obj = Business(**input.model_dump())
+        doc = business_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        
+        await db.businesses.insert_one(doc)
+        return business_obj
 
 
 # Customer Routes
