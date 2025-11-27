@@ -45,12 +45,25 @@ const Businesses = () => {
   
   useEffect(() => {
     fetchBusinesses();
-  }, [sortBy, sortOrder]);
+  }, []);
+  
+  // Client-side sorting - memoized to prevent unnecessary recalculations
+  const sortedBusinesses = useMemo(() => {
+    return [...businesses].sort((a, b) => {
+      const aVal = a[sortBy] || '';
+      const bVal = b[sortBy] || '';
+      if (sortOrder === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+  }, [businesses, sortBy, sortOrder]);
   
   const fetchBusinesses = async (search = '') => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API}/businesses?search=${search}&sort_by=${sortBy}&sort_order=${sortOrder}`);
+      const res = await axios.get(`${API}/businesses?search=${search}`);
       setBusinesses(res.data);
       setLoading(false);
     } catch (error) {
