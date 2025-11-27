@@ -560,20 +560,30 @@ const Customers = () => {
                       />
                     </div>
                     <div>
-                      <Label>City</Label>
-                      <Input
-                        value={formData.city_1}
-                        onChange={(e) => setFormData({...formData, city_1: e.target.value})}
-                        placeholder="City"
-                      />
+                      <Label>State</Label>
+                      <Select value={formData.state_1} onValueChange={(val) => handleStateChange(val, 1)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select state" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {indianStates.map((state) => (
+                            <SelectItem key={state} value={state}>{state}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
-                      <Label>State</Label>
-                      <Input
-                        value={formData.state_1}
-                        onChange={(e) => setFormData({...formData, state_1: e.target.value})}
-                        placeholder="State"
-                      />
+                      <Label>City</Label>
+                      <Select value={formData.city_1} onValueChange={(val) => setFormData({...formData, city_1: val})}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select city" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableCities.map((city) => (
+                            <SelectItem key={city} value={city}>{city}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label>Pincode</Label>
