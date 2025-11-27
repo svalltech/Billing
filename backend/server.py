@@ -172,8 +172,11 @@ class Invoice(BaseModel):
     total_igst: float
     total_tax: float
     grand_total: float
-    payment_method: Optional[str] = None
     payment_status: str = "unpaid"
+    payment_method: Optional[str] = None
+    paid_amount: Optional[float] = 0
+    balance_due: Optional[float] = 0
+    transaction_reference: Optional[str] = None
     notes: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -192,8 +195,11 @@ class InvoiceCreate(BaseModel):
     total_igst: float
     total_tax: float
     grand_total: float
-    payment_method: Optional[str] = None
     payment_status: str = "unpaid"
+    payment_method: Optional[str] = None
+    paid_amount: Optional[float] = 0
+    balance_due: Optional[float] = 0
+    transaction_reference: Optional[str] = None
     notes: Optional[str] = None
 
 
