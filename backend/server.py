@@ -720,9 +720,14 @@ async def update_invoice(invoice_id: str, input: InvoiceCreate):
     invoice_dict['is_deleted'] = invoice.get('is_deleted', False)
     invoice_dict['deleted_at'] = invoice.get('deleted_at')
     
-    # Convert datetime to isoformat if it's a datetime object
-    if isinstance(invoice_dict['invoice_date'], datetime):
-        invoice_dict['invoice_date'] = invoice_dict['invoice_date'].isoformat()
+    # Handle invoice_date - use provided or keep original
+    if invoice_dict.get('invoice_date'):
+        if isinstance(invoice_dict['invoice_date'], datetime):
+            invoice_dict['invoice_date'] = invoice_dict['invoice_date'].isoformat()
+        # invoice_date is already a string, keep it as is
+    else:
+        # Preserve original invoice_date if not provided
+        invoice_dict['invoice_date'] = invoice['invoice_date']
     
     await db.invoices.update_one({"id": invoice_id}, {"$set": invoice_dict})
     
