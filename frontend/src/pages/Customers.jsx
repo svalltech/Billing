@@ -570,7 +570,7 @@ const Customers = () => {
                         <SelectTrigger>
                           <SelectValue placeholder="Select state" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px]">
                           {indianStates.map((state) => (
                             <SelectItem key={state} value={state}>{state}</SelectItem>
                           ))}
