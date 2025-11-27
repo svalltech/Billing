@@ -24,6 +24,8 @@ const Businesses = () => {
   const [editingBusiness, setEditingBusiness] = useState(null);
   const [sortBy, setSortBy] = useState('created_at');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [availableCities, setAvailableCities] = useState([]);
+  const [showCustomCity, setShowCustomCity] = useState(false);
   const [formData, setFormData] = useState({
     legal_name: '',
     nickname: '',
