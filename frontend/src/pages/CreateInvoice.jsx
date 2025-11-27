@@ -827,6 +827,7 @@ const CreateInvoice = () => {
                     <SelectValue placeholder="Select payment method" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="cash">Cash</SelectItem>
                     <SelectItem value="upi">UPI</SelectItem>
                     <SelectItem value="neft_rtgs_imps">NEFT/RTGS/IMPS</SelectItem>
                     <SelectItem value="cheque">Cheque</SelectItem>
