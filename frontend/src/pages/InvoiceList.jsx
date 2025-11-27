@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Eye, Search, PlusCircle, Edit2, Trash2, Download, ArrowUpDown } from 'lucide-react';
+import { Eye, Search, PlusCircle, Edit2, Trash2, Download, ArrowUpDown, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const InvoiceList = () => {
