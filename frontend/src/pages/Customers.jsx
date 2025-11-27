@@ -235,6 +235,8 @@ const Customers = () => {
   
   const resetForm = () => {
     setAvailableCities([]);
+    setShowCustomCity1(false);
+    setShowCustomCity2(false);
     setFormData({
       name: '',
       nickname: '',
