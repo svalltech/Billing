@@ -412,17 +412,35 @@ const InvoiceList = () => {
     }
   };
   
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (invoice) => {
     const statusMap = {
       'fully_paid': { bg: 'bg-green-100', text: 'text-green-700', label: 'Fully Paid' },
       'partial': { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'Partial' },
       'unpaid': { bg: 'bg-orange-100', text: 'text-orange-700', label: 'Unpaid' }
     };
-    const config = statusMap[status] || statusMap['unpaid'];
+    const config = statusMap[invoice.payment_status] || statusMap['unpaid'];
+    
     return (
-      <span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${config.bg} ${config.text}`}>
-        {config.label}
-      </span>
+      <div className="flex items-center justify-center gap-2">
+        <span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${config.bg} ${config.text}`}>
+          {config.label}
+        </span>
+        {invoice.payment_status === 'partial' && invoice.balance_due > 0 && (
+          <div className="relative group">
+            <Info 
+              size={14} 
+              className="text-yellow-600 cursor-help"
+            />
+            <div className="absolute hidden group-hover:block z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 px-3 py-2 text-xs font-medium text-white bg-slate-900 rounded-lg shadow-lg">
+              <div className="text-center">
+                <p className="mb-1">Due amount is:</p>
+                <p className="text-sm font-bold text-orange-300">₹{invoice.balance_due.toFixed(2)}</p>
+              </div>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-900"></div>
+            </div>
+          </div>
+        )}
+      </div>
     );
   };
   
