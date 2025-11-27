@@ -86,13 +86,24 @@ const Customers = () => {
   const fetchCustomers = async (search = '') => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API}/customers?search=${search}&sort_by=${sortBy}&sort_order=${sortOrder}`);
+      const res = await axios.get(`${API}/customers?search=${search}`);
       setCustomers(res.data);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching customers:', error);
       toast.error('Failed to load customers');
       setLoading(false);
+    }
+  };
+  
+  const fetchAvailableBusinesses = async () => {
+    try {
+      const res = await axios.get(`${API}/businesses`);
+      // Filter businesses that have no linked customers
+      const unlinked = res.data.filter(b => !b.linked_customers || b.linked_customers.length === 0);
+      setAvailableBusinesses(unlinked);
+    } catch (error) {
+      console.error('Error fetching businesses:', error);
     }
   };
   
