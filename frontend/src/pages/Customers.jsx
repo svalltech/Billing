@@ -35,6 +35,8 @@ const Customers = () => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [availableBusinesses, setAvailableBusinesses] = useState([]);
   const [availableCities, setAvailableCities] = useState([]);
+  const [showCustomCity1, setShowCustomCity1] = useState(false);
+  const [showCustomCity2, setShowCustomCity2] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     nickname: '',
