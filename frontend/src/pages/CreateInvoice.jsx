@@ -339,6 +339,8 @@ const CreateInvoice = () => {
     
     const totals = calculateTotals();
     
+    const balanceDue = paymentStatus === 'partial' ? Math.max(0, totals.grandTotal - paidAmount) : 0;
+    
     const invoiceData = {
       customer_id: selectedCustomer.id,
       customer_name: selectedCustomer.name,
@@ -353,8 +355,11 @@ const CreateInvoice = () => {
       total_igst: totals.totalIgst,
       total_tax: totals.totalTax,
       grand_total: totals.grandTotal,
-      payment_method: paymentMethod || null,
       payment_status: paymentStatus,
+      payment_method: paymentMethod || null,
+      paid_amount: paymentStatus === 'partial' ? paidAmount : (paymentStatus === 'fully_paid' ? totals.grandTotal : 0),
+      balance_due: balanceDue,
+      transaction_reference: transactionReference || null,
       notes: notes || null
     };
     
