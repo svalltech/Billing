@@ -1,31 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { API } from '@/App';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Plus, Trash2, Save, UserPlus } from 'lucide-react';
+import { Plus, Trash2, Save, Receipt } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CreateInvoice = () => {
   const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
-  const [gstRates, setGstRates] = useState([]);
+  const [adminBusiness, setAdminBusiness] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [showNewCustomerDialog, setShowNewCustomerDialog] = useState(false);
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
+  const [gstType, setGstType] = useState(null); // 'cgst_sgst' or 'igst'
   const [items, setItems] = useState([{
     product_name: '',
     description: '',
     hsn: '',
     qty: 1,
     uom: 'pcs',
+    rate_mode: 'with_gst', // 'with_gst' or 'without_gst'
     rate: 0,
+    gst_rate: 18,
+    custom_gst_rate: '',
     total: 0,
     discount_amount: 0,
     cgst_percent: 0,
@@ -41,22 +45,10 @@ const CreateInvoice = () => {
   const [paymentStatus, setPaymentStatus] = useState('unpaid');
   const [notes, setNotes] = useState('');
   
-  const [newCustomer, setNewCustomer] = useState({
-    name: '',
-    nickname: '',
-    gstin: '',
-    phone_1: '',
-    phone_2: '',
-    email_1: '',
-    email_2: '',
-    address_1: '',
-    address_2: ''
-  });
-  
   useEffect(() => {
     fetchCustomers();
     fetchProducts();
-    fetchGstRates();
+    fetchAdminBusiness();
   }, []);
   
   const fetchCustomers = async () => {
@@ -77,42 +69,65 @@ const CreateInvoice = () => {
     }
   };
   
-  const fetchGstRates = async () => {
+  const fetchAdminBusiness = async () => {
     try {
-      const res = await axios.get(`${API}/gst-rates`);
-      setGstRates(res.data);
+      const res = await axios.get(`${API}/business`);
+      setAdminBusiness(res.data);
     } catch (error) {
-      console.error('Error fetching GST rates:', error);
+      console.error('Error fetching admin business:', error);
     }
   };
   
-  const handleCreateCustomer = async () => {
-    if (!newCustomer.name) {
-      toast.error('Customer name is required');
-      return;
+  // Filter customers based on search
+  const filteredCustomers = useMemo(() => {
+    if (!customerSearch) return customers;
+    const search = customerSearch.toLowerCase();
+    return customers.filter(customer => {
+      const nameMatch = customer.name?.toLowerCase().includes(search);
+      const businessMatch = customer.business_name?.toLowerCase().includes(search);
+      const gstinMatch = customer.gstin?.toLowerCase().includes(search);
+      return nameMatch || businessMatch || gstinMatch;
+    });
+  }, [customers, customerSearch]);
+  
+  // Determine GST type when customer is selected
+  useEffect(() => {
+    if (selectedCustomer && adminBusiness) {
+      const customerState = selectedCustomer.state_1 || '';
+      const adminState = adminBusiness.state || '';
+      
+      if (customerState && adminState) {
+        if (customerState.toLowerCase() === adminState.toLowerCase()) {
+          setGstType('cgst_sgst');
+        } else {
+          setGstType('igst');
+        }
+      } else {
+        setGstType('cgst_sgst'); // Default to CGST/SGST
+      }
+    }
+  }, [selectedCustomer, adminBusiness]);
+  
+  const handleCustomerSelect = (customer) => {
+    setSelectedCustomer(customer);
+    setCustomerSearch('');
+    setShowCustomerDropdown(false);
+  };
+  
+  const getCustomerDisplayText = (customer) => {
+    let text = customer.name;
+    
+    // Add business name if exists and not "NA"
+    if (customer.business_name && customer.business_name !== 'NA') {
+      text += ` - ${customer.business_name}`;
     }
     
-    try {
-      const res = await axios.post(`${API}/customers`, newCustomer);
-      setCustomers([...customers, res.data]);
-      setSelectedCustomer(res.data);
-      setShowNewCustomerDialog(false);
-      setNewCustomer({
-        name: '',
-        nickname: '',
-        gstin: '',
-        phone_1: '',
-        phone_2: '',
-        email_1: '',
-        email_2: '',
-        address_1: '',
-        address_2: ''
-      });
-      toast.success('Customer created successfully');
-    } catch (error) {
-      console.error('Error creating customer:', error);
-      toast.error('Failed to create customer');
+    // Add GSTIN if exists
+    if (customer.gstin) {
+      text += ` - ${customer.gstin}`;
     }
+    
+    return text;
   };
   
   const handleProductSelect = async (index, productName) => {
@@ -124,23 +139,11 @@ const CreateInvoice = () => {
         product_name: product.name,
         description: product.description || '',
         hsn: product.hsn || '',
+        gst_rate: product.gst_rate || 18,
         rate: product.default_rate || 0
       };
       setItems(updatedItems);
       calculateItemTotal(index, updatedItems);
-    } else {
-      // New product - save it
-      if (productName) {
-        try {
-          await axios.post(`${API}/products`, {
-            name: productName,
-            uom: 'pcs'
-          });
-          fetchProducts();
-        } catch (error) {
-          console.error('Error saving product:', error);
-        }
-      }
     }
   };
   
@@ -148,31 +151,69 @@ const CreateInvoice = () => {
     const updatedItems = [...items];
     updatedItems[index][field] = value;
     setItems(updatedItems);
-    calculateItemTotal(index, updatedItems);
+    
+    // Recalculate if rate, qty, discount, or gst_rate changes
+    if (['rate', 'qty', 'discount_amount', 'gst_rate', 'rate_mode'].includes(field)) {
+      calculateItemTotal(index, updatedItems);
+    }
   };
   
   const calculateItemTotal = (index, itemsArray) => {
     const item = itemsArray[index];
-    const total = item.qty * item.rate;
-    const taxableAmount = total - item.discount_amount;
+    const gstRate = item.custom_gst_rate ? parseFloat(item.custom_gst_rate) : item.gst_rate;
     
+    let taxableAmount = 0;
+    let gstAmount = 0;
+    let finalAmount = 0;
+    
+    if (item.rate_mode === 'with_gst') {
+      // User enters final price (including GST)
+      // We need to back-calculate taxable amount and GST
+      const enteredPrice = item.qty * item.rate;
+      const priceAfterDiscount = enteredPrice - item.discount_amount;
+      
+      // Final amount = Taxable + GST
+      // Final amount = Taxable + (Taxable * GST%)
+      // Final amount = Taxable * (1 + GST%)
+      // Therefore: Taxable = Final amount / (1 + GST%)
+      taxableAmount = priceAfterDiscount / (1 + (gstRate / 100));
+      gstAmount = priceAfterDiscount - taxableAmount;
+      finalAmount = priceAfterDiscount;
+    } else {
+      // User enters base price (without GST)
+      // GST is added on top
+      const basePrice = item.qty * item.rate;
+      taxableAmount = basePrice - item.discount_amount;
+      gstAmount = (taxableAmount * gstRate) / 100;
+      finalAmount = taxableAmount + gstAmount;
+    }
+    
+    // Distribute GST based on type (CGST/SGST or IGST)
     let cgstAmount = 0;
     let sgstAmount = 0;
     let igstAmount = 0;
+    let cgstPercent = 0;
+    let sgstPercent = 0;
+    let igstPercent = 0;
     
-    if (item.igst_percent > 0) {
-      igstAmount = (taxableAmount * item.igst_percent) / 100;
+    if (gstType === 'igst') {
+      igstAmount = gstAmount;
+      igstPercent = gstRate;
     } else {
-      cgstAmount = (taxableAmount * item.cgst_percent) / 100;
-      sgstAmount = (taxableAmount * item.sgst_percent) / 100;
+      // CGST/SGST - split equally
+      cgstAmount = gstAmount / 2;
+      sgstAmount = gstAmount / 2;
+      cgstPercent = gstRate / 2;
+      sgstPercent = gstRate / 2;
     }
-    
-    const finalAmount = taxableAmount + cgstAmount + sgstAmount + igstAmount;
     
     itemsArray[index] = {
       ...item,
-      total,
+      total: item.qty * item.rate,
       taxable_amount: taxableAmount,
+      cgst_percent: cgstPercent,
+      sgst_percent: sgstPercent,
+      igst_percent: igstPercent,
       cgst_amount: cgstAmount,
       sgst_amount: sgstAmount,
       igst_amount: igstAmount,
@@ -189,7 +230,10 @@ const CreateInvoice = () => {
       hsn: '',
       qty: 1,
       uom: 'pcs',
+      rate_mode: 'with_gst',
       rate: 0,
+      gst_rate: 18,
+      custom_gst_rate: '',
       total: 0,
       discount_amount: 0,
       cgst_percent: 0,
@@ -280,133 +324,66 @@ const CreateInvoice = () => {
           <CardTitle className="text-xl">Customer Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <Label>Select Customer</Label>
-              <Select
-                value={selectedCustomer?.id || ''}
-                onValueChange={(value) => {
-                  const customer = customers.find(c => c.id === value);
-                  setSelectedCustomer(customer);
+          <div>
+            <Label>Select Customer *</Label>
+            <div className="relative">
+              <Input
+                value={selectedCustomer ? getCustomerDisplayText(selectedCustomer) : customerSearch}
+                onChange={(e) => {
+                  setCustomerSearch(e.target.value);
+                  setShowCustomerDropdown(true);
+                  if (!e.target.value) {
+                    setSelectedCustomer(null);
+                  }
                 }}
-              >
-                <SelectTrigger data-testid="customer-select">
-                  <SelectValue placeholder="Select a customer" />
-                </SelectTrigger>
-                <SelectContent>
-                  {customers.map((customer) => (
-                    <SelectItem key={customer.id} value={customer.id}>
-                      {customer.name} {customer.phone_1 ? `- ${customer.phone_1}` : ''}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onFocus={() => setShowCustomerDropdown(true)}
+                placeholder="Search by customer name, business name, or GSTIN..."
+                className="w-full"
+                data-testid="customer-search"
+              />
+              
+              {showCustomerDropdown && (
+                <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto">
+                  {filteredCustomers.length > 0 ? (
+                    filteredCustomers.map((customer) => (
+                      <div
+                        key={customer.id}
+                        className="px-3 py-2 hover:bg-blue-50 cursor-pointer border-b last:border-b-0"
+                        onClick={() => handleCustomerSelect(customer)}
+                      >
+                        <p className="font-medium text-slate-800">{getCustomerDisplayText(customer)}</p>
+                        {customer.phone_1 && (
+                          <p className="text-sm text-slate-500">{customer.phone_1}</p>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-3 py-4 text-center text-slate-500">
+                      No customers found
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            
-            <Dialog open={showNewCustomerDialog} onOpenChange={setShowNewCustomerDialog}>
-              <DialogTrigger asChild>
-                <Button className="mt-6" data-testid="new-customer-btn">
-                  <UserPlus size={18} className="mr-2" />
-                  New Customer
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Add New Customer</DialogTitle>
-                </DialogHeader>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <Label>Name *</Label>
-                    <Input
-                      value={newCustomer.name}
-                      onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})}
-                      placeholder="Customer name"
-                      data-testid="new-customer-name"
-                    />
-                  </div>
-                  <div>
-                    <Label>Nickname</Label>
-                    <Input
-                      value={newCustomer.nickname}
-                      onChange={(e) => setNewCustomer({...newCustomer, nickname: e.target.value})}
-                      placeholder="Nickname"
-                    />
-                  </div>
-                  <div>
-                    <Label>GSTIN</Label>
-                    <Input
-                      value={newCustomer.gstin}
-                      onChange={(e) => setNewCustomer({...newCustomer, gstin: e.target.value})}
-                      placeholder="GST number"
-                    />
-                  </div>
-                  <div>
-                    <Label>Phone 1</Label>
-                    <Input
-                      value={newCustomer.phone_1}
-                      onChange={(e) => setNewCustomer({...newCustomer, phone_1: e.target.value})}
-                      placeholder="Primary phone"
-                    />
-                  </div>
-                  <div>
-                    <Label>Phone 2</Label>
-                    <Input
-                      value={newCustomer.phone_2}
-                      onChange={(e) => setNewCustomer({...newCustomer, phone_2: e.target.value})}
-                      placeholder="Secondary phone"
-                    />
-                  </div>
-                  <div>
-                    <Label>Email 1</Label>
-                    <Input
-                      type="email"
-                      value={newCustomer.email_1}
-                      onChange={(e) => setNewCustomer({...newCustomer, email_1: e.target.value})}
-                      placeholder="Primary email"
-                    />
-                  </div>
-                  <div>
-                    <Label>Email 2</Label>
-                    <Input
-                      type="email"
-                      value={newCustomer.email_2}
-                      onChange={(e) => setNewCustomer({...newCustomer, email_2: e.target.value})}
-                      placeholder="Secondary email"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <Label>Address 1</Label>
-                    <Textarea
-                      value={newCustomer.address_1}
-                      onChange={(e) => setNewCustomer({...newCustomer, address_1: e.target.value})}
-                      placeholder="Primary address"
-                      rows={2}
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <Label>Address 2</Label>
-                    <Textarea
-                      value={newCustomer.address_2}
-                      onChange={(e) => setNewCustomer({...newCustomer, address_2: e.target.value})}
-                      placeholder="Secondary address"
-                      rows={2}
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end gap-3 mt-6">
-                  <Button variant="outline" onClick={() => setShowNewCustomerDialog(false)}>Cancel</Button>
-                  <Button onClick={handleCreateCustomer} data-testid="save-new-customer-btn">Save Customer</Button>
-                </div>
-              </DialogContent>
-            </Dialog>
           </div>
           
           {selectedCustomer && (
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="font-semibold text-slate-800">{selectedCustomer.name}</p>
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-1">
+              <p className="font-semibold text-slate-800 text-lg">{selectedCustomer.name}</p>
+              {selectedCustomer.business_name && selectedCustomer.business_name !== 'NA' && (
+                <p className="text-sm text-slate-600">Business: {selectedCustomer.business_name}</p>
+              )}
               {selectedCustomer.gstin && <p className="text-sm text-slate-600">GSTIN: {selectedCustomer.gstin}</p>}
               {selectedCustomer.phone_1 && <p className="text-sm text-slate-600">Phone: {selectedCustomer.phone_1}</p>}
               {selectedCustomer.address_1 && <p className="text-sm text-slate-600">{selectedCustomer.address_1}</p>}
+              {selectedCustomer.state_1 && <p className="text-sm text-slate-600">State: {selectedCustomer.state_1}</p>}
+              
+              {/* GST Type Indicator */}
+              <div className="mt-3 pt-3 border-t border-blue-300">
+                <p className="text-sm font-semibold text-blue-700">
+                  {gstType === 'igst' ? '📦 Inter-State Supply (IGST)' : '📍 Intra-State Supply (CGST + SGST)'}
+                </p>
+              </div>
             </div>
           )}
         </CardContent>
@@ -418,33 +395,19 @@ const CreateInvoice = () => {
           <CardTitle className="text-xl">Invoice Items</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="overflow-x-auto">
-            <div className="min-w-[1200px]">
-              {/* Header */}
-              <div className="grid grid-cols-12 gap-2 mb-2 text-xs font-semibold text-slate-700 pb-2 border-b">
-                <div className="col-span-2">Product</div>
-                <div className="col-span-1">HSN</div>
-                <div className="col-span-1">QTY</div>
-                <div className="col-span-1">Rate</div>
-                <div className="col-span-1">Discount</div>
-                <div className="col-span-1">CGST%</div>
-                <div className="col-span-1">SGST%</div>
-                <div className="col-span-1">IGST%</div>
-                <div className="col-span-2">Total</div>
-                <div className="col-span-1"></div>
-              </div>
-              
-              {/* Items */}
-              {items.map((item, index) => (
-                <div key={index} className="grid grid-cols-12 gap-2 mb-3 items-start">
-                  <div className="col-span-2">
+          {items.map((item, index) => (
+            <Card key={index} className="border-2">
+              <CardContent className="pt-6 space-y-4">
+                {/* Product Selection */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Product Name *</Label>
                     <Input
                       list={`products-${index}`}
                       value={item.product_name}
                       onChange={(e) => handleItemChange(index, 'product_name', e.target.value)}
                       onBlur={(e) => handleProductSelect(index, e.target.value)}
-                      placeholder="Product name"
-                      className="text-sm"
+                      placeholder="Enter or select product"
                     />
                     <datalist id={`products-${index}`}>
                       {products.map((product) => (
@@ -452,107 +415,195 @@ const CreateInvoice = () => {
                       ))}
                     </datalist>
                   </div>
-                  <div className="col-span-1">
+                  <div>
+                    <Label>HSN Code</Label>
                     <Input
                       value={item.hsn}
                       onChange={(e) => handleItemChange(index, 'hsn', e.target.value)}
-                      placeholder="HSN"
-                      className="text-sm"
+                      placeholder="HSN code"
                     />
                   </div>
-                  <div className="col-span-1">
+                </div>
+                
+                {/* Description */}
+                <div>
+                  <Label>Description</Label>
+                  <Textarea
+                    value={item.description}
+                    onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                    placeholder="Product description (optional)"
+                    rows={2}
+                  />
+                </div>
+                
+                {/* Quantity and Rate */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>Quantity *</Label>
                     <Input
                       type="number"
                       value={item.qty}
                       onChange={(e) => handleItemChange(index, 'qty', parseFloat(e.target.value) || 0)}
-                      className="text-sm"
+                      min="0"
+                      step="0.01"
                     />
                   </div>
-                  <div className="col-span-1">
+                  <div>
+                    <Label>Unit</Label>
                     <Input
-                      type="number"
-                      value={item.rate}
-                      onChange={(e) => handleItemChange(index, 'rate', parseFloat(e.target.value) || 0)}
-                      className="text-sm"
+                      value={item.uom}
+                      onChange={(e) => handleItemChange(index, 'uom', e.target.value)}
                     />
                   </div>
-                  <div className="col-span-1">
+                  <div>
+                    <Label>Discount (₹)</Label>
                     <Input
                       type="number"
                       value={item.discount_amount}
                       onChange={(e) => handleItemChange(index, 'discount_amount', parseFloat(e.target.value) || 0)}
-                      className="text-sm"
+                      min="0"
+                      step="0.01"
                     />
-                  </div>
-                  <div className="col-span-1">
-                    <Select
-                      value={item.cgst_percent.toString()}
-                      onValueChange={(value) => {
-                        handleItemChange(index, 'cgst_percent', parseFloat(value));
-                        handleItemChange(index, 'sgst_percent', parseFloat(value));
-                        handleItemChange(index, 'igst_percent', 0);
-                      }}
-                    >
-                      <SelectTrigger className="text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {gstRates.map((rate) => (
-                          <SelectItem key={rate.value} value={(rate.value / 2).toString()}>{rate.value / 2}%</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="col-span-1">
-                    <Input
-                      type="number"
-                      value={item.sgst_percent}
-                      readOnly
-                      className="text-sm bg-slate-50"
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <Select
-                      value={item.igst_percent.toString()}
-                      onValueChange={(value) => {
-                        handleItemChange(index, 'igst_percent', parseFloat(value));
-                        if (parseFloat(value) > 0) {
-                          handleItemChange(index, 'cgst_percent', 0);
-                          handleItemChange(index, 'sgst_percent', 0);
-                        }
-                      }}
-                    >
-                      <SelectTrigger className="text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {gstRates.map((rate) => (
-                          <SelectItem key={rate.value} value={rate.value.toString()}>{rate.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="col-span-2">
-                    <Input
-                      value={`₹${item.final_amount.toFixed(2)}`}
-                      readOnly
-                      className="text-sm font-semibold bg-slate-50"
-                    />
-                  </div>
-                  <div className="col-span-1 flex justify-end">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeItem(index)}
-                      disabled={items.length === 1}
-                    >
-                      <Trash2 size={16} className="text-red-500" />
-                    </Button>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+                
+                {/* Rate Toggle and GST Rate */}
+                <div className="border rounded-lg p-4 bg-slate-50">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                      <Label className="mb-2 block">Rate Type *</Label>
+                      <div className="flex items-center gap-2 bg-white border-2 rounded-lg p-1">
+                        <button
+                          type="button"
+                          onClick={() => handleItemChange(index, 'rate_mode', 'with_gst')}
+                          className={`flex-1 py-2 px-3 rounded-md font-medium text-sm transition-all ${
+                            item.rate_mode === 'with_gst'
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'bg-white text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          With GST
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleItemChange(index, 'rate_mode', 'without_gst')}
+                          className={`flex-1 py-2 px-3 rounded-md font-medium text-sm transition-all ${
+                            item.rate_mode === 'without_gst'
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'bg-white text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          Without GST
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label>
+                        Rate (₹) *
+                        <span className="text-xs text-slate-500 ml-1">
+                          {item.rate_mode === 'with_gst' ? '(Inc. GST)' : '(Exc. GST)'}
+                        </span>
+                      </Label>
+                      <Input
+                        type="number"
+                        value={item.rate}
+                        onChange={(e) => handleItemChange(index, 'rate', parseFloat(e.target.value) || 0)}
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label>GST Rate (%)</Label>
+                      <div className="flex gap-2">
+                        <Select
+                          value={item.custom_gst_rate ? 'custom' : item.gst_rate.toString()}
+                          onValueChange={(value) => {
+                            if (value === 'custom') {
+                              handleItemChange(index, 'custom_gst_rate', '');
+                            } else {
+                              handleItemChange(index, 'gst_rate', parseFloat(value));
+                              handleItemChange(index, 'custom_gst_rate', '');
+                            }
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="0">0%</SelectItem>
+                            <SelectItem value="5">5%</SelectItem>
+                            <SelectItem value="12">12%</SelectItem>
+                            <SelectItem value="18">18%</SelectItem>
+                            <SelectItem value="28">28%</SelectItem>
+                            <SelectItem value="custom">Custom</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        
+                        {(item.custom_gst_rate !== undefined && item.custom_gst_rate !== null && 
+                          (item.gst_rate.toString() === 'custom' || item.custom_gst_rate !== '')) && (
+                          <Input
+                            type="number"
+                            value={item.custom_gst_rate}
+                            onChange={(e) => handleItemChange(index, 'custom_gst_rate', e.target.value)}
+                            placeholder="Enter %"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                            className="w-24"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Calculation Summary */}
+                  <div className="mt-4 pt-4 border-t border-slate-300 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                    <div>
+                      <p className="text-slate-500">Taxable Amount</p>
+                      <p className="font-semibold text-slate-800">₹{item.taxable_amount.toFixed(2)}</p>
+                    </div>
+                    {gstType === 'cgst_sgst' ? (
+                      <>
+                        <div>
+                          <p className="text-slate-500">CGST ({item.cgst_percent}%)</p>
+                          <p className="font-semibold text-slate-800">₹{item.cgst_amount.toFixed(2)}</p>
+                        </div>
+                        <div>
+                          <p className="text-slate-500">SGST ({item.sgst_percent}%)</p>
+                          <p className="font-semibold text-slate-800">₹{item.sgst_amount.toFixed(2)}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <div>
+                        <p className="text-slate-500">IGST ({item.igst_percent}%)</p>
+                        <p className="font-semibold text-slate-800">₹{item.igst_amount.toFixed(2)}</p>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-slate-500">Final Amount</p>
+                      <p className="font-bold text-blue-600 text-base">₹{item.final_amount.toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Remove Button */}
+                <div className="flex justify-end">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeItem(index)}
+                    disabled={items.length === 1}
+                    className="text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 size={16} className="mr-1" />
+                    Remove Item
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
           
           <Button onClick={addItem} variant="outline" className="w-full" data-testid="add-item-btn">
             <Plus size={18} className="mr-2" />
@@ -598,50 +649,61 @@ const CreateInvoice = () => {
             <span className="text-2xl font-bold text-blue-600" data-testid="grand-total">₹{totals.grandTotal.toFixed(2)}</span>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 pt-4">
-            <div>
-              <Label>Payment Method</Label>
-              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                <SelectTrigger data-testid="payment-method-select">
-                  <SelectValue placeholder="Select method" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cash">Cash</SelectItem>
-                  <SelectItem value="card">Card</SelectItem>
-                  <SelectItem value="upi">UPI</SelectItem>
-                  <SelectItem value="credit">Credit</SelectItem>
-                </SelectContent>
-              </Select>
+          {/* Payment Details */}
+          <div className="pt-4 border-t space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Payment Method</Label>
+                <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select payment method" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cash">Cash</SelectItem>
+                    <SelectItem value="card">Card</SelectItem>
+                    <SelectItem value="upi">UPI</SelectItem>
+                    <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+                    <SelectItem value="credit">Credit</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Payment Status</Label>
+                <Select value={paymentStatus} onValueChange={setPaymentStatus}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="paid">Paid</SelectItem>
+                    <SelectItem value="unpaid">Unpaid</SelectItem>
+                    <SelectItem value="partial">Partial</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div>
-              <Label>Payment Status</Label>
-              <Select value={paymentStatus} onValueChange={setPaymentStatus}>
-                <SelectTrigger data-testid="payment-status-select">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="paid">Paid</SelectItem>
-                  <SelectItem value="unpaid">Unpaid</SelectItem>
-                  <SelectItem value="partial">Partial</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>Notes</Label>
+              <Textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Additional notes or terms"
+                rows={3}
+              />
             </div>
           </div>
           
-          <div>
-            <Label>Notes</Label>
-            <Textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Add any notes or terms..."
-              rows={3}
-            />
+          {/* Save Button */}
+          <div className="flex justify-end pt-4">
+            <Button 
+              onClick={handleSaveInvoice} 
+              size="lg"
+              disabled={!selectedCustomer}
+              data-testid="save-invoice-btn"
+            >
+              <Receipt size={20} className="mr-2" />
+              Save Invoice
+            </Button>
           </div>
-          
-          <Button onClick={handleSaveInvoice} className="w-full" size="lg" data-testid="save-invoice-btn">
-            <Save size={20} className="mr-2" />
-            Save Invoice
-          </Button>
         </CardContent>
       </Card>
     </div>
