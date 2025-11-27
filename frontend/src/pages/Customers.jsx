@@ -67,22 +67,6 @@ const Customers = () => {
     fetchAvailableBusinesses();
   }, []);
   
-  useEffect(() => {
-    // Client-side sorting - no API call
-    if (customers.length > 0) {
-      const sorted = [...customers].sort((a, b) => {
-        const aVal = a[sortBy] || '';
-        const bVal = b[sortBy] || '';
-        if (sortOrder === 'asc') {
-          return aVal > bVal ? 1 : -1;
-        } else {
-          return aVal < bVal ? 1 : -1;
-        }
-      });
-      setCustomers(sorted);
-    }
-  }, [sortBy, sortOrder]);
-  
   const fetchCustomers = async (search = '') => {
     try {
       setLoading(true);
