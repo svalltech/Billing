@@ -400,16 +400,23 @@ const CreateInvoice = () => {
       paid_amount: paymentStatus === 'partial' ? paidAmount : (paymentStatus === 'fully_paid' ? totals.grandTotal : 0),
       balance_due: balanceDue,
       transaction_reference: transactionReference || null,
-      notes: notes || null
+      notes: notes || null,
+      invoice_date: invoiceDate
     };
     
     try {
-      const res = await axios.post(`${API}/invoices`, invoiceData);
-      toast.success('Invoice created successfully!');
-      navigate(`/invoices/${res.data.id}`);
+      if (isEditMode) {
+        await axios.put(`${API}/invoices/${invoiceId}`, invoiceData);
+        toast.success('Invoice updated successfully!');
+        navigate(`/invoices/${invoiceId}`);
+      } else {
+        const res = await axios.post(`${API}/invoices`, invoiceData);
+        toast.success('Invoice created successfully!');
+        navigate(`/invoices/${res.data.id}`);
+      }
     } catch (error) {
-      console.error('Error creating invoice:', error);
-      toast.error('Failed to create invoice');
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} invoice:`, error);
+      toast.error(`Failed to ${isEditMode ? 'update' : 'create'} invoice`);
     }
   };
   
