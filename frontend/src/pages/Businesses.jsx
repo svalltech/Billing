@@ -676,7 +676,7 @@ const Businesses = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {businesses.map((business) => (
+                  {sortedBusinesses.map((business) => (
                     <tr key={business.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                       <td className="py-3 px-4 text-sm text-slate-600">{business.state || '-'}</td>
                       <td className="py-3 px-4 text-sm text-slate-600">{business.city || '-'}</td>
