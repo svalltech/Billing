@@ -784,17 +784,19 @@ const CreateInvoice = () => {
           </div>
           
           {/* Save Button */}
-          <div className="flex justify-end pt-4">
-            <Button 
-              onClick={handleSaveInvoice} 
-              size="lg"
-              disabled={!selectedCustomer}
-              data-testid="save-invoice-btn"
-            >
-              <Receipt size={20} className="mr-2" />
-              Save Invoice
-            </Button>
-          </div>
+          {itemsConfirmed && (
+            <div className="flex justify-end pt-4">
+              <Button 
+                onClick={handleSaveInvoice} 
+                size="lg"
+                disabled={!selectedCustomer}
+                data-testid="save-invoice-btn"
+              >
+                <Receipt size={20} className="mr-2" />
+                Save Invoice
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
