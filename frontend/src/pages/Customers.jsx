@@ -120,6 +120,16 @@ const Customers = () => {
     }
   };
   
+  const handleStateChange = (state, addressNumber) => {
+    const cities = indianStatesAndCities[state] || [];
+    setAvailableCities(cities);
+    if (addressNumber === 1) {
+      setFormData({...formData, state_1: state, city_1: ''});
+    } else {
+      setFormData({...formData, state_2: state, city_2: ''});
+    }
+  };
+  
   // Handle "Same as customer" checkboxes
   const handleSamePhoneChange = (checked) => {
     setFormData({
