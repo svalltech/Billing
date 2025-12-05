@@ -482,121 +482,175 @@ const Businesses = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label>State</Label>
-                  <Select value={formData.state} onValueChange={handleStateChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select state" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[300px]">
-                      {indianStates.map((state) => (
-                        <SelectItem key={state} value={state}>{state}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>City</Label>
-                  <Select 
-                    value={showCustomCity ? "Others" : formData.city} 
-                    onValueChange={(val) => {
-                      if (val === "Others") {
-                        setShowCustomCity(true);
-                        setFormData({...formData, city: ''});
-                      } else {
-                        setShowCustomCity(false);
-                        setFormData({...formData, city: val});
-                      }
-                    }} 
-                    disabled={!formData.state}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={formData.state ? "Select city" : "Select state first"} />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[300px]">
-                      {availableCities.map((city) => (
-                        <SelectItem key={city} value={city}>{city}</SelectItem>
-                      ))}
-                      <SelectItem value="Others">Others (Enter manually)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {showCustomCity && (
-                    <Input
-                      value={formData.city}
-                      onChange={(e) => setFormData({...formData, city: e.target.value})}
-                      placeholder="Enter city name"
-                      className="mt-2"
+              </div>
+              
+              {/* Bill To Section */}
+              <div className="mt-6 border-t pt-4">
+                <h4 className="text-sm font-semibold text-slate-700 mb-3">Bill To</h4>
+                <div className="space-y-3">
+                  <div>
+                    <Label>Address</Label>
+                    <Textarea
+                      value={formData.address_1}
+                      onChange={(e) => setFormData({...formData, address_1: e.target.value})}
+                      placeholder="Billing address"
+                      rows={2}
                     />
-                  )}
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <Label>State</Label>
+                      <Select value={formData.state} onValueChange={handleStateChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select state" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[300px]">
+                          {indianStates.map((state) => (
+                            <SelectItem key={state} value={state}>{state}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>City</Label>
+                      <Select 
+                        value={showCustomCity ? "Others" : formData.city} 
+                        onValueChange={(val) => {
+                          if (val === "Others") {
+                            setShowCustomCity(true);
+                            setFormData({...formData, city: ''});
+                          } else {
+                            setShowCustomCity(false);
+                            setFormData({...formData, city: val});
+                          }
+                        }} 
+                        disabled={!formData.state}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={formData.state ? "Select city" : "Select state first"} />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[300px]">
+                          {availableCities.map((city) => (
+                            <SelectItem key={city} value={city}>{city}</SelectItem>
+                          ))}
+                          <SelectItem value="Others">Others (Enter manually)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {showCustomCity && (
+                        <Input
+                          value={formData.city}
+                          onChange={(e) => setFormData({...formData, city: e.target.value})}
+                          placeholder="Enter city name"
+                          className="mt-2"
+                        />
+                      )}
+                    </div>
+                    <div>
+                      <Label>Phone</Label>
+                      <Input
+                        value={formData.phone_1}
+                        onChange={(e) => setFormData({...formData, phone_1: e.target.value})}
+                        placeholder="Phone number"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <Label>PAN</Label>
-                  <Input
-                    value={formData.pan}
-                    onChange={(e) => setFormData({...formData, pan: e.target.value})}
-                    placeholder="PAN number"
-                  />
+              </div>
+              
+              {/* Ship To Section */}
+              <div className="mt-6 border-t pt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-semibold text-slate-700">Ship To</h4>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={copyBillToShip}
+                      onChange={(e) => handleCopyBillToShip(e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-xs text-slate-600">Copy from Bill To</span>
+                  </label>
                 </div>
-                <div>
-                  <Label>Others</Label>
-                  <Input
-                    value={formData.others}
-                    onChange={(e) => setFormData({...formData, others: e.target.value})}
-                    placeholder="Other details"
-                  />
+                <div className="space-y-3">
+                  <div>
+                    <Label>Address</Label>
+                    <Textarea
+                      value={formData.address_2}
+                      onChange={(e) => setFormData({...formData, address_2: e.target.value})}
+                      placeholder="Shipping address"
+                      rows={2}
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <Label>State</Label>
+                      <Input
+                        value={formData.ship_state}
+                        onChange={(e) => setFormData({...formData, ship_state: e.target.value})}
+                        placeholder="State name"
+                      />
+                    </div>
+                    <div>
+                      <Label>City</Label>
+                      <Input
+                        value={formData.ship_city}
+                        onChange={(e) => setFormData({...formData, ship_city: e.target.value})}
+                        placeholder="City name"
+                      />
+                    </div>
+                    <div>
+                      <Label>Phone</Label>
+                      <Input
+                        value={formData.phone_2}
+                        onChange={(e) => setFormData({...formData, phone_2: e.target.value})}
+                        placeholder="Phone number"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <Label>Phone 1</Label>
-                  <Input
-                    value={formData.phone_1}
-                    onChange={(e) => setFormData({...formData, phone_1: e.target.value})}
-                    placeholder="Primary phone"
-                  />
+              </div>
+              
+              {/* Other Fields */}
+              <div className="mt-6 border-t pt-4">
+                <h4 className="text-sm font-semibold text-slate-700 mb-3">Other Details</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>PAN</Label>
+                    <Input
+                      value={formData.pan}
+                      onChange={(e) => setFormData({...formData, pan: e.target.value})}
+                      placeholder="PAN number"
+                    />
+                  </div>
+                  <div>
+                    <Label>Others</Label>
+                    <Input
+                      value={formData.others}
+                      onChange={(e) => setFormData({...formData, others: e.target.value})}
+                      placeholder="Other details"
+                    />
+                  </div>
+                  <div>
+                    <Label>Email 1</Label>
+                    <Input
+                      type="email"
+                      value={formData.email_1}
+                      onChange={(e) => setFormData({...formData, email_1: e.target.value})}
+                      placeholder="Primary email"
+                    />
+                  </div>
+                  <div>
+                    <Label>Email 2</Label>
+                    <Input
+                      type="email"
+                      value={formData.email_2}
+                      onChange={(e) => setFormData({...formData, email_2: e.target.value})}
+                      placeholder="Secondary email"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label>Phone 2</Label>
-                  <Input
-                    value={formData.phone_2}
-                    onChange={(e) => setFormData({...formData, phone_2: e.target.value})}
-                    placeholder="Secondary phone"
-                  />
-                </div>
-                <div>
-                  <Label>Email 1</Label>
-                  <Input
-                    type="email"
-                    value={formData.email_1}
-                    onChange={(e) => setFormData({...formData, email_1: e.target.value})}
-                    placeholder="Primary email"
-                  />
-                </div>
-                <div>
-                  <Label>Email 2</Label>
-                  <Input
-                    type="email"
-                    value={formData.email_2}
-                    onChange={(e) => setFormData({...formData, email_2: e.target.value})}
-                    placeholder="Secondary email"
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Label>Address 1</Label>
-                  <Textarea
-                    value={formData.address_1}
-                    onChange={(e) => setFormData({...formData, address_1: e.target.value})}
-                    placeholder="Primary address"
-                    rows={2}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Label>Address 2</Label>
-                  <Textarea
-                    value={formData.address_2}
-                    onChange={(e) => setFormData({...formData, address_2: e.target.value})}
-                    placeholder="Secondary address"
-                    rows={2}
-                  />
-                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
               </div>
               <div className="flex justify-end gap-3 mt-6">
                 <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
