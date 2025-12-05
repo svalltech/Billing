@@ -77,6 +77,38 @@ const InvoiceView = () => {
   
   return (
     <div className="p-6 lg:p-8 space-y-6" data-testid="invoice-view-page">
+      <style>{`
+        @media print {
+          @page {
+            size: A4;
+            margin: 1cm;
+          }
+          
+          .print-area {
+            box-shadow: none !important;
+            border: none !important;
+          }
+          
+          .print-area table {
+            width: 100% !important;
+            font-size: 11px !important;
+          }
+          
+          .print-area table th,
+          .print-area table td {
+            padding: 8px 4px !important;
+            font-size: 11px !important;
+          }
+          
+          .print-area h1 {
+            font-size: 24px !important;
+          }
+          
+          .print-area h2 {
+            font-size: 28px !important;
+          }
+        }
+      `}</style>
       {/* Action Bar */}
       <div className="no-print flex items-center justify-between">
         <Button variant="outline" onClick={() => navigate('/invoices')} data-testid="back-btn">
