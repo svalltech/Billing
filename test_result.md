@@ -446,3 +446,33 @@ agent_communication:
       - Products: Mesh Jacket, NOM Jogger, Mesh Trackpants
       
       Starting comprehensive UI testing...
+  
+  - agent: "testing"
+    message: |
+      🎉 INVOICE FORMAT TESTING COMPLETED SUCCESSFULLY
+      
+      TEST RESULTS SUMMARY:
+      ✅ Invoice Creation: Successfully created invoice INV-00017
+      ✅ Customer Selection: Ankit selected and linked correctly
+      ✅ Product Details: Mesh Jacket with qty 2, discount ₹100, rate ₹1000
+      ✅ GST Calculation: Correctly applied 5% GST (2.5% CGST + 2.5% SGST)
+      ✅ Invoice Navigation: Successfully navigated to invoice view page
+      
+      9-COLUMN FORMAT VERIFICATION:
+      ✅ Item: Shows "Mesh Jacket" with proper formatting
+      ✅ HSN: Shows "6103" correctly
+      ✅ Rate (excl. GST): Shows "₹954.76" (calculated correctly)
+      ✅ Qty: Shows "2 pcs" correctly
+      ✅ Item Value: Shows "₹1909.52" correctly
+      ✅ Discount: Shows "₹100.00 (5.24%)" - BOTH amount and percentage ✓
+      ✅ Taxable Value: Shows "₹1809.52" correctly
+      ✅ Tax: Shows "2.5% + 2.5% CGST + SGST" - percentage and labels ✓
+      ✅ Item Total: Shows "₹1900.00" correctly
+      
+      CRITICAL FEATURES VERIFIED:
+      ✅ Discount column displays both rupee amount and percentage
+      ✅ Tax column shows percentage on first line and "CGST + SGST" labels
+      ✅ All calculations are mathematically correct
+      ✅ Invoice format is professional and complete
+      
+      INVOICE FORMAT TEST: 100% SUCCESSFUL - All requirements met!
