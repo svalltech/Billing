@@ -702,6 +702,25 @@ const Customers = () => {
                   </div>
                   <div className="space-y-3">
                     <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label>GSTIN</Label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={copyGstinToShipTo}
+                            onChange={(e) => handleCopyGstinToShipTo(e.target.checked)}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-xs text-slate-600">Copy from main GSTIN</span>
+                        </label>
+                      </div>
+                      <Input
+                        value={formData.ship_to_gstin}
+                        onChange={(e) => setFormData({...formData, ship_to_gstin: e.target.value})}
+                        placeholder="GSTIN"
+                      />
+                    </div>
+                    <div>
                       <Label>Address</Label>
                       <Textarea
                         value={formData.address_2}
