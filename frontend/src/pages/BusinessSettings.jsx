@@ -430,23 +430,7 @@ const BusinessSettings = () => {
             {/* Contact Info */}
             <div className="border-t pt-6 mt-6">
               <h3 className="text-lg font-semibold text-slate-800 mb-4">Contact Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label>Phone 1</Label>
-                  <Input
-                    value={formData.phone_1}
-                    onChange={(e) => setFormData({...formData, phone_1: e.target.value})}
-                    placeholder="Primary phone"
-                  />
-                </div>
-                <div>
-                  <Label>Phone 2</Label>
-                  <Input
-                    value={formData.phone_2}
-                    onChange={(e) => setFormData({...formData, phone_2: e.target.value})}
-                    placeholder="Secondary phone"
-                  />
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label>Email 1</Label>
                   <Input
@@ -472,31 +456,6 @@ const BusinessSettings = () => {
                     value={formData.website}
                     onChange={(e) => setFormData({...formData, website: e.target.value})}
                     placeholder="www.example.com"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            {/* Address */}
-            <div className="border-t pt-6 mt-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4">Address</h3>
-              <div className="space-y-4">
-                <div>
-                  <Label>Address 1</Label>
-                  <Textarea
-                    value={formData.address_1}
-                    onChange={(e) => setFormData({...formData, address_1: e.target.value})}
-                    placeholder="Primary business address"
-                    rows={3}
-                  />
-                </div>
-                <div>
-                  <Label>Address 2</Label>
-                  <Textarea
-                    value={formData.address_2}
-                    onChange={(e) => setFormData({...formData, address_2: e.target.value})}
-                    placeholder="Secondary address (optional)"
-                    rows={3}
                   />
                 </div>
               </div>
