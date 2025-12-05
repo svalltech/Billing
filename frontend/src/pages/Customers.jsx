@@ -169,6 +169,20 @@ const Customers = () => {
     });
   };
   
+  const handleCopyBillToShip = (checked) => {
+    setCopyBillToShip(checked);
+    if (checked) {
+      setFormData({
+        ...formData,
+        address_2: formData.address_1,
+        state_2: formData.state_1,
+        city_2: formData.city_1,
+        pincode_2: formData.pincode_1,
+        phone_2: formData.phone_1
+      });
+    }
+  };
+  
   const handleSubmit = async () => {
     if (!formData.name) {
       toast.error('Customer name is required');
