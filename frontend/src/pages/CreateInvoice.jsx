@@ -109,16 +109,25 @@ const CreateInvoice = () => {
       
       // Set items with proper validation and defaults
       if (invoice.items && Array.isArray(invoice.items)) {
-        setItems(invoice.items.map(item => ({ 
-          ...item, 
-          confirmed: true,
-          custom_gst_rate: item.custom_gst_rate || null,
-          rate_mode: item.rate_mode || 'with_gst',
-          rate: item.rate || 0,
-          qty: item.qty || 1,
-          uom: item.uom || 'pcs',
-          discount_amount: item.discount_amount || 0
-        })));
+        setItems(invoice.items.map(item => {
+          // Calculate gst_rate from the item's tax percentages
+          const gstRate = item.igst_percent > 0 
+            ? item.igst_percent 
+            : (item.cgst_percent + item.sgst_percent);
+          
+          return {
+            ...item, 
+            confirmed: true,
+            custom_gst_rate: item.custom_gst_rate || null,
+            rate_mode: item.rate_mode || 'with_gst',
+            rate: item.rate || 0,
+            qty: item.qty || 1,
+            uom: item.uom || 'pcs',
+            discount_amount: item.discount_amount || 0,
+            gst_rate: gstRate || 18,
+            total: item.total || item.final_amount || 0
+          };
+        }));
       }
       
       // Set payment details
