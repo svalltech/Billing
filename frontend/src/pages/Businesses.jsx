@@ -200,7 +200,9 @@ const Businesses = () => {
       email_1: business.email_1 || '',
       email_2: business.email_2 || '',
       address_1: business.address_1 || '',
-      address_2: business.address_2 || ''
+      address_2: business.address_2 || '',
+      ship_state: business.ship_state || '',
+      ship_city: business.ship_city || ''
     });
     setShowDialog(true);
   };
