@@ -116,6 +116,19 @@ const Businesses = () => {
     }
   };
   
+  const handleCopyBillToShip = (checked) => {
+    setCopyBillToShip(checked);
+    if (checked) {
+      setFormData({
+        ...formData,
+        address_2: formData.address_1,
+        ship_state: formData.state,
+        ship_city: formData.city,
+        phone_2: formData.phone_1
+      });
+    }
+  };
+
   const handleSubmit = async () => {
     if (!formData.legal_name) {
       toast.error('Business legal name is required');
@@ -138,7 +151,9 @@ const Businesses = () => {
         email_1: formData.email_1 || null,
         email_2: formData.email_2 || null,
         address_1: formData.address_1 || null,
-        address_2: formData.address_2 || null
+        address_2: formData.address_2 || null,
+        ship_state: formData.ship_state || null,
+        ship_city: formData.ship_city || null
       };
       
       if (editingBusiness) {
