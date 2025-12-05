@@ -49,6 +49,7 @@ const BusinessSettings = () => {
           state_code: res.data.state_code || '',
           state: res.data.state || '',
           city: res.data.city || '',
+          pincode: res.data.pincode || '',
           pan: res.data.pan || '',
           others: res.data.others || '',
           phone_1: res.data.phone_1 || '',
@@ -58,6 +59,7 @@ const BusinessSettings = () => {
           address_1: res.data.address_1 || '',
           address_2: res.data.address_2 || ''
         });
+        setLogo(res.data.logo || null);
       }
       setLoading(false);
     } catch (error) {
