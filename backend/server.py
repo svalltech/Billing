@@ -852,7 +852,7 @@ async def get_dashboard_stats(
     pending_invoices = await db.invoices.find(pending_dues_query, {"_id": 0}).to_list(10000)
     
     total_pending_dues = 0
-    customer_dues = {}
+    invoice_dues = []
     
     for inv in pending_invoices:
         due_amount = 0
@@ -863,20 +863,21 @@ async def get_dashboard_stats(
         
         total_pending_dues += due_amount
         
-        customer_id = inv.get('customer_id')
-        customer_name = inv.get('customer_name')
-        
-        if customer_id:
-            if customer_id not in customer_dues:
-                customer_dues[customer_id] = {
-                    'customer_id': customer_id,
-                    'customer_name': customer_name,
-                    'total_due': 0
-                }
-            customer_dues[customer_id]['total_due'] += due_amount
+        # Add individual invoice to the list
+        invoice_dues.append({
+            'invoice_id': inv.get('id'),
+            'invoice_number': inv.get('invoice_number'),
+            'customer_id': inv.get('customer_id'),
+            'customer_name': inv.get('customer_name'),
+            'invoice_date': inv.get('invoice_date'),
+            'payment_status': inv.get('payment_status'),
+            'grand_total': inv.get('grand_total', 0),
+            'paid_amount': inv.get('paid_amount', 0),
+            'due_amount': due_amount
+        })
     
-    # Get TOP 5 customers by due amount
-    top_5_dues = sorted(customer_dues.values(), key=lambda x: x['total_due'], reverse=True)[:5]
+    # Get TOP 5 invoices by due amount
+    top_5_dues = sorted(invoice_dues, key=lambda x: x['due_amount'], reverse=True)[:5]
     
     return {
         "total_sales": total_sales,
