@@ -46,6 +46,7 @@ class Business(BaseModel):
     phone_2: Optional[str] = None
     email_1: Optional[EmailStr] = None
     email_2: Optional[EmailStr] = None
+    website: Optional[str] = None
     address_1: Optional[str] = None
     address_2: Optional[str] = None
     logo: Optional[str] = None
