@@ -38,6 +38,8 @@ const Customers = () => {
   const [showCustomCity1, setShowCustomCity1] = useState(false);
   const [showCustomCity2, setShowCustomCity2] = useState(false);
   const [copyBillToShip, setCopyBillToShip] = useState(false);
+  const [copyGstinToBillTo, setCopyGstinToBillTo] = useState(false);
+  const [copyGstinToShipTo, setCopyGstinToShipTo] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     nickname: '',
