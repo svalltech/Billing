@@ -18,6 +18,7 @@ const BusinessSettings = () => {
     gstin: '',
     state_code: '',
     state: '',
+    city: '',
     pan: '',
     others: '',
     phone_1: '',
