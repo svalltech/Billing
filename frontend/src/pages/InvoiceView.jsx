@@ -141,7 +141,7 @@ const InvoiceView = () => {
                 )}
               </div>
               <div className="text-right">
-                <h2 className="text-4xl font-bold text-blue-600 mb-2">INVOICE</h2>
+                <h2 className="text-4xl font-bold text-blue-600 mb-2">Tax Invoice</h2>
                 <p className="text-lg font-semibold text-slate-800">{invoice.invoice_number}</p>
                 <p className="text-sm text-slate-600">Date: {new Date(invoice.invoice_date).toLocaleDateString()}</p>
               </div>
