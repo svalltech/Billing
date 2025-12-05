@@ -32,8 +32,11 @@ const BusinessSettings = () => {
     email_2: '',
     website: '',
     address_1: '',
-    address_2: ''
+    address_2: '',
+    ship_state: '',
+    ship_city: ''
   });
+  const [copyBillToShip, setCopyBillToShip] = useState(false);
   
   useEffect(() => {
     fetchBusiness();
