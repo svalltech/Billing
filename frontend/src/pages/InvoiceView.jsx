@@ -164,13 +164,13 @@ const InvoiceView = () => {
                 <tr className="border-b-2 border-slate-300">
                   <th className="text-left py-3 px-2 text-sm font-semibold text-slate-700">Item</th>
                   <th className="text-left py-3 px-2 text-sm font-semibold text-slate-700">HSN</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Rate<br/>(excl. GST)</th>
+                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Rate (₹)<br/>(excl. GST)</th>
                   <th className="text-center py-3 px-2 text-sm font-semibold text-slate-700">Qty</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Item Value</th>
+                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Item Value (₹)</th>
                   <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Discount</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Taxable<br/>Value</th>
+                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Taxable<br/>Value (₹)</th>
                   <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Tax</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Item Total</th>
+                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Item Total (₹)</th>
                 </tr>
               </thead>
               <tbody>
