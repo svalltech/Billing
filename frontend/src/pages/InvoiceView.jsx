@@ -177,33 +177,39 @@ const InvoiceView = () => {
                   <th className="text-left py-3 px-2 text-sm font-semibold text-slate-700">Item</th>
                   <th className="text-left py-3 px-2 text-sm font-semibold text-slate-700">HSN</th>
                   <th className="text-center py-3 px-2 text-sm font-semibold text-slate-700">QTY</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Rate</th>
+                  <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Rate (excl. GST)</th>
                   <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Discount</th>
                   <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Tax</th>
                   <th className="text-right py-3 px-2 text-sm font-semibold text-slate-700">Amount</th>
                 </tr>
               </thead>
               <tbody>
-                {invoice.items.map((item, index) => (
-                  <tr key={index} className="border-b border-slate-200">
-                    <td className="py-3 px-2 text-sm text-slate-800">
-                      <p className="font-medium">{item.product_name}</p>
-                      {item.description && <p className="text-xs text-slate-500">{item.description}</p>}
-                    </td>
-                    <td className="py-3 px-2 text-sm text-slate-600">{item.hsn || '-'}</td>
-                    <td className="py-3 px-2 text-sm text-slate-600 text-center">{item.qty} {item.uom}</td>
-                    <td className="py-3 px-2 text-sm text-slate-600 text-right">₹{item.rate.toFixed(2)}</td>
-                    <td className="py-3 px-2 text-sm text-slate-600 text-right">₹{item.discount_amount.toFixed(2)}</td>
-                    <td className="py-3 px-2 text-sm text-slate-600 text-right">
-                      {item.igst_percent > 0 ? (
-                        <span>IGST {item.igst_percent}%</span>
-                      ) : (
-                        <span>CGST {item.cgst_percent}% + SGST {item.sgst_percent}%</span>
-                      )}
-                    </td>
-                    <td className="py-3 px-2 text-sm font-semibold text-slate-800 text-right">₹{item.final_amount.toFixed(2)}</td>
-                  </tr>
-                ))}
+                {invoice.items.map((item, index) => {
+                  // Calculate rate excluding GST
+                  // taxable_amount = rate * qty - discount
+                  const rateExclGST = (item.taxable_amount / item.qty).toFixed(2);
+                  
+                  return (
+                    <tr key={index} className="border-b border-slate-200">
+                      <td className="py-3 px-2 text-sm text-slate-800">
+                        <p className="font-medium">{item.product_name}</p>
+                        {item.description && <p className="text-xs text-slate-500">{item.description}</p>}
+                      </td>
+                      <td className="py-3 px-2 text-sm text-slate-600">{item.hsn || '-'}</td>
+                      <td className="py-3 px-2 text-sm text-slate-600 text-center">{item.qty} {item.uom}</td>
+                      <td className="py-3 px-2 text-sm text-slate-600 text-right">₹{rateExclGST}</td>
+                      <td className="py-3 px-2 text-sm text-slate-600 text-right">₹{item.discount_amount.toFixed(2)}</td>
+                      <td className="py-3 px-2 text-sm text-slate-600 text-right">
+                        {item.igst_percent > 0 ? (
+                          <span>IGST {item.igst_percent}%</span>
+                        ) : (
+                          <span>CGST {item.cgst_percent}% + SGST {item.sgst_percent}%</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-2 text-sm font-semibold text-slate-800 text-right">₹{item.final_amount.toFixed(2)}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
