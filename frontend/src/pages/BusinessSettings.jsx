@@ -181,6 +181,64 @@ const BusinessSettings = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Logo Upload */}
+            <div className="border-b pb-6">
+              <Label>Company Logo</Label>
+              <p className="text-xs text-slate-500 mb-3">Upload your company logo (will be displayed on invoices at 1.5"×1.5")</p>
+              
+              {logo ? (
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <img 
+                      src={logo} 
+                      alt="Business Logo" 
+                      className="w-32 h-32 object-contain border-2 border-slate-200 rounded-lg p-2"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploadingLogo}
+                    >
+                      <Upload size={16} className="mr-2" />
+                      Change Logo
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleRemoveLogo}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <X size={16} className="mr-2" />
+                      Remove Logo
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingLogo}
+                >
+                  <Upload size={16} className="mr-2" />
+                  {uploadingLogo ? 'Uploading...' : 'Upload Logo'}
+                </Button>
+              )}
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleLogoUpload}
+                className="hidden"
+              />
+            </div>
+            
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
