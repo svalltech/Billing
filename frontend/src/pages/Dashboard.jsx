@@ -2,58 +2,159 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API } from '@/App';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Users, DollarSign, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { 
+  DollarSign, 
+  TrendingUp, 
+  RefreshCw, 
+  Calendar,
+  AlertCircle,
+  User
+} from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from '@/components/ui/input';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
-    totalInvoices: 0,
-    totalCustomers: 0,
-    totalRevenue: 0,
-    pendingPayments: 0
+    total_sales: 0,
+    total_pending_dues: 0,
+    top_5_dues: [],
+    invoice_count: 0
   });
-  const [recentInvoices, setRecentInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dateFilter, setDateFilter] = useState('today');
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
   
   useEffect(() => {
-    fetchDashboardData();
+    fetchDashboardStats();
   }, []);
   
-  const fetchDashboardData = async () => {
+  // Calculate date range based on filter
+  const getDateRange = () => {
+    const today = new Date();
+    let startDate = '';
+    let endDate = today.toISOString().split('T')[0];
+    
+    switch(dateFilter) {
+      case 'today':
+        startDate = endDate;
+        break;
+      case '7days':
+        const last7Days = new Date(today);
+        last7Days.setDate(today.getDate() - 7);
+        startDate = last7Days.toISOString().split('T')[0];
+        break;
+      case '30days':
+        const last30Days = new Date(today);
+        last30Days.setDate(today.getDate() - 30);
+        startDate = last30Days.toISOString().split('T')[0];
+        break;
+      case 'quarterly':
+        const last3Months = new Date(today);
+        last3Months.setMonth(today.getMonth() - 3);
+        startDate = last3Months.toISOString().split('T')[0];
+        break;
+      case 'halfyearly':
+        const last6Months = new Date(today);
+        last6Months.setMonth(today.getMonth() - 6);
+        startDate = last6Months.toISOString().split('T')[0];
+        break;
+      case 'yearly':
+        const lastYear = new Date(today);
+        lastYear.setFullYear(today.getFullYear() - 1);
+        startDate = lastYear.toISOString().split('T')[0];
+        break;
+      case 'fy':
+        // Indian FY: April to March
+        const currentMonth = today.getMonth(); // 0-11
+        const currentYear = today.getFullYear();
+        
+        if (currentMonth >= 3) { // April (3) to December (11)
+          startDate = `${currentYear}-04-01`;
+        } else { // January (0) to March (2)
+          startDate = `${currentYear - 1}-04-01`;
+        }
+        break;
+      case 'custom':
+        startDate = customStartDate;
+        endDate = customEndDate;
+        break;
+      default:
+        startDate = endDate;
+    }
+    
+    return { startDate, endDate };
+  };
+  
+  const fetchDashboardStats = async () => {
     try {
-      const [invoicesRes, customersRes] = await Promise.all([
-        axios.get(`${API}/invoices?limit=5`),
-        axios.get(`${API}/customers`)
-      ]);
+      setLoading(true);
+      const { startDate, endDate } = getDateRange();
       
-      const invoices = invoicesRes.data;
-      const customers = customersRes.data;
-      
-      const totalRevenue = invoices.reduce((sum, inv) => sum + inv.grand_total, 0);
-      const pendingPayments = invoices.filter(inv => inv.payment_status === 'unpaid').reduce((sum, inv) => sum + inv.grand_total, 0);
-      
-      setStats({
-        totalInvoices: invoices.length,
-        totalCustomers: customers.length,
-        totalRevenue: totalRevenue,
-        pendingPayments: pendingPayments
+      const response = await axios.get(`${API}/dashboard/stats`, {
+        params: {
+          start_date: startDate,
+          end_date: endDate
+        }
       });
       
-      setRecentInvoices(invoices.slice(0, 5));
+      setStats(response.data);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-      toast.error('Failed to load dashboard data');
+      console.error('Error fetching dashboard stats:', error);
+      toast.error('Failed to load dashboard statistics');
       setLoading(false);
     }
   };
   
-  const statCards = [
-    { title: 'Total Invoices', value: stats.totalInvoices, icon: FileText, color: 'text-blue-600', bg: 'bg-blue-100' },
-    { title: 'Total Customers', value: stats.totalCustomers, icon: Users, color: 'text-green-600', bg: 'bg-green-100' },
-    { title: 'Total Revenue', value: `₹${stats.totalRevenue.toFixed(2)}`, icon: DollarSign, color: 'text-purple-600', bg: 'bg-purple-100' },
-    { title: 'Pending Payments', value: `₹${stats.pendingPayments.toFixed(2)}`, icon: TrendingUp, color: 'text-orange-600', bg: 'bg-orange-100' },
-  ];
+  const handleRefresh = () => {
+    fetchDashboardStats();
+    toast.success('Dashboard refreshed');
+  };
+  
+  const handleDateFilterChange = (value) => {
+    setDateFilter(value);
+  };
+  
+  const handleApplyCustomDate = () => {
+    if (!customStartDate || !customEndDate) {
+      toast.error('Please select both start and end dates');
+      return;
+    }
+    if (new Date(customStartDate) > new Date(customEndDate)) {
+      toast.error('Start date must be before end date');
+      return;
+    }
+    fetchDashboardStats();
+  };
+  
+  useEffect(() => {
+    if (dateFilter !== 'custom') {
+      fetchDashboardStats();
+    }
+  }, [dateFilter]);
+  
+  const getFilterLabel = () => {
+    const labels = {
+      'today': 'Today',
+      '7days': 'Last 7 Days',
+      '30days': 'Last 30 Days',
+      'quarterly': 'Quarterly (Last 3 Months)',
+      'halfyearly': 'Half Yearly (Last 6 Months)',
+      'yearly': 'Yearly (Last 12 Months)',
+      'fy': 'Financial Year (Apr-Mar)',
+      'custom': 'Custom Date Range'
+    };
+    return labels[dateFilter] || 'Today';
+  };
   
   if (loading) {
     return (
@@ -69,75 +170,170 @@ const Dashboard = () => {
   return (
     <div className="p-6 lg:p-8 space-y-6" data-testid="dashboard-page">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl lg:text-5xl font-bold text-slate-800 mb-2">Dashboard</h1>
-        <p className="text-slate-600">Welcome to your billing dashboard</p>
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <h1 className="text-4xl lg:text-5xl font-bold text-slate-800 mb-2">Dashboard</h1>
+          <p className="text-slate-600">Overview of your sales and pending dues</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <Button 
+            onClick={handleRefresh}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <RefreshCw size={16} />
+            Refresh
+          </Button>
+        </div>
       </div>
       
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <Card key={index} className="hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-slate-600 mb-1">{stat.title}</p>
-                    <p className="text-2xl font-bold text-slate-800" data-testid={`stat-${stat.title.toLowerCase().replace(/\s+/g, '-')}`}>{stat.value}</p>
-                  </div>
-                  <div className={`${stat.bg} ${stat.color} p-3 rounded-xl`}>
-                    <Icon size={24} />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-      
-      {/* Recent Invoices */}
+      {/* Date Filter Section */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Recent Invoices</CardTitle>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Calendar size={20} />
+            Date Filter: <span className="text-blue-600">{getFilterLabel()}</span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          {recentInvoices.length === 0 ? (
-            <p className="text-slate-500 text-center py-8">No invoices yet. Create your first invoice!</p>
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1">
+              <Select value={dateFilter} onValueChange={handleDateFilterChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select period" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="today">Today</SelectItem>
+                  <SelectItem value="7days">Last 7 Days</SelectItem>
+                  <SelectItem value="30days">Last 30 Days</SelectItem>
+                  <SelectItem value="quarterly">Quarterly (Last 3 Months)</SelectItem>
+                  <SelectItem value="halfyearly">Half Yearly (Last 6 Months)</SelectItem>
+                  <SelectItem value="yearly">Yearly (Last 12 Months)</SelectItem>
+                  <SelectItem value="fy">Financial Year (Apr-Mar)</SelectItem>
+                  <SelectItem value="custom">Custom Date Range</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {dateFilter === 'custom' && (
+              <>
+                <div className="flex-1">
+                  <Input 
+                    type="date" 
+                    value={customStartDate}
+                    onChange={(e) => setCustomStartDate(e.target.value)}
+                    placeholder="Start Date"
+                  />
+                </div>
+                <div className="flex-1">
+                  <Input 
+                    type="date" 
+                    value={customEndDate}
+                    onChange={(e) => setCustomEndDate(e.target.value)}
+                    placeholder="End Date"
+                  />
+                </div>
+                <Button onClick={handleApplyCustomDate}>
+                  Apply
+                </Button>
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Sales Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Total Sales Card */}
+        <Card className="hover:shadow-lg transition-shadow duration-300">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-600 mb-1">Total Sales</p>
+                <p className="text-3xl font-bold text-slate-800">₹{stats.total_sales.toFixed(2)}</p>
+                <p className="text-xs text-slate-500 mt-2">{stats.invoice_count} invoices</p>
+              </div>
+              <div className="bg-green-100 text-green-600 p-4 rounded-xl">
+                <DollarSign size={32} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Pending Dues Card */}
+        <Card className="hover:shadow-lg transition-shadow duration-300">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-600 mb-1">Total Pending Dues</p>
+                <p className="text-3xl font-bold text-slate-800">₹{stats.total_pending_dues.toFixed(2)}</p>
+                <p className="text-xs text-slate-500 mt-2">From unpaid & partial payments</p>
+              </div>
+              <div className="bg-orange-100 text-orange-600 p-4 rounded-xl">
+                <AlertCircle size={32} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* TOP 5 Pending Dues */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">TOP 5 Customers by Pending Dues</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {stats.top_5_dues.length === 0 ? (
+            <div className="text-center py-8">
+              <TrendingUp size={48} className="mx-auto text-slate-300 mb-3" />
+              <p className="text-slate-500">No pending dues at the moment!</p>
+              <p className="text-sm text-slate-400 mt-1">All invoices are paid 🎉</p>
+            </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Invoice #</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Customer</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Date</th>
-                    <th className="text-right py-3 px-4 text-sm font-semibold text-slate-700">Amount</th>
-                    <th className="text-center py-3 px-4 text-sm font-semibold text-slate-700">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentInvoices.map((invoice) => (
-                    <tr key={invoice.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                      <td className="py-3 px-4 text-sm font-medium text-slate-800">{invoice.invoice_number}</td>
-                      <td className="py-3 px-4 text-sm text-slate-600">{invoice.customer_name}</td>
-                      <td className="py-3 px-4 text-sm text-slate-600">{new Date(invoice.invoice_date).toLocaleDateString()}</td>
-                      <td className="py-3 px-4 text-sm font-semibold text-right text-slate-800">₹{invoice.grand_total.toFixed(2)}</td>
-                      <td className="py-3 px-4 text-center">
-                        <span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${
-                          invoice.payment_status === 'paid' 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-orange-100 text-orange-700'
-                        }`}>
-                          {invoice.payment_status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="space-y-4">
+              {stats.top_5_dues.map((customer, index) => (
+                <div 
+                  key={customer.customer_id} 
+                  className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-bold">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-800 flex items-center gap-2">
+                        <User size={16} />
+                        {customer.customer_name}
+                      </p>
+                      <p className="text-xs text-slate-500">Customer ID: {customer.customer_id}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-red-600">₹{customer.total_due.toFixed(2)}</p>
+                    <p className="text-xs text-slate-500">Due Amount</p>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+      
+      {/* Info Note */}
+      <Card className="bg-blue-50 border-blue-200">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <AlertCircle size={20} className="text-blue-600 mt-0.5" />
+            <div>
+              <p className="text-sm text-blue-900 font-medium">Dashboard Information</p>
+              <p className="text-xs text-blue-700 mt-1">
+                • Sales data is calculated based on invoice dates within the selected period<br />
+                • Pending dues include both unpaid and partially paid invoices<br />
+                • Use the refresh button to reload the latest data
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
