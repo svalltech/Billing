@@ -128,6 +128,19 @@ const BusinessSettings = () => {
     }
   };
 
+  const handleCopyBillToShip = (checked) => {
+    setCopyBillToShip(checked);
+    if (checked) {
+      setFormData({
+        ...formData,
+        address_2: formData.address_1,
+        ship_state: formData.state,
+        ship_city: formData.city,
+        phone_2: formData.phone_1
+      });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
