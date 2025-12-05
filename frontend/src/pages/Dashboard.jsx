@@ -4,12 +4,12 @@ import { API } from '@/App';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
-  DollarSign, 
   TrendingUp, 
   RefreshCw, 
   Calendar,
   AlertCircle,
-  User
+  User,
+  Receipt
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
