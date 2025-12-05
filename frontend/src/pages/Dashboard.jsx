@@ -281,7 +281,7 @@ const Dashboard = () => {
       {/* TOP 5 Pending Dues */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">TOP 5 Customers by Pending Dues</CardTitle>
+          <CardTitle className="text-2xl">TOP 5 Invoices by Pending Dues</CardTitle>
         </CardHeader>
         <CardContent>
           {stats.top_5_dues.length === 0 ? (
@@ -292,9 +292,9 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {stats.top_5_dues.map((customer, index) => (
+              {stats.top_5_dues.map((invoice, index) => (
                 <div 
-                  key={customer.customer_id} 
+                  key={invoice.invoice_id} 
                   className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
                 >
                   <div className="flex items-center gap-4">
@@ -304,14 +304,20 @@ const Dashboard = () => {
                     <div>
                       <p className="font-semibold text-slate-800 flex items-center gap-2">
                         <User size={16} />
-                        {customer.customer_name}
+                        {invoice.customer_name}
                       </p>
-                      <p className="text-xs text-slate-500">Customer ID: {customer.customer_id}</p>
+                      <p className="text-sm text-slate-600 font-medium">Invoice: {invoice.invoice_number}</p>
+                      <p className="text-xs text-slate-500">
+                        {invoice.payment_status === 'unpaid' ? 'Unpaid' : `Partial (Paid: ₹${invoice.paid_amount.toFixed(2)})`}
+                        {' • '}
+                        {new Date(invoice.invoice_date).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-red-600">₹{customer.total_due.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-red-600">₹{invoice.due_amount.toFixed(2)}</p>
                     <p className="text-xs text-slate-500">Due Amount</p>
+                    <p className="text-xs text-slate-400">Total: ₹{invoice.grand_total.toFixed(2)}</p>
                   </div>
                 </div>
               ))}
