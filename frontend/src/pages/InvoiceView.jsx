@@ -194,9 +194,9 @@ const InvoiceView = () => {
                         {item.description && <p className="text-xs text-slate-500 mt-0.5">{item.description}</p>}
                       </td>
                       <td className="py-3 px-2 text-sm text-slate-600">{item.hsn || '-'}</td>
-                      <td className="py-3 px-2 text-sm text-slate-600 text-right">₹{rateExclGST.toFixed(2)}</td>
-                      <td className="py-3 px-2 text-sm text-slate-600 text-center">{item.qty} {item.uom}</td>
-                      <td className="py-3 px-2 text-sm text-slate-600 text-right">₹{itemValue.toFixed(2)}</td>
+                      <td className="py-3 px-2 text-sm text-slate-600 text-right">{rateExclGST.toFixed(2)}</td>
+                      <td className="py-3 px-2 text-sm text-slate-600 text-center">{item.qty}</td>
+                      <td className="py-3 px-2 text-sm text-slate-600 text-right">{itemValue.toFixed(2)}</td>
                       <td className="py-3 px-2 text-sm text-slate-600 text-right">
                         {item.discount_amount > 0 ? (
                           <>
@@ -207,7 +207,7 @@ const InvoiceView = () => {
                           <span>-</span>
                         )}
                       </td>
-                      <td className="py-3 px-2 text-sm text-slate-600 text-right">₹{item.taxable_amount.toFixed(2)}</td>
+                      <td className="py-3 px-2 text-sm text-slate-600 text-right">{item.taxable_amount.toFixed(2)}</td>
                       <td className="py-3 px-2 text-sm text-slate-600 text-right">
                         {item.igst_percent > 0 ? (
                           <>
