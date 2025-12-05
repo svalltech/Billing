@@ -117,20 +117,8 @@ const InvoiceView = () => {
       {/* Invoice */}
       <Card className="print-area">
         <CardContent className="p-8">
-          {/* Header with Logo */}
+          {/* Header */}
           <div className="mb-8 pb-6 border-b-2 border-slate-300">
-            {/* Logo - Center Top */}
-            {business?.logo && (
-              <div className="flex justify-center mb-6">
-                <img 
-                  src={business.logo} 
-                  alt="Company Logo" 
-                  style={{ width: '1.5in', height: '1.5in', objectFit: 'contain' }}
-                  className="border border-slate-200 rounded p-1"
-                />
-              </div>
-            )}
-            
             <div className="flex justify-between items-start">
               <div>
                 {business ? (
