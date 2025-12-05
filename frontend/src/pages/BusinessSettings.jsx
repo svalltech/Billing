@@ -68,6 +68,59 @@ const BusinessSettings = () => {
     }
   };
   
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+    
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Image size should be less than 2MB');
+      return;
+    }
+    
+    try {
+      setUploadingLogo(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const res = await axios.post(`${API}/business/upload-logo`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      setLogo(res.data.logo);
+      toast.success('Logo uploaded successfully');
+      setUploadingLogo(false);
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      toast.error('Failed to upload logo');
+      setUploadingLogo(false);
+    }
+  };
+  
+  const handleRemoveLogo = async () => {
+    try {
+      await axios.post(`${API}/business`, {
+        ...formData,
+        logo: null,
+        email_1: formData.email_1 || null,
+        email_2: formData.email_2 || null
+      });
+      setLogo(null);
+      toast.success('Logo removed successfully');
+    } catch (error) {
+      console.error('Error removing logo:', error);
+      toast.error('Failed to remove logo');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -82,6 +135,7 @@ const BusinessSettings = () => {
       // Prepare data with null values for empty emails
       const dataToSend = {
         ...formData,
+        logo: logo,
         email_1: formData.email_1 || null,
         email_2: formData.email_2 || null
       };
