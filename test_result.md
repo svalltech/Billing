@@ -586,3 +586,59 @@ agent_communication:
       
       QUANTITY INPUT FIELD TEST: 100% SUCCESSFUL - All requirements met!
       The quantity field correctly enforces whole number (integer) input and rejects decimal values.
+  
+  - agent: "user"
+    message: "Test the Ship To functionality by creating an invoice with complete Bill To and Ship To details."
+  
+  - agent: "testing"
+    message: |
+      🎉 SHIP TO FUNCTIONALITY TESTING COMPLETED SUCCESSFULLY
+      
+      COMPREHENSIVE SHIP TO TESTING RESULTS:
+      ✅ Successfully tested complete Ship To functionality end-to-end
+      ✅ All test steps completed without errors - Invoice INV-00019 created
+      
+      CUSTOMER SETUP VERIFICATION:
+      1. ✅ Navigated to Customers page successfully
+      2. ✅ Found and edited existing customer "Ankit"
+      3. ✅ Filled Bill To section: Address "123 Main Street", Phone "9876543210"
+      4. ✅ Used "Copy from Bill To" checkbox functionality
+      5. ✅ Modified Ship To section: Address "456 Delivery Avenue", City "Bangalore", State "Karnataka", Pincode "560001", Phone "9876543211"
+      6. ✅ Customer updated successfully with separate Bill To and Ship To details
+      
+      INVOICE CREATION VERIFICATION:
+      7. ✅ Navigated to Create Invoice page successfully
+      8. ✅ Selected customer "Ankit" with complete address details
+      9. ✅ Added product "Test Product" with quantity 2, rate ₹1000
+      10. ✅ Item confirmed and invoice saved successfully
+      11. ✅ Navigated to invoice view page (INV-00019)
+      
+      SHIP TO DISPLAY VERIFICATION:
+      ✅ Both Bill To and Ship To sections found side by side on invoice
+      ✅ Bill To section correctly displays:
+         - Customer name: "Ankit"
+         - Address: "123 Main Street" ✓
+         - Phone: "9876543210" ✓
+      ✅ Ship To section correctly displays:
+         - Customer name: "Ankit"
+         - Address: "456 Delivery Avenue" ✓
+         - Location: "Bangalore, Karnataka - 560001" ✓
+         - Phone: "9876543211" ✓
+      
+      CRITICAL FEATURES VERIFIED:
+      ✅ "Copy from Bill To" checkbox functionality working correctly
+      ✅ Separate Bill To and Ship To address management
+      ✅ Invoice displays both sections side by side as expected
+      ✅ All address details properly saved and displayed
+      ✅ Phone numbers correctly differentiated between Bill To and Ship To
+      ✅ Complete address formatting with city, state, and pincode
+      
+      SHIP TO FUNCTIONALITY STATUS: 🟢 FULLY WORKING
+      - Customer form supports separate Bill To and Ship To addresses
+      - "Copy from Bill To" feature works correctly for initial population
+      - Invoice view displays both sections with complete details
+      - All address components properly formatted and displayed
+      - Phone numbers correctly associated with respective addresses
+      
+      SHIP TO FUNCTIONALITY TEST: 100% SUCCESSFUL - All requirements met!
+      The Ship To functionality is working perfectly and ready for production use!
