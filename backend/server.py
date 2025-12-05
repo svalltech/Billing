@@ -39,6 +39,7 @@ class Business(BaseModel):
     state_code: Optional[str] = None
     state: Optional[str] = None
     city: Optional[str] = None
+    pincode: Optional[str] = None
     pan: Optional[str] = None
     others: Optional[str] = None
     phone_1: Optional[str] = None
@@ -47,6 +48,7 @@ class Business(BaseModel):
     email_2: Optional[EmailStr] = None
     address_1: Optional[str] = None
     address_2: Optional[str] = None
+    logo: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -57,6 +59,7 @@ class BusinessCreate(BaseModel):
     state_code: Optional[str] = None
     state: Optional[str] = None
     city: Optional[str] = None
+    pincode: Optional[str] = None
     pan: Optional[str] = None
     others: Optional[str] = None
     phone_1: Optional[str] = None
@@ -65,6 +68,7 @@ class BusinessCreate(BaseModel):
     email_2: Optional[EmailStr] = None
     address_1: Optional[str] = None
     address_2: Optional[str] = None
+    logo: Optional[str] = None
 
 
 class Customer(BaseModel):
