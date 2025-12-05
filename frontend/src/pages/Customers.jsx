@@ -173,6 +173,20 @@ const Customers = () => {
     });
   };
   
+  const handleCopyGstinToBillTo = (checked) => {
+    setCopyGstinToBillTo(checked);
+    if (checked) {
+      setFormData({...formData, bill_to_gstin: formData.gstin});
+    }
+  };
+
+  const handleCopyGstinToShipTo = (checked) => {
+    setCopyGstinToShipTo(checked);
+    if (checked) {
+      setFormData({...formData, ship_to_gstin: formData.gstin});
+    }
+  };
+
   const handleCopyBillToShip = (checked) => {
     setCopyBillToShip(checked);
     if (checked) {
