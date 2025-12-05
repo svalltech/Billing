@@ -351,6 +351,32 @@ async def save_admin_business(input: BusinessCreate):
         await db.businesses.insert_one(doc)
         return business_obj
 
+@api_router.post("/business/upload-logo")
+async def upload_business_logo(file: UploadFile = File(...)):
+    """Upload business logo and store as base64"""
+    try:
+        # Read file content
+        contents = await file.read()
+        
+        # Convert to base64
+        base64_encoded = base64.b64encode(contents).decode('utf-8')
+        logo_data = f"data:{file.content_type};base64,{base64_encoded}"
+        
+        # Update admin business with logo
+        existing_business = await db.businesses.find_one({}, {"_id": 0})
+        
+        if existing_business:
+            await db.businesses.update_one(
+                {"id": existing_business['id']}, 
+                {"$set": {"logo": logo_data, "updated_at": datetime.now(timezone.utc).isoformat()}}
+            )
+            return {"message": "Logo uploaded successfully", "logo": logo_data}
+        else:
+            raise HTTPException(status_code=404, detail="Business not found. Please save business details first.")
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload logo: {str(e)}")
+
 
 # Customer Routes
 @api_router.post("/customers", response_model=Customer)
