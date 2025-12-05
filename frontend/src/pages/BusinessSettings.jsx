@@ -364,6 +364,15 @@ const BusinessSettings = () => {
                     placeholder="Secondary email"
                   />
                 </div>
+                <div>
+                  <Label>Website</Label>
+                  <Input
+                    type="text"
+                    value={formData.website}
+                    onChange={(e) => setFormData({...formData, website: e.target.value})}
+                    placeholder="www.example.com"
+                  />
+                </div>
               </div>
             </div>
             
