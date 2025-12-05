@@ -289,13 +289,21 @@ const BusinessSettings = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <Label>City</Label>
                 <Input
                   value={formData.city}
                   onChange={(e) => setFormData({...formData, city: e.target.value})}
                   placeholder="City name"
+                />
+              </div>
+              <div>
+                <Label>Pincode</Label>
+                <Input
+                  value={formData.pincode}
+                  onChange={(e) => setFormData({...formData, pincode: e.target.value})}
+                  placeholder="Pincode"
                 />
               </div>
               <div>
