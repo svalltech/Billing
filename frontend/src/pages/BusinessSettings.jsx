@@ -30,6 +30,7 @@ const BusinessSettings = () => {
     phone_2: '',
     email_1: '',
     email_2: '',
+    website: '',
     address_1: '',
     address_2: ''
   });
