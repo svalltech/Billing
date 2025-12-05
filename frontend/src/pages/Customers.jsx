@@ -37,6 +37,7 @@ const Customers = () => {
   const [availableCities, setAvailableCities] = useState([]);
   const [showCustomCity1, setShowCustomCity1] = useState(false);
   const [showCustomCity2, setShowCustomCity2] = useState(false);
+  const [copyBillToShip, setCopyBillToShip] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     nickname: '',
