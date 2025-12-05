@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { API } from '@/App';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,11 +7,15 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Save, Building } from 'lucide-react';
+import { Save, Building, Upload, X } from 'lucide-react';
 
 const BusinessSettings = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [logo, setLogo] = useState(null);
+  const fileInputRef = useRef(null);
+  
   const [formData, setFormData] = useState({
     legal_name: '',
     nickname: '',
@@ -19,6 +23,7 @@ const BusinessSettings = () => {
     state_code: '',
     state: '',
     city: '',
+    pincode: '',
     pan: '',
     others: '',
     phone_1: '',
