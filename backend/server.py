@@ -49,6 +49,8 @@ class Business(BaseModel):
     website: Optional[str] = None
     address_1: Optional[str] = None
     address_2: Optional[str] = None
+    ship_state: Optional[str] = None
+    ship_city: Optional[str] = None
     logo: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
