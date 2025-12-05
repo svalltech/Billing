@@ -476,3 +476,43 @@ agent_communication:
       ✅ Invoice format is professional and complete
       
       INVOICE FORMAT TEST: 100% SUCCESSFUL - All requirements met!
+  
+  - agent: "user"
+    message: "Test the invoice edit functionality to verify the bug fix where editing an invoice item was causing an error."
+  
+  - agent: "testing"
+    message: |
+      🎉 INVOICE EDIT FUNCTIONALITY BUG FIX VERIFICATION COMPLETE
+      
+      CRITICAL BUG FIX TESTING RESULTS:
+      ✅ Successfully tested the invoice edit functionality for the reported bug
+      ✅ All test steps completed without any errors or page crashes
+      
+      COMPREHENSIVE TEST EXECUTION:
+      1. ✅ Navigated to invoice list page successfully
+      2. ✅ Located and viewed invoice INV-00017 
+      3. ✅ Used "Back to Invoices" button to return to list
+      4. ✅ Successfully entered edit mode for INV-00017
+      5. ✅ Found confirmed item (Mesh Jacket) in edit mode
+      6. ✅ Clicked "Edit item" button without any errors
+      7. ✅ Item became editable - all form fields appeared correctly
+      8. ✅ Successfully changed quantity from 2 to 3
+      9. ✅ Clicked "Confirm Item" button successfully
+      10. ✅ Item was confirmed back to table without any page crashes
+      
+      CRITICAL BUG FIX VERIFICATION:
+      ✅ The previously reported bug where editing invoice items caused page crashes due to missing 'gst_rate' and 'total' fields has been SUCCESSFULLY FIXED!
+      ✅ No console errors detected during the entire edit process
+      ✅ All field validations working correctly
+      ✅ Item editing functionality now works smoothly without any errors
+      ✅ Invoice calculations updated correctly after item edit
+      
+      TECHNICAL VERIFICATION:
+      ✅ No missing field errors (gst_rate, total) detected
+      ✅ Form state management working correctly
+      ✅ Item confirmation process working without crashes
+      ✅ UI remains responsive throughout the edit process
+      ✅ All invoice totals recalculated correctly after edit
+      
+      INVOICE EDIT BUG FIX STATUS: 🟢 FULLY RESOLVED
+      The invoice edit functionality is now working perfectly and ready for production use!
