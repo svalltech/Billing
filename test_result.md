@@ -285,15 +285,18 @@ frontend:
   
   - task: "Test new invoice format with discount functionality"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/CreateInvoice.jsx, /app/frontend/src/pages/InvoiceView.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "Testing new 9-column invoice format: Item, HSN, Rate (excl. GST), Qty, Item Value, Discount (₹ + %), Taxable Value, Tax (% + CGST/SGST), Item Total. Testing with customer Ankit, product with qty 2, discount 100, GST 18%."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED SUCCESSFULLY: Created invoice INV-00017 with customer Ankit, Mesh Jacket (qty: 2, discount: ₹100, GST: 5%). All 9 columns verified: Item✓, HSN✓, Rate(excl. GST)✓, Qty✓, Item Value✓, Discount✓, Taxable Value✓, Tax✓, Item Total✓. Discount shows both amount (₹100.00) and percentage (5.24%)✓. Tax shows percentage (2.5% + 2.5%) and CGST + SGST labels✓. Invoice format working perfectly."
 
 metadata:
   created_by: "main_agent"
