@@ -327,6 +327,21 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ QUANTITY FIELD VALIDATION COMPLETE: Comprehensive testing completed successfully. Decimal values properly rejected/truncated (2.5→2, 3.7→3, 1.25→15). Step increment/decrement works by 1 as expected (ArrowUp/Down). HTML attributes correctly configured: type='number', step='1', min='0'. Edge cases handled properly. Field enforces integer-only input exactly as required for invoice quantities."
+  
+  - task: "Test Ship To functionality with complete Bill To and Ship To details"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Customers.jsx, /app/frontend/src/pages/InvoiceView.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "User requested testing of Ship To functionality by creating an invoice with complete Bill To and Ship To details. Need to test customer editing, 'Copy from Bill To' checkbox, separate address management, and invoice display."
+      - working: true
+        agent: "testing"
+        comment: "✅ SHIP TO FUNCTIONALITY TEST COMPLETE: Successfully tested end-to-end Ship To functionality. Customer 'Ankit' updated with Bill To (123 Main Street, 9876543210) and Ship To (456 Delivery Avenue, Bangalore, Karnataka - 560001, 9876543211) details. 'Copy from Bill To' checkbox working correctly. Created invoice INV-00019 displaying both sections side by side with complete details. All address components properly formatted and phone numbers correctly differentiated. Ship To functionality fully working and ready for production use."
 
 metadata:
   created_by: "main_agent"
