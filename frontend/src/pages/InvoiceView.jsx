@@ -181,13 +181,27 @@ const InvoiceView = () => {
             </div>
           </div>
           
-          {/* Bill To */}
-          <div className="mb-8">
-            <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Bill To</p>
-            <h3 className="text-xl font-bold text-slate-800 mb-1">{invoice.customer_name}</h3>
-            {invoice.customer_gstin && <p className="text-sm text-slate-600">GSTIN: {invoice.customer_gstin}</p>}
-            {invoice.customer_address && <p className="text-sm text-slate-600">{invoice.customer_address}</p>}
-            {invoice.customer_phone && <p className="text-sm text-slate-600">Phone: {invoice.customer_phone}</p>}
+          {/* Bill To and Ship To */}
+          <div className="mb-8 grid grid-cols-2 gap-8">
+            {/* Bill To */}
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Bill To</p>
+              <h3 className="text-xl font-bold text-slate-800 mb-1">{invoice.customer_name}</h3>
+              {invoice.customer_gstin && <p className="text-sm text-slate-600">GSTIN: {invoice.customer_gstin}</p>}
+              {invoice.customer_address && <p className="text-sm text-slate-600">{invoice.customer_address}</p>}
+              {invoice.customer_phone && <p className="text-sm text-slate-600">Phone: {invoice.customer_phone}</p>}
+            </div>
+            
+            {/* Ship To */}
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Ship To</p>
+              <h3 className="text-xl font-bold text-slate-800 mb-1">{invoice.customer_name}</h3>
+              {invoice.customer_ship_address && <p className="text-sm text-slate-600">{invoice.customer_ship_address}</p>}
+              {invoice.customer_ship_state && invoice.customer_ship_city && (
+                <p className="text-sm text-slate-600">{invoice.customer_ship_city}, {invoice.customer_ship_state}</p>
+              )}
+              {invoice.customer_phone_2 && <p className="text-sm text-slate-600">Phone: {invoice.customer_phone_2}</p>}
+            </div>
           </div>
           
           {/* Items Table */}
