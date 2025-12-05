@@ -200,7 +200,7 @@ const InvoiceView = () => {
                       <td className="py-3 px-2 text-sm text-slate-600 text-right">
                         {item.discount_amount > 0 ? (
                           <>
-                            <p>₹{item.discount_amount.toFixed(2)}</p>
+                            <p>{item.discount_amount.toFixed(2)}</p>
                             <p className="text-xs text-slate-500">({discountPercent.toFixed(2)}%)</p>
                           </>
                         ) : (
@@ -221,7 +221,7 @@ const InvoiceView = () => {
                           </>
                         )}
                       </td>
-                      <td className="py-3 px-2 text-sm font-semibold text-slate-800 text-right">₹{item.final_amount.toFixed(2)}</td>
+                      <td className="py-3 px-2 text-sm font-semibold text-slate-800 text-right">{item.final_amount.toFixed(2)}</td>
                     </tr>
                   );
                 })}
