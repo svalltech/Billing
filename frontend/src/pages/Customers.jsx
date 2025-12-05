@@ -580,65 +580,75 @@ const Customers = () => {
                   </div>
                 </div>
                 
-                {/* Address 1 Section */}
+                {/* Bill To Section */}
                 <div className="border-b pb-4">
-                  <h3 className="text-sm font-semibold text-slate-700 mb-3">Address 1</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="col-span-2">
-                      <Label>Address 1</Label>
+                  <h3 className="text-sm font-semibold text-slate-700 mb-3">Bill To</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <Label>Address</Label>
                       <Textarea
                         value={formData.address_1}
                         onChange={(e) => setFormData({...formData, address_1: e.target.value})}
-                        placeholder="Primary address"
+                        placeholder="Billing address"
                         rows={2}
                       />
                     </div>
-                    <div>
-                      <Label>State</Label>
-                      <Select value={formData.state_1} onValueChange={(val) => handleStateChange(val, 1)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select state" />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-[300px]">
-                          {indianStates.map((state) => (
-                            <SelectItem key={state} value={state}>{state}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label>City</Label>
-                      <Select 
-                        value={showCustomCity1 ? "Others" : formData.city_1} 
-                        onValueChange={(val) => {
-                          if (val === "Others") {
-                            setShowCustomCity1(true);
-                            setFormData({...formData, city_1: ''});
-                          } else {
-                            setShowCustomCity1(false);
-                            setFormData({...formData, city_1: val});
-                          }
-                        }} 
-                        disabled={!formData.state_1}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={formData.state_1 ? "Select city" : "Select state first"} />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-[300px]">
-                          {availableCities.map((city) => (
-                            <SelectItem key={city} value={city}>{city}</SelectItem>
-                          ))}
-                          <SelectItem value="Others">Others (Enter manually)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {showCustomCity1 && (
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <Label>State</Label>
+                        <Select value={formData.state_1} onValueChange={(val) => handleStateChange(val, 1)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select state" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px]">
+                            {indianStates.map((state) => (
+                              <SelectItem key={state} value={state}>{state}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>City</Label>
+                        <Select 
+                          value={showCustomCity1 ? "Others" : formData.city_1} 
+                          onValueChange={(val) => {
+                            if (val === "Others") {
+                              setShowCustomCity1(true);
+                              setFormData({...formData, city_1: ''});
+                            } else {
+                              setShowCustomCity1(false);
+                              setFormData({...formData, city_1: val});
+                            }
+                          }} 
+                          disabled={!formData.state_1}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={formData.state_1 ? "Select city" : "Select state first"} />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px]">
+                            {availableCities.map((city) => (
+                              <SelectItem key={city} value={city}>{city}</SelectItem>
+                            ))}
+                            <SelectItem value="Others">Others (Enter manually)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {showCustomCity1 && (
+                          <Input
+                            value={formData.city_1}
+                            onChange={(e) => setFormData({...formData, city_1: e.target.value})}
+                            placeholder="Enter city name"
+                            className="mt-2"
+                          />
+                        )}
+                      </div>
+                      <div>
+                        <Label>Phone</Label>
                         <Input
-                          value={formData.city_1}
-                          onChange={(e) => setFormData({...formData, city_1: e.target.value})}
-                          placeholder="Enter city name"
-                          className="mt-2"
+                          value={formData.phone_1}
+                          onChange={(e) => setFormData({...formData, phone_1: e.target.value})}
+                          placeholder="Phone number"
                         />
-                      )}
+                      </div>
                     </div>
                     <div>
                       <Label>Pincode</Label>
@@ -651,65 +661,86 @@ const Customers = () => {
                   </div>
                 </div>
                 
-                {/* Address 2 Section */}
+                {/* Ship To Section */}
                 <div className="border-b pb-4">
-                  <h3 className="text-sm font-semibold text-slate-700 mb-3">Address 2 (Optional)</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="col-span-2">
-                      <Label>Address 2</Label>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-semibold text-slate-700">Ship To</h3>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={copyBillToShip}
+                        onChange={(e) => handleCopyBillToShip(e.target.checked)}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-xs text-slate-600">Copy from Bill To</span>
+                    </label>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <Label>Address</Label>
                       <Textarea
                         value={formData.address_2}
                         onChange={(e) => setFormData({...formData, address_2: e.target.value})}
-                        placeholder="Secondary address"
+                        placeholder="Shipping address"
                         rows={2}
                       />
                     </div>
-                    <div>
-                      <Label>State</Label>
-                      <Select value={formData.state_2} onValueChange={(val) => handleStateChange(val, 2)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select state" />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-[300px]">
-                          {indianStates.map((state) => (
-                            <SelectItem key={state} value={state}>{state}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label>City</Label>
-                      <Select 
-                        value={showCustomCity2 ? "Others" : formData.city_2} 
-                        onValueChange={(val) => {
-                          if (val === "Others") {
-                            setShowCustomCity2(true);
-                            setFormData({...formData, city_2: ''});
-                          } else {
-                            setShowCustomCity2(false);
-                            setFormData({...formData, city_2: val});
-                          }
-                        }} 
-                        disabled={!formData.state_2}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={formData.state_2 ? "Select city" : "Select state first"} />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-[300px]">
-                          {availableCities.map((city) => (
-                            <SelectItem key={city} value={city}>{city}</SelectItem>
-                          ))}
-                          <SelectItem value="Others">Others (Enter manually)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {showCustomCity2 && (
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <Label>State</Label>
+                        <Select value={formData.state_2} onValueChange={(val) => handleStateChange(val, 2)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select state" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px]">
+                            {indianStates.map((state) => (
+                              <SelectItem key={state} value={state}>{state}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>City</Label>
+                        <Select 
+                          value={showCustomCity2 ? "Others" : formData.city_2} 
+                          onValueChange={(val) => {
+                            if (val === "Others") {
+                              setShowCustomCity2(true);
+                              setFormData({...formData, city_2: ''});
+                            } else {
+                              setShowCustomCity2(false);
+                              setFormData({...formData, city_2: val});
+                            }
+                          }} 
+                          disabled={!formData.state_2}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={formData.state_2 ? "Select city" : "Select state first"} />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px]">
+                            {availableCities.map((city) => (
+                              <SelectItem key={city} value={city}>{city}</SelectItem>
+                            ))}
+                            <SelectItem value="Others">Others (Enter manually)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {showCustomCity2 && (
+                          <Input
+                            value={formData.city_2}
+                            onChange={(e) => setFormData({...formData, city_2: e.target.value})}
+                            placeholder="Enter city name"
+                            className="mt-2"
+                          />
+                        )}
+                      </div>
+                      <div>
+                        <Label>Phone</Label>
                         <Input
-                          value={formData.city_2}
-                          onChange={(e) => setFormData({...formData, city_2: e.target.value})}
-                          placeholder="Enter city name"
-                          className="mt-2"
+                          value={formData.phone_2}
+                          onChange={(e) => setFormData({...formData, phone_2: e.target.value})}
+                          placeholder="Phone number"
                         />
-                      )}
+                      </div>
                     </div>
                     <div>
                       <Label>Pincode</Label>
