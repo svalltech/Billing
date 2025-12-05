@@ -411,3 +411,24 @@ agent_communication:
       - Or clear browser cache and reload the page
       
       If issue persists after hard refresh, please share a screenshot of what you're seeing.
+  
+  - agent: "user"
+    message: "Test the new invoice format by creating an invoice with discount through the UI."
+  
+  - agent: "testing"
+    message: |
+      INVOICE FORMAT TESTING INITIATED
+      
+      Testing new invoice format with discount functionality:
+      1. Navigate to Create Invoice page
+      2. Select customer "Ankit" 
+      3. Add product with quantity 2, discount 100 (amount), GST Rate 18%
+      4. Submit invoice
+      5. Navigate to invoice view page
+      6. Verify 9-column format with proper discount display
+      
+      Available test data:
+      - Customer: Ankit (GSTIN: 20BKZPK1869D1ZZ, State: Jharkhand)
+      - Products: Mesh Jacket, NOM Jogger, Mesh Trackpants
+      
+      Starting comprehensive UI testing...
