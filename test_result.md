@@ -290,7 +290,8 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Test new invoice format with discount functionality"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
