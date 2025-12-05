@@ -62,7 +62,9 @@ const BusinessSettings = () => {
           email_2: res.data.email_2 || '',
           website: res.data.website || '',
           address_1: res.data.address_1 || '',
-          address_2: res.data.address_2 || ''
+          address_2: res.data.address_2 || '',
+          ship_state: res.data.ship_state || '',
+          ship_city: res.data.ship_city || ''
         });
         setLogo(res.data.logo || null);
       }
