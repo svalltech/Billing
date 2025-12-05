@@ -57,6 +57,7 @@ const BusinessSettings = () => {
           phone_2: res.data.phone_2 || '',
           email_1: res.data.email_1 || '',
           email_2: res.data.email_2 || '',
+          website: res.data.website || '',
           address_1: res.data.address_1 || '',
           address_2: res.data.address_2 || ''
         });
