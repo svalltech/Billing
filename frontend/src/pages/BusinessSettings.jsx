@@ -71,7 +71,15 @@ const BusinessSettings = () => {
     
     try {
       setSaving(true);
-      await axios.post(`${API}/business`, formData);
+      
+      // Prepare data with null values for empty emails
+      const dataToSend = {
+        ...formData,
+        email_1: formData.email_1 || null,
+        email_2: formData.email_2 || null
+      };
+      
+      await axios.post(`${API}/business`, dataToSend);
       toast.success('Business details saved successfully');
       setSaving(false);
     } catch (error) {
