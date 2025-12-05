@@ -813,6 +813,79 @@ async def get_hsn_codes(search: Optional[str] = None):
     return hsn_codes
 
 
+# Dashboard Routes
+@api_router.get("/dashboard/stats")
+async def get_dashboard_stats(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None
+):
+    """
+    Get dashboard statistics for a date range
+    - Total sales (sum of grand_total for invoices in date range)
+    - Pending dues (sum of balance_due for unpaid + partial invoices)
+    - TOP 5 customers with highest dues
+    """
+    # Build query for date range
+    query = {"is_deleted": False}
+    
+    if start_date or end_date:
+        date_query = {}
+        if start_date:
+            date_query["$gte"] = start_date
+        if end_date:
+            date_query["$lte"] = end_date
+        if date_query:
+            query["invoice_date"] = date_query
+    
+    # Get invoices for the date range
+    invoices = await db.invoices.find(query, {"_id": 0}).to_list(10000)
+    
+    # Calculate total sales (sum of grand_total)
+    total_sales = sum(inv.get('grand_total', 0) for inv in invoices)
+    
+    # Calculate pending dues (unpaid + partial invoices)
+    pending_dues_query = {
+        "is_deleted": False,
+        "payment_status": {"$in": ["unpaid", "partial"]}
+    }
+    
+    pending_invoices = await db.invoices.find(pending_dues_query, {"_id": 0}).to_list(10000)
+    
+    total_pending_dues = 0
+    customer_dues = {}
+    
+    for inv in pending_invoices:
+        due_amount = 0
+        if inv.get('payment_status') == 'unpaid':
+            due_amount = inv.get('grand_total', 0)
+        elif inv.get('payment_status') == 'partial':
+            due_amount = inv.get('balance_due', 0)
+        
+        total_pending_dues += due_amount
+        
+        customer_id = inv.get('customer_id')
+        customer_name = inv.get('customer_name')
+        
+        if customer_id:
+            if customer_id not in customer_dues:
+                customer_dues[customer_id] = {
+                    'customer_id': customer_id,
+                    'customer_name': customer_name,
+                    'total_due': 0
+                }
+            customer_dues[customer_id]['total_due'] += due_amount
+    
+    # Get TOP 5 customers by due amount
+    top_5_dues = sorted(customer_dues.values(), key=lambda x: x['total_due'], reverse=True)[:5]
+    
+    return {
+        "total_sales": total_sales,
+        "total_pending_dues": total_pending_dues,
+        "top_5_dues": top_5_dues,
+        "invoice_count": len(invoices)
+    }
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
