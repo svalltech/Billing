@@ -282,6 +282,18 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: Export buttons (Excel, PDF, Word) are accessible and clickable. Export functions include Business Name column in the data structure as verified in code review."
+  
+  - task: "Test new invoice format with discount functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CreateInvoice.jsx, /app/frontend/src/pages/InvoiceView.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing new 9-column invoice format: Item, HSN, Rate (excl. GST), Qty, Item Value, Discount (₹ + %), Taxable Value, Tax (% + CGST/SGST), Item Total. Testing with customer Ankit, product with qty 2, discount 100, GST 18%."
 
 metadata:
   created_by: "main_agent"
