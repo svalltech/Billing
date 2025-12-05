@@ -255,7 +255,7 @@ const Dashboard = () => {
                 <p className="text-xs text-slate-500 mt-2">{stats.invoice_count} invoices</p>
               </div>
               <div className="bg-green-100 text-green-600 p-4 rounded-xl">
-                <DollarSign size={32} />
+                <Receipt size={32} />
               </div>
             </div>
           </CardContent>
