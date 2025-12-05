@@ -297,6 +297,21 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED SUCCESSFULLY: Created invoice INV-00017 with customer Ankit, Mesh Jacket (qty: 2, discount: ₹100, GST: 5%). All 9 columns verified: Item✓, HSN✓, Rate(excl. GST)✓, Qty✓, Item Value✓, Discount✓, Taxable Value✓, Tax✓, Item Total✓. Discount shows both amount (₹100.00) and percentage (5.24%)✓. Tax shows percentage (2.5% + 2.5%) and CGST + SGST labels✓. Invoice format working perfectly."
+  
+  - task: "Fix invoice edit functionality bug - missing gst_rate and total fields"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/CreateInvoice.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "User reported bug: When editing an invoice and then editing an item, the page would crash due to missing 'gst_rate' and 'total' fields. Need to test the fix."
+      - working: true
+        agent: "testing"
+        comment: "✅ BUG FIX VERIFIED: Comprehensive testing completed successfully. All test steps passed: 1) Navigated to invoice list 2) Viewed invoice INV-00017 3) Returned to list via 'Back to Invoices' 4) Entered edit mode 5) Successfully edited item (changed qty from 2 to 3) 6) Confirmed changes without errors. The previously reported bug where editing invoice items caused page crashes due to missing 'gst_rate' and 'total' fields has been SUCCESSFULLY FIXED. No console errors detected, form state management working correctly, item editing functionality now works smoothly."
 
 metadata:
   created_by: "main_agent"
