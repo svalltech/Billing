@@ -162,6 +162,17 @@ const BusinessSettings = () => {
               </div>
             </div>
             
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>City</Label>
+                <Input
+                  value={formData.city}
+                  onChange={(e) => setFormData({...formData, city: e.target.value})}
+                  placeholder="City name"
+                />
+              </div>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>PAN</Label>
