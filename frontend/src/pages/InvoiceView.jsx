@@ -135,6 +135,7 @@ const InvoiceView = () => {
                     )}
                     {business.phone_1 && <p className="text-sm text-slate-600 mt-1">Phone: {business.phone_1}</p>}
                     {business.email_1 && <p className="text-sm text-slate-600">Email: {business.email_1}</p>}
+                    {business.website && <p className="text-sm text-slate-600">Website: {business.website}</p>}
                   </>
                 ) : (
                   <h1 className="text-3xl font-bold text-slate-800">Invoice</h1>
