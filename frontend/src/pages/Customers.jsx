@@ -591,6 +591,25 @@ const Customers = () => {
                   <h3 className="text-sm font-semibold text-slate-700 mb-3">Bill To</h3>
                   <div className="space-y-3">
                     <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label>GSTIN</Label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={copyGstinToBillTo}
+                            onChange={(e) => handleCopyGstinToBillTo(e.target.checked)}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-xs text-slate-600">Copy from main GSTIN</span>
+                        </label>
+                      </div>
+                      <Input
+                        value={formData.bill_to_gstin}
+                        onChange={(e) => setFormData({...formData, bill_to_gstin: e.target.value})}
+                        placeholder="GSTIN"
+                      />
+                    </div>
+                    <div>
                       <Label>Address</Label>
                       <Textarea
                         value={formData.address_1}
