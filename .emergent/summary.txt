@@ -1,100 +1,89 @@
 <analysis>**original_problem_statement:**
-The user requested a series of enhancements to the Customer and Business management features.
+The user initially requested UI/UX enhancements and deeper integration between the Customer and Business management features. However, the focus of this session shifted entirely to a new, comprehensive Invoice Management feature.
 
-**Initial Request (Customer & Business Integration):**
-1.  In the Customers data table, add a 'Business Name' column next to 'Name' and remove the 'Email' column.
-2.  In the 'Add Customer' form, add a checkbox to indicate if the customer has a business with GST.
-3.  If a customer has a business, display a form to capture business details.
-4.  Provide Same as customer checkboxes to auto-fill business details (Name, Phone, Email, Address) from the customer's data.
-5.  If the entered business GSTIN already exists, link the customer to the existing business profile. Otherwise, create a new business profile.
-6.  The linked business name should be displayed in the Customers table.
-7.  In the Businesses data table, show which customers are linked to each business.
+**PRODUCT REQUIREMENTS:**
+1.  **Invoice Creation:**
+    *   Create a new page for generating invoices.
+    *   Customer selection dropdown should be searchable and display .
+    *   Automatically determine GST type (CGST/SGST for intra-state, IGST for inter-state) by comparing the customer's state with the admin's business state (from Settings).
+    *   Invoice items should have a rate toggle: With GST (inclusive, default) and Without GST (exclusive).
+    *   Provide standard GST rates (5%, 12%, 18%, 28%) with an option for manual entry.
+    *   Implement an item-by-item confirmation flow: An item is added in an editable card, and a Confirm Item button finalizes it into a read-only summary row. Multiple items can be added this way.
+    *   Confirmed items in the summary row should have Edit and Delete icons.
 
-**Follow-up Requests (UI/UX Improvements):**
-1.  **Customers Page:**
-    *   In the 'Add Customer' form, move the 'State' field before 'City'.
-    *   Implement dynamic dropdowns for State and City, using a comprehensive list of all Indian states and cities.
-    *   Allow manual entry for City if it's not in the list (Others option).
-    *   In the 'Add Customer' form, the 'Business Legal Name' field should be a dropdown of existing, unlinked businesses, but also allow typing for a new business.
-    *   Table sorting should not refresh the entire page (i.e., implement client-side sorting).
+2.  **Payment Tracking:**
+    *   Add a detailed payment section to the invoice form.
+    *   Implement payment statuses: , , .
+    *   If Partial is selected, an input field for the paid amount should appear, and the Balance Due should be calculated and displayed prominently.
+    -   Payment methods should include , , , , , and .
+    -   Include a field for .
 
-2.  **Businesses Page:**
-    *   In the 'Add Business' form, move 'GSTIN' and 'State Code' before the 'State' field.
-    *   When a GSTIN is entered, automatically fetch and populate the state code. The state code should still be editable via a dropdown.
-    *   Implement dynamic dropdowns for State and City, with an option for manual entry.
-    *   The GST State Code should be a dropdown showing , but also allow dynamic typing.
-    *   Table sorting should not refresh the entire page.
+3.  **Invoice Listing & Management:**
+    *   Create an All Invoices page with a data table.
+    *   Implement client-side sorting for all columns.
+    *   Allow searching by invoice number or customer name, and filtering by a date range.
+    *   The table should display: , , , , , and action buttons ().
+    *   In the status column, for Partial payments, show an info icon () that reveals the due amount on hover.
+    *   Implement a soft-delete mechanism. Deleted invoices should move to a new Archives section.
+    *   Create an Archives page, accessible from the sidebar, to list deleted bills and provide a Restore option.
+    *   The Edit Invoice functionality should allow modification of all fields, including the date (up to the last bill date).
+    *   The PDF download action should generate a document that visually matches the detailed invoice view page.
 
 **User's preferred language**: English
 
 **what currently exists?**
-A full-stack billing application with a React frontend, FastAPI backend, and MongoDB database. It has modules for managing Customers, Businesses, and Products. The core logic to link a Customer to a Business profile upon creation has been implemented. The Customers page has been updated with client-side sorting and dynamic, searchable dropdowns for State and City with an Other option for manual entry. The Businesses page has also been modified to include similar UI enhancements.
+The application now includes a fully-featured Invoice Management module. This includes a sophisticated  page for generating invoices with line-item confirmation, automatic tax calculation, and detailed payment tracking. A new  page displays all invoices with client-side sorting, searching, date filtering, and actions (View, Edit, PDF Download, Soft Delete). A corresponding  page allows for viewing and restoring deleted invoices. The FastAPI backend in  has been significantly updated with new Pydantic models and API endpoints to support all CRUD operations for invoices, including the soft-delete and restore logic.
 
 **Last working item**:
-- Last item agent was working: Implementing significant UI/UX enhancements on the **Businesses page** (). This included:
-    1.  Reordering form fields to place  and  first.
-    2.  Adding logic to auto-populate the state from the first two digits of the GSTIN.
-    3.  Implementing dynamic dropdowns for State, City, and GST State Code.
-    4.  Changing the table sorting mechanism to be client-side to prevent page reloads.
-- Status: **IN PROGRESS**
-- Agent Testing Done: N
-- Which testing method agent to use? **Frontend testing agent** to verify all the new UI components, client-side sorting, and form logic on the Businesses page.
+- Last item agent was working: Fixing a critical bug where updating an existing invoice by adding a new item and clicking Save Invoice resulted in a failed to update invoice error.
+- Status: **USER VERIFICATION PENDING**
+- Agent Testing Done: Y
+- Which testing method agent to use? The agent has successfully tested the fix using the screenshot tool, verifying the entire workflow from adding an item to an existing invoice, saving it, and viewing the updated invoice. The user should now test and confirm the resolution.
 - User Testing Done: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: (P0) Verify and Test Businesses Page Enhancements**
-    -   Description: The agent implemented all requested features for the  page but did not perform any testing or receive user confirmation. The new features (client-side sorting, dynamic dropdowns, GSTIN-based state detection) are complex and have a high probability of containing bugs.
-    -   Next debug checklist:
-        -   Start by taking a screenshot of the Businesses page to check for any obvious rendering errors.
-        -   Manually test the Add Business form:
-            -   Does the State dropdown work?
-            -   Does the City dropdown populate based on the State?
-            -   Does entering a GSTIN auto-fill the State Code?
-            -   Can you manually override the auto-filled State Code?
-        -   Test the client-side sorting by clicking on table headers.
-        -   Run the  agent to create a comprehensive test suite for .
-    -   Why fix this issue and what will be achieved with the fix?: This will complete the user's feature request and ensure the Businesses page is stable and functional.
+-   **Issue 1: (P1) Verify and Test Businesses Page Enhancements**
+    -   Description: This was the highest priority task from the previous session but was deferred to build the invoice feature. The  page has significant unverified UI/UX changes, including client-side sorting, dynamic dropdowns for State/City, and logic to auto-populate the state from the GSTIN. These features need to be thoroughly tested.
     -   Status: **NOT STARTED**
-    -   Is recurring issue?: N/A
+    -   Is recurring issue?: N
     -   Should Test frontend/backend/both after fix?: Frontend.
 
 **In progress Task List**:
--   **Task 1: Complete Businesses Page Enhancements**
-    -   Where to resume: The code has been written and compiled successfully. The next step is to begin testing as outlined in Issue 1 above.
-    -   What will be achieved with this?: A fully functional and user-friendly Business management page that meets all user requirements.
-    -   Status: **IN PROGRESS**
-    -   Should Test frontend/backend/both after fix?: Frontend
-    -   Blocked on something: No.
+- None.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks:**
-    - (P1) Add an Import tab/functionality for customers and businesses.
-    - (P1) Implement payment tracking (cash, card, UPI, credit).
-    - (P2) Add sales reports and analytics.
+  - (P1) Add an Import tab/functionality for customers and businesses.
+  - (P2) Add sales reports and analytics.
 - **Future Tasks:**
-    - Implement offline sync capabilities.
-    - Develop user role management and permissions.
-    - Integrate with the separate inventory management application.
+  - Implement offline sync capabilities.
+  - Develop user role management and permissions.
+  - Integrate with the separate inventory management application.
 
 **Completed work in this session**
--   **Customer-Business Integration:**
-    -   Backend logic in  updated to handle linking/creating businesses when a customer is added/updated.
-    -   Frontend  overhauled to include a business sub-form.
-    -   Business Name column added to the Customers table; Email column removed.
--   **Customers Page UI/UX Enhancements:**
-    -   Client-side sorting implemented to prevent page reloads ( used for optimization).
-    -   Dynamic, searchable dropdowns for State and City added to the customer form.
-    -   A comprehensive city list was added, with an Other option for manual city entry.
+-   **Invoice Feature Implementation (Complete Lifecycle):**
+    -   **Creation ():** A new, dynamic page was built from scratch to handle invoice creation and editing. It includes customer search, automatic GST type detection, an item-by-item confirmation workflow, complex state management for calculations, and a detailed payment section with partial payment logic.
+    -   **Listing ():** A new page was created to list all invoices with client-side searching, sorting, date-range filtering, and action buttons. It features a custom tooltip to show the due amount for partially paid invoices.
+    -   **Archiving ():** A new page was created to display soft-deleted invoices with an option to restore them.
+    -   **PDF Generation:** The PDF download functionality was updated to generate a PDF that precisely matches the invoice's detailed view format.
+-   **Backend Development ():**
+    -   New Pydantic models (, , ) were added.
+    -   New API endpoints for the entire invoice lifecycle were implemented: create, list (with filters), update, soft-delete, and restore.
+-   **UI/Navigation:**
+    -   The main sidebar () was updated to include a link to the new Archives page.
+    -   Frontend routing () was updated to handle all new invoice-related pages.
 -   **Bug Fixes:**
-    -   Fixed a ResizeObserver loop error on the Customers page by optimizing sorting with  and adding CSS constraints to the dropdown.
-    -   Resolved a persistent UI caching/hot-reload issue by clearing the  and restarting services, as suggested by the .
+    -   Resolved an issue where changing the GST rate did not trigger a recalculation of taxes.
+    -   Fixed a critical crash on the Edit Invoice page by ensuring customer and invoice data were loaded in the correct order.
+    -   Corrected a  error for the unit price when viewing an item in an edited invoice.
+    -   Fixed a backend validation  that prevented existing invoices from being updated.
 
 **Earlier issues found/mentioned but not fixed**
 -   **Issue 1:  Warning Suppression**
-    -   Debug checklist: The agent suppressed the ResizeObserver loop completed with undelivered notifications warning in  by adding a global error handler. This is a workaround, not a true fix. The underlying issue in the Radix UI Select component with large lists might still cause performance degradation. A better fix would be to investigate virtualization for the dropdown list if performance becomes an issue.
-    -   Why to solve this issue and what will be achieved with this?: To improve performance and follow best practices by fixing the root cause of a warning rather than suppressing it.
+    -   Debug checklist: In , a ResizeObserver loop warning was suppressed with a global error handler as a workaround. This does not fix the underlying performance issue in the Radix UI Select component when handling large lists. The proper solution is to investigate list virtualization if the component feels slow.
+    -   Why to solve this issue and what will be achieved with this?: To fix the root cause of a performance-related warning and follow best practices.
     -   Should Test frontend/backend/both after fix: Frontend.
-    -   Is recurring issue?: Y (It occurred multiple times before being suppressed).
+    -   Is recurring issue?: Y
 
 **Known issue recurrence from previous fork**
 -   None.
@@ -103,72 +92,82 @@ A full-stack billing application with a React frontend, FastAPI backend, and Mon
 
 
 **Key Technical Concepts**
--   **Full-stack Architecture:** React frontend, FastAPI backend, MongoDB database.
--   **UI Framework:** Shadcn UI for components (Select, Checkbox, etc.).
--   **State Management:** React Hooks (, , ).
--   **API Communication:**  on frontend.
--   **Client-side Optimization:**  for expensive computations (sorting), client-side sorting to reduce API calls.
--   **Data Handling:** Created static JS files (, ) to serve data to the frontend.
+-   **Frontend:** React, React Hooks (, ), , Shadcn UI components, .
+-   **Backend:** FastAPI, Pydantic for data modeling.
+-   **Database:** MongoDB.
+-   **Core Patterns:** Soft-delete implementation, complex form state management, conditional UI rendering, client-side PDF generation from HTML, client-side data table operations (search, sort, filter).
 
 **key DB schema**
--   **customers**:
-    -   : (Optional[str]) - Foreign key linking to the  collection.
-    -   : (Optional[str]) - Denormalized business name for quick display.
-    -   Other fields: , , , , , , etc.
--   **businesses**:
-    -   uid=0(root) gid=0(root) groups=0(root): (str, UUID) - Primary key.
-    -   , , , , etc.
+-   **invoices**:
+    -   uid=0(root) gid=0(root) groups=0(root), , , , , ,  (unpaid/partial/fully_paid), , , , , 
+    -   : 
+    -   : 
+-   **customers**: (Existing)
+-   **businesses**: (Existing)
 
 **changes in tech stack**
-- None.
+-   None.
 
-**All files**
+**All files of reference**
 -   **Created:**
-    -   : Contains a large object mapping Indian states to a list of cities for dynamic dropdowns.
-    -   : Contains an object mapping GST state codes to state names.
+    -   : The main page for viewing and managing all invoices.
+    -   : Page to view and restore soft-deleted invoices.
 -   **Updated:**
-    -   : Modified customer creation/update endpoints to handle business linking. Added a  to the business listing endpoint.
-    -   : Heavily modified to integrate business details, add dynamic state/city dropdowns, implement client-side sorting, and fix performance bugs.
-    -   : Heavily modified to reorder form fields, add dynamic dropdowns for state/city/GST code, implement client-side sorting, and add logic for auto-populating state from GSTIN.
-    -   : Updated with test plans and results for backend/frontend testing cycles.
+    -   : Overhauled to become the central component for creating and editing invoices.
+    -   : Heavily modified with new models and endpoints for the invoice module.
+    -   : Added navigation for the Archives page.
+    -   : Added routes for all new invoice-related pages.
+    -   : Its structure was used as a template for the PDF download.
 
 **Areas that need refactoring**:
--   The hardcoded state/city data in  is very large. This could be moved to a separate JSON file and loaded on demand, or served from a dedicated backend endpoint to reduce the initial bundle size.
--   The  error suppression in  is a temporary fix. The root cause should be investigated if performance issues arise.
+-   The  file is now extremely large and handles a vast amount of logic and state. It should be broken down into smaller, more manageable sub-components (e.g., , , , ).
+-   The  error suppression in  remains a temporary workaround.
 
 **key api endpoints**
--   : Modified to accept business details, find existing businesses by GSTIN, or create new ones.
--   : Same modifications as the POST endpoint.
--   : Modified to include a  field in the response.
--   : New endpoint to fetch businesses not yet linked to any customer, used for the dropdown in the 'Add Customer' form.
+-   : Lists invoices with support for search, sorting, and date range filtering.
+-   : Creates a new invoice.
+-   : Retrieves a single invoice for viewing or editing.
+-   : Updates an existing invoice.
+-   : Soft-deletes an invoice by setting .
+-   : Restores a soft-deleted invoice.
+-   : Fetches admin details for GST calculations.
 
 **Critical Info for New Agent**
--   **UI Caching Issue**: The previous agent spent a significant amount of time debugging a severe UI caching problem where changes did not appear in the browser. The issue persisted even in incognito mode. The  identified a hot-reload malfunction. The fix involved clearing the webpack cache (). If UI changes are not visible, be prepared to perform aggressive cache clearing on both the server and browser side.
--   **Client-Side Sorting**: Sorting for both Customers and Businesses tables is now handled on the client side using . The  calls no longer send sorting parameters to the API.
--   **Data Files**: State/City and GST code data are now stored in static JS files in .
+-   The user prioritized the new Invoice feature over the pending testing for the Businesses page. The next logical step is to get user verification on the latest bug fix and then address the deferred testing of the  page.
+-   The  component is the heart of the new feature set but is also a technical debt risk due to its size and complexity. Be cautious when making changes there.
+-   The invoice workflow involves multiple states (editing item, confirmed item, partial payment) that are handled with conditional rendering. Understanding this flow is key to debugging or enhancing the page.
 
 **documents created in this job**
-- None.
+-   None.
 
-**Last 5 User Messages and any pending user messages**
-1.  **User:** Requests improvements for the Businesses tab (move GSTIN, auto-fetch state, dynamic dropdowns, client-side sorting). (Pending implementation/verification)
-2.  **User:** Confirms dropdowns on the Customers page are working but notes the city list is incomplete and requests an Others option for manual entry. (Completed)
-3.  **User:** Reports an error when clicking the state dropdown on the Customers page. (Completed - Fixed with  and other optimizations).
-4.  **User:** Confirms that the business integration features are now visible on the Customers page and requests several UI/UX improvements (move state before city, dynamic dropdowns, better business selection, client-side sorting). (Completed)
-5.  **User:** Reports UI changes are still not visible after multiple attempts. (Resolved - This was the major caching issue).
+**Last 10 User Messages and any pending user messages**
+1.  **Request:** Implement a Confirm button and a summary row for added invoice items. (Completed)
+2.  **Request:** Refine the item confirmation flow to be per-item, with confirmed items showing as rows with edit/delete icons. (Completed)
+3.  **Request:** Add detailed payment options (status, methods, partial payment logic). (Completed)
+4.  **Request:** Add Cash as the first payment method option. (Completed)
+5.  **Request:** Implement invoice list sorting, date search, new columns, PDF download, editing, and a soft-delete/archive system. (Completed)
+6.  **Request:** Ensure the downloaded PDF's format matches the invoice view page. (Completed)
+7.  **Request:** Add a tooltip on the Partial status in the invoice list to show the due amount. (Completed)
+8.  **Bug Report:** An error occurs when clicking the Edit button on an invoice. (Completed)
+9.  **Bug Report:** An error failed to update invoice occurs when saving an edited invoice with a new item. (Completed, pending user verification)
+10. **(No pending messages)** The last user interaction was a bug report that has now been resolved by the agent.
 
 **Project Health Check:**
--   **Broken:** The  page is in an unverified state after major changes. It may be broken.
+-   **Broken:** None. The last reported bug has been fixed.
 -   **Mocked:** None.
+-   **Unverified:** The  page contains major feature enhancements from a previous session that have not been tested.
+
+**3rd Party Integrations**:
+-   None added in this session.
 
 **Testing status**
--   Testing agent used after significant changes: YES (for the initial business integration and backend changes).
--   Troubleshoot agent used after agent stuck in loop: YES (for the persistent UI caching issue).
--   Test files created:  (by the backend testing agent).
+-   Testing agent used after significant changes: NO
+-   Troubleshoot agent used after agent stuck in loop: NO
+-   Test files created: None.
 -   Known regressions: None.
 
 **Credentials to test flow:**
 -   None required.
 
 **What agent forgot to execute**
-The agent implemented a large set of features on the  page based on user requirements but concluded the session immediately after the code compiled successfully, without performing any form of testing (manual, screenshot, or agent-based) to verify if the new functionality works or if it introduced any regressions. The task is therefore incomplete and at high risk of being buggy.</analysis>
+-   The agent did not forget but correctly **deferred** the pending task of testing the  page enhancements to prioritize the user's new, extensive feature request for Invoice Management.</analysis>

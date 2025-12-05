@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class BusinessIntegrationTester:
-    def __init__(self, base_url="https://bizlink-dashboard.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://invoice-forge-26.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
