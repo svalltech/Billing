@@ -544,22 +544,6 @@ const Customers = () => {
                       />
                     </div>
                     <div>
-                      <Label>Phone 1</Label>
-                      <Input
-                        value={formData.phone_1}
-                        onChange={(e) => setFormData({...formData, phone_1: e.target.value})}
-                        placeholder="Primary phone"
-                      />
-                    </div>
-                    <div>
-                      <Label>Phone 2</Label>
-                      <Input
-                        value={formData.phone_2}
-                        onChange={(e) => setFormData({...formData, phone_2: e.target.value})}
-                        placeholder="Secondary phone"
-                      />
-                    </div>
-                    <div>
                       <Label>Email 1</Label>
                       <Input
                         type="email"
