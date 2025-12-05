@@ -196,9 +196,11 @@ const InvoiceView = () => {
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Ship To</p>
               <h3 className="text-xl font-bold text-slate-800 mb-1">{invoice.customer_name}</h3>
-              {invoice.customer_ship_address && <p className="text-sm text-slate-600">{invoice.customer_ship_address}</p>}
-              {invoice.customer_ship_state && invoice.customer_ship_city && (
-                <p className="text-sm text-slate-600">{invoice.customer_ship_city}, {invoice.customer_ship_state}</p>
+              {invoice.customer_ship_address && <p className="text-sm text-slate-600 mt-2">{invoice.customer_ship_address}</p>}
+              {(invoice.customer_ship_city || invoice.customer_ship_state || invoice.customer_ship_pincode) && (
+                <p className="text-sm text-slate-600">
+                  {invoice.customer_ship_city}{invoice.customer_ship_city && invoice.customer_ship_state ? ', ' : ''}{invoice.customer_ship_state}{invoice.customer_ship_pincode ? ` - ${invoice.customer_ship_pincode}` : ''}
+                </p>
               )}
               {invoice.customer_phone_2 && <p className="text-sm text-slate-600">Phone: {invoice.customer_phone_2}</p>}
             </div>
