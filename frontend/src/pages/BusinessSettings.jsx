@@ -282,7 +282,7 @@ const BusinessSettings = () => {
             </div>
             
             {/* Tax Info */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>GSTIN</Label>
                 <Input
@@ -299,48 +299,131 @@ const BusinessSettings = () => {
                   placeholder="State code"
                 />
               </div>
-              <div>
-                <Label>State</Label>
-                <Input
-                  value={formData.state}
-                  onChange={(e) => setFormData({...formData, state: e.target.value})}
-                  placeholder="State name"
-                />
+            </div>
+            
+            {/* Bill To Section */}
+            <div className="border-t pt-6 mt-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">Bill To</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label>Address</Label>
+                  <Textarea
+                    value={formData.address_1}
+                    onChange={(e) => setFormData({...formData, address_1: e.target.value})}
+                    placeholder="Billing address"
+                    rows={3}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>State</Label>
+                    <Input
+                      value={formData.state}
+                      onChange={(e) => setFormData({...formData, state: e.target.value})}
+                      placeholder="State name"
+                    />
+                  </div>
+                  <div>
+                    <Label>City</Label>
+                    <Input
+                      value={formData.city}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                      placeholder="City name"
+                    />
+                  </div>
+                  <div>
+                    <Label>Phone</Label>
+                    <Input
+                      value={formData.phone_1}
+                      onChange={(e) => setFormData({...formData, phone_1: e.target.value})}
+                      placeholder="Phone number"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <Label>City</Label>
-                <Input
-                  value={formData.city}
-                  onChange={(e) => setFormData({...formData, city: e.target.value})}
-                  placeholder="City name"
-                />
+            {/* Ship To Section */}
+            <div className="border-t pt-6 mt-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-slate-800">Ship To</h3>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={copyBillToShip}
+                    onChange={(e) => handleCopyBillToShip(e.target.checked)}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm text-slate-600">Copy from Bill To</span>
+                </label>
               </div>
-              <div>
-                <Label>Pincode</Label>
-                <Input
-                  value={formData.pincode}
-                  onChange={(e) => setFormData({...formData, pincode: e.target.value})}
-                  placeholder="Pincode"
-                />
+              <div className="space-y-4">
+                <div>
+                  <Label>Address</Label>
+                  <Textarea
+                    value={formData.address_2}
+                    onChange={(e) => setFormData({...formData, address_2: e.target.value})}
+                    placeholder="Shipping address"
+                    rows={3}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>State</Label>
+                    <Input
+                      value={formData.ship_state}
+                      onChange={(e) => setFormData({...formData, ship_state: e.target.value})}
+                      placeholder="State name"
+                    />
+                  </div>
+                  <div>
+                    <Label>City</Label>
+                    <Input
+                      value={formData.ship_city}
+                      onChange={(e) => setFormData({...formData, ship_city: e.target.value})}
+                      placeholder="City name"
+                    />
+                  </div>
+                  <div>
+                    <Label>Phone</Label>
+                    <Input
+                      value={formData.phone_2}
+                      onChange={(e) => setFormData({...formData, phone_2: e.target.value})}
+                      placeholder="Phone number"
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <Label>PAN</Label>
-                <Input
-                  value={formData.pan}
-                  onChange={(e) => setFormData({...formData, pan: e.target.value})}
-                  placeholder="PAN number"
-                />
-              </div>
-              <div>
-                <Label>Others</Label>
-                <Input
-                  value={formData.others}
-                  onChange={(e) => setFormData({...formData, others: e.target.value})}
-                  placeholder="Other details"
-                />
+            </div>
+            
+            {/* Other Fields */}
+            <div className="border-t pt-6 mt-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">Other Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label>Pincode</Label>
+                  <Input
+                    value={formData.pincode}
+                    onChange={(e) => setFormData({...formData, pincode: e.target.value})}
+                    placeholder="Pincode"
+                  />
+                </div>
+                <div>
+                  <Label>PAN</Label>
+                  <Input
+                    value={formData.pan}
+                    onChange={(e) => setFormData({...formData, pan: e.target.value})}
+                    placeholder="PAN number"
+                  />
+                </div>
+                <div>
+                  <Label>Others</Label>
+                  <Input
+                    value={formData.others}
+                    onChange={(e) => setFormData({...formData, others: e.target.value})}
+                    placeholder="Other details"
+                  />
+                </div>
               </div>
             </div>
             
