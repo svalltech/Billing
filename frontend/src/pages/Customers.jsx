@@ -271,10 +271,14 @@ const Customers = () => {
     setShowCustomCity1(false);
     setShowCustomCity2(false);
     setCopyBillToShip(false);
+    setCopyGstinToBillTo(false);
+    setCopyGstinToShipTo(false);
     setFormData({
       name: '',
       nickname: '',
       gstin: '',
+      bill_to_gstin: '',
+      ship_to_gstin: '',
       phone_1: '',
       phone_2: '',
       email_1: '',
