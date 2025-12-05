@@ -238,8 +238,11 @@ const Businesses = () => {
         email_1: '',
         email_2: '',
         address_1: '',
-        address_2: ''
+        address_2: '',
+        ship_state: '',
+        ship_city: ''
       });
+      setCopyBillToShip(false);
     }
   };
   
