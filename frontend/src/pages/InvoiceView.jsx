@@ -117,27 +117,46 @@ const InvoiceView = () => {
       {/* Invoice */}
       <Card className="print-area">
         <CardContent className="p-8">
-          {/* Header */}
-          <div className="flex justify-between items-start mb-8 pb-6 border-b-2 border-slate-300">
-            <div>
-              {business ? (
-                <>
-                  <h1 className="text-3xl font-bold text-slate-800 mb-1">{business.legal_name}</h1>
-                  {business.nickname && <p className="text-sm text-slate-600 mb-2">{business.nickname}</p>}
-                  {business.gstin && <p className="text-sm text-slate-600">GSTIN: {business.gstin}</p>}
-                  {business.state && <p className="text-sm text-slate-600">State: {business.state} ({business.state_code})</p>}
-                  {business.address_1 && <p className="text-sm text-slate-600 mt-2">{business.address_1}</p>}
-                  {business.phone_1 && <p className="text-sm text-slate-600">Phone: {business.phone_1}</p>}
-                  {business.email_1 && <p className="text-sm text-slate-600">Email: {business.email_1}</p>}
-                </>
-              ) : (
-                <h1 className="text-3xl font-bold text-slate-800">Invoice</h1>
-              )}
-            </div>
-            <div className="text-right">
-              <h2 className="text-4xl font-bold text-blue-600 mb-2">INVOICE</h2>
-              <p className="text-lg font-semibold text-slate-800">{invoice.invoice_number}</p>
-              <p className="text-sm text-slate-600">Date: {new Date(invoice.invoice_date).toLocaleDateString()}</p>
+          {/* Header with Logo */}
+          <div className="mb-8 pb-6 border-b-2 border-slate-300">
+            {/* Logo - Center Top */}
+            {business?.logo && (
+              <div className="flex justify-center mb-6">
+                <img 
+                  src={business.logo} 
+                  alt="Company Logo" 
+                  style={{ width: '1.5in', height: '1.5in', objectFit: 'contain' }}
+                  className="border border-slate-200 rounded p-1"
+                />
+              </div>
+            )}
+            
+            <div className="flex justify-between items-start">
+              <div>
+                {business ? (
+                  <>
+                    <h1 className="text-3xl font-bold text-slate-800 mb-1">{business.legal_name}</h1>
+                    {business.gstin && <p className="text-sm text-slate-600">GSTIN: {business.gstin}</p>}
+                    {business.address_1 && (
+                      <div className="text-sm text-slate-600 mt-2">
+                        <p>{business.address_1}</p>
+                        <p>
+                          {[business.city, business.state, business.pincode].filter(Boolean).join(', ')}
+                        </p>
+                      </div>
+                    )}
+                    {business.phone_1 && <p className="text-sm text-slate-600 mt-1">Phone: {business.phone_1}</p>}
+                    {business.email_1 && <p className="text-sm text-slate-600">Email: {business.email_1}</p>}
+                  </>
+                ) : (
+                  <h1 className="text-3xl font-bold text-slate-800">Invoice</h1>
+                )}
+              </div>
+              <div className="text-right">
+                <h2 className="text-4xl font-bold text-blue-600 mb-2">INVOICE</h2>
+                <p className="text-lg font-semibold text-slate-800">{invoice.invoice_number}</p>
+                <p className="text-sm text-slate-600">Date: {new Date(invoice.invoice_date).toLocaleDateString()}</p>
+              </div>
             </div>
           </div>
           
