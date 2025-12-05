@@ -205,6 +205,11 @@ class InvoiceCreate(BaseModel):
     customer_gstin: Optional[str] = None
     customer_address: Optional[str] = None
     customer_phone: Optional[str] = None
+    customer_ship_address: Optional[str] = None
+    customer_ship_city: Optional[str] = None
+    customer_ship_state: Optional[str] = None
+    customer_ship_pincode: Optional[str] = None
+    customer_phone_2: Optional[str] = None
     items: List[InvoiceItem]
     subtotal: float
     total_discount: float
