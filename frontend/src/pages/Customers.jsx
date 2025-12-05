@@ -252,6 +252,7 @@ const Customers = () => {
     setAvailableCities([]);
     setShowCustomCity1(false);
     setShowCustomCity2(false);
+    setCopyBillToShip(false);
     setFormData({
       name: '',
       nickname: '',
