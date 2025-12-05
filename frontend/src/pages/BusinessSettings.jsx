@@ -43,6 +43,7 @@ const BusinessSettings = () => {
           gstin: res.data.gstin || '',
           state_code: res.data.state_code || '',
           state: res.data.state || '',
+          city: res.data.city || '',
           pan: res.data.pan || '',
           others: res.data.others || '',
           phone_1: res.data.phone_1 || '',
