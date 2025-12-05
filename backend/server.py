@@ -180,9 +180,11 @@ class Invoice(BaseModel):
     invoice_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     customer_id: str
     customer_name: str
+    customer_business_name: Optional[str] = None
     customer_gstin: Optional[str] = None
     customer_address: Optional[str] = None
     customer_phone: Optional[str] = None
+    customer_ship_gstin: Optional[str] = None
     customer_ship_address: Optional[str] = None
     customer_ship_city: Optional[str] = None
     customer_ship_state: Optional[str] = None
@@ -210,9 +212,11 @@ class Invoice(BaseModel):
 class InvoiceCreate(BaseModel):
     customer_id: str
     customer_name: str
+    customer_business_name: Optional[str] = None
     customer_gstin: Optional[str] = None
     customer_address: Optional[str] = None
     customer_phone: Optional[str] = None
+    customer_ship_gstin: Optional[str] = None
     customer_ship_address: Optional[str] = None
     customer_ship_city: Optional[str] = None
     customer_ship_state: Optional[str] = None
