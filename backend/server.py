@@ -72,6 +72,8 @@ class BusinessCreate(BaseModel):
     website: Optional[str] = None
     address_1: Optional[str] = None
     address_2: Optional[str] = None
+    ship_state: Optional[str] = None
+    ship_city: Optional[str] = None
     logo: Optional[str] = None
 
 
