@@ -676,9 +676,9 @@ const CreateInvoice = () => {
                     <Input
                       type="number"
                       value={item.qty}
-                      onChange={(e) => handleItemChange(index, 'qty', parseFloat(e.target.value) || 0)}
+                      onChange={(e) => handleItemChange(index, 'qty', parseInt(e.target.value) || 0)}
                       min="0"
-                      step="0.01"
+                      step="1"
                     />
                   </div>
                   <div>
