@@ -61,6 +61,8 @@ class BusinessCreate(BaseModel):
     legal_name: str
     nickname: Optional[str] = None
     gstin: Optional[str] = None
+    bill_to_gstin: Optional[str] = None
+    ship_to_gstin: Optional[str] = None
     state_code: Optional[str] = None
     state: Optional[str] = None
     city: Optional[str] = None
